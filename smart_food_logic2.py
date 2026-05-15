@@ -485,7 +485,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 @app.route("/")
 def index():
-    return send_file(os.path.join(BASE_DIR, "smart_food_ui.html"))
+    return send_file(os.path.join(BASE_DIR, "login.html"))
 
 
 @app.route("/api/weather")

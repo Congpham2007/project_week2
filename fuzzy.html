@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Gợi ý AI - Aura Cuisines</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script src="navigation.js" defer></script>
 <script src="api.js" defer></script>
@@ -12,12 +13,17 @@
   ::-webkit-scrollbar { display: none; }
   html, body { -ms-overflow-style: none; scrollbar-width: none; overflow-x: hidden; }
   body { font-family: 'Inter', sans-serif; }
-  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
   .mesh-gradient-bg {
       background: radial-gradient(at 0% 0%, #ffd6ba 0%, transparent 50%),
                   radial-gradient(at 100% 0%, #e8d7ff 0%, transparent 50%),
                   radial-gradient(at 50% 100%, #b4eee2 0%, transparent 50%);
   }
+  /* Animation cho Modal */
+  .animate-pop { animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
+  @keyframes popIn { from { opacity: 0; transform: scale(0.9) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+  
+  .toast { position:fixed; bottom:100px; left:50%; transform:translateX(-50%) translateY(20px); background:#765842; color:#fff; border-radius:24px; padding:12px 24px; font-size:13px; opacity:0; transition:all 0.3s; z-index:999; pointer-events:none; }
+  .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
 </style>
 </head>
 <body class="bg-[#fbf9f4] text-[#1b1c19] min-h-screen pb-24">
@@ -27,16 +33,14 @@
 <span class="material-symbols-outlined">arrow_back</span>
 </button>
 <h1 class="text-[22px] font-semibold text-[#3f2c22]">Gợi ý cho bạn</h1>
-<button class="text-[#765842] active:scale-95 transition-transform duration-200">
-<span class="material-symbols-outlined">restaurant_menu</span>
-</button>
+<div class="w-10"></div>
 </div>
 </header>
 
 <main class="max-w-md mx-auto pt-20 px-5 space-y-6">
 <div id="reason-box" class="bg-[#fff1e4] border border-[#ead8cb] rounded-2xl p-4 flex items-start gap-3 text-[#6f5544]">
 <span class="material-symbols-outlined text-[#8a6547]" style="font-variation-settings:'FILL' 1;">info</span>
-<p class="text-sm leading-6">Đang lấy kết quả fuzzy từ backend…</p>
+<p class="text-sm leading-6">Đang phân tích dữ liệu AI...</p>
 </div>
 
 <div class="relative overflow-hidden rounded-xl mesh-gradient-bg p-6 text-center shadow-lg border border-white/40">
@@ -46,7 +50,7 @@
 <span id="match-score" class="text-[48px] font-bold text-[#3f2c22] leading-tight">--%</span>
 <span class="material-symbols-outlined text-[#8a6547] text-3xl" style="font-variation-settings:'FILL' 1;">auto_awesome</span>
 </div>
-<p id="insight-text" class="text-sm text-[#5f5148] mt-2 leading-6">Phân tích theo độ đói, thời gian, ngân sách và thời tiết thực tế.</p>
+<p id="insight-text" class="text-sm text-[#5f5148] mt-2 leading-6">Phân tích theo thông số của bạn.</p>
 </div>
 </div>
 
@@ -57,20 +61,116 @@
 
 <section class="space-y-4">
 <h2 class="text-sm font-semibold text-[#7d6d63] mb-4 uppercase tracking-widest">Các đề xuất khác</h2>
-<div id="other-choices" class="space-y-4"></div>
+<div id="other-choices" class="space-y-4 pb-10"></div>
 </section>
 </main>
 
+<div id="order-modal" class="fixed inset-0 z-[500] hidden items-center justify-center p-4 bg-[#241814]/60 backdrop-blur-sm">
+    <div class="w-full max-w-[390px] bg-[#fbf9f4] rounded-[32px] overflow-hidden shadow-2xl animate-pop">
+        <div class="h-1.5 w-full bg-[#765842]"></div>
+        <div class="p-6">
+            <div class="flex items-start justify-between mb-5">
+                <div>
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-[#9c8a7d]">Xác nhận món ăn</p>
+                    <h3 id="modal-name" class="text-[22px] font-bold text-[#241814] mt-0.5 leading-tight">--</h3>
+                </div>
+                <button onclick="closeModal()" class="w-9 h-9 rounded-full bg-[#f0ebe7] flex items-center justify-center text-[#8a6547]">
+                    <span class="material-symbols-outlined text-[18px]">close</span>
+                </button>
+            </div>
+
+            <div class="flex items-center justify-between bg-white border border-[#eee2d8] rounded-[24px] p-4 mb-5">
+                <span class="text-[14px] font-bold text-[#5a4a40]">Số lượng đặt</span>
+                <div class="flex items-center gap-5">
+                    <button onclick="updateQty(-1)" class="w-9 h-9 rounded-full border border-[#eaded5] flex items-center justify-center text-[#8a6547] text-xl active:scale-90">-</button>
+                    <span id="modal-qty" class="text-[18px] font-black text-[#765842] w-6 text-center">1</span>
+                    <button onclick="updateQty(1)" class="w-9 h-9 rounded-full bg-[#765842] text-white flex items-center justify-center text-xl active:scale-90">+</button>
+                </div>
+            </div>
+
+            <div class="rounded-[24px] bg-[#f7f3ef] p-5 mb-6 space-y-3">
+                <div class="flex justify-between text-[13px]">
+                    <span class="text-[#8d7d72] font-medium">Nhà hàng:</span>
+                    <span id="modal-rest" class="font-bold text-[#765842]">--</span>
+                </div>
+                <div class="flex justify-between border-t border-[#eee2d8] pt-3">
+                    <span class="text-[#5a4a40] font-bold">Tổng thanh toán:</span>
+                    <span id="modal-total" class="font-black text-[#765842] text-[19px]">--</span>
+                </div>
+            </div>
+
+            <button onclick="confirmOrder()" class="w-full py-4 rounded-[18px] bg-[#765842] text-white font-bold text-[16px] flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all">
+                <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">shopping_bag</span>
+                Đặt hàng & Theo dõi
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
 <script>
+let currentDish = null;
+let currentQty = 1;
+
 function fallbackImage(type) {
   return type === "fast"
     ? "https://images.unsplash.com/photo-1512058564366-c9e2c0cf0f12?auto=format&fit=crop&w=900&q=80"
     : "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=900&q=80";
 }
 
-function selectDish(item) {
-  smartFoodStore.setStored(smartFoodApi.STORAGE_KEYS.selectedDish, item);
-  navigateTo("detail.html");
+function openOrderModal(item) {
+  currentDish = item;
+  currentQty = 1;
+  document.getElementById('modal-name').textContent = item.name;
+  document.getElementById('modal-rest').textContent = item.rest_name;
+  document.getElementById('modal-qty').textContent = currentQty;
+  document.getElementById('modal-total').textContent = smartFoodUtils.formatPrice(item.price);
+  
+  document.getElementById('order-modal').classList.remove('hidden');
+  document.getElementById('order-modal').classList.add('flex');
+}
+
+function closeModal() {
+  document.getElementById('order-modal').classList.replace('flex', 'hidden');
+}
+
+function updateQty(val) {
+  currentQty = Math.max(1, currentQty + val);
+  document.getElementById('modal-qty').textContent = currentQty;
+  document.getElementById('modal-total').textContent = smartFoodUtils.formatPrice(currentDish.price * currentQty);
+}
+
+function confirmOrder() {
+  closeModal();
+  let orders = JSON.parse(localStorage.getItem('smart_food_orders') || '[]');
+  const newOrder = {
+    ...currentDish,
+    qty: currentQty,
+    totalPrice: currentDish.price * currentQty,
+    startTime: Date.now(),
+    orderId: 'ORD-' + Math.floor(100000 + Math.random() * 900000),
+    status: 'Đang chuẩn bị'
+  };
+  orders.push(newOrder);
+  localStorage.setItem('smart_food_orders', JSON.stringify(orders));
+  localStorage.setItem('last_order_id', newOrder.orderId);
+
+  showToast('🛒 Đang kết nối tài xế...');
+  
+  setTimeout(() => {
+    if(window.parent && window.parent.changeChannel) {
+      window.parent.changeChannel('tracking.html', 'tab-map');
+    } else {
+      window.location.href = 'tracking.html';
+    }
+  }, 1000);
+}
+
+function showToast(m) { 
+  const t = document.getElementById('toast'); 
+  t.innerText = m; t.classList.add('show'); 
+  setTimeout(() => t.classList.remove('show'), 2500); 
 }
 
 function bestCard(item) {
@@ -84,7 +184,7 @@ function bestCard(item) {
       </div>
       <div class="p-4 space-y-3">
         <div class="flex justify-between items-start gap-3">
-          <div>
+          <div class="text-left">
             <h3 class="text-[22px] leading-[28px] font-semibold text-[#2e2018]">${item.name}</h3>
             <div class="flex items-center gap-3 text-[#7d6d63] mt-1 flex-wrap text-sm">
               <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[18px]">local_fire_department</span>${item.calo} kcal</span>
@@ -96,23 +196,21 @@ function bestCard(item) {
             <div class="text-[#8a6547] text-[22px] font-semibold">${smartFoodUtils.formatPrice(item.price)}</div>
           </div>
         </div>
-        <button onclick='selectDish(${JSON.stringify(item).replace(/'/g, "&apos;")})' class="w-full bg-[#ffd6ba] text-[#7a5b45] py-3 rounded-full text-sm font-semibold active:scale-95 transition-all shadow-sm">Đặt món ngay</button>
+        <button onclick='openOrderModal(${JSON.stringify(item).replace(/'/g, "&apos;")})' class="w-full bg-[#ffd6ba] text-[#7a5b45] py-3 rounded-full text-sm font-semibold active:scale-95 transition-all shadow-sm">Đặt món ngay</button>
       </div>
     </div>`;
 }
 
 function smallCard(item, index) {
   return `
-    <div class="bg-white p-3 rounded-[20px] flex gap-4 shadow-sm border border-[#eadfd5] active:scale-[0.98] transition-transform">
+    <div class="bg-white p-3 rounded-[20px] flex gap-4 shadow-sm border border-[#eadfd5] active:scale-[0.98] transition-transform" onclick='openOrderModal(${JSON.stringify(item).replace(/'/g, "&apos;")})'>
       <div class="w-24 h-24 rounded-lg overflow-hidden shrink-0 relative">
         <img alt="${item.name}" class="w-full h-full object-cover" src="${fallbackImage(item.meal_type)}">
         <div class="absolute top-1 right-1 bg-white/80 backdrop-blur-sm text-[#8a6547] text-[10px] font-semibold px-1.5 py-0.5 rounded-full">${smartFoodUtils.buildMatch(index + 1, item.match_pct)}</div>
       </div>
-      <div class="flex-1 flex flex-col justify-between">
+      <div class="flex-1 flex flex-col justify-between text-left">
         <div>
-          <div class="flex justify-between items-start gap-2">
-            <h4 class="text-[16px] leading-[22px] font-semibold text-[#2e2018] line-clamp-2">${item.name}</h4>
-          </div>
+          <h4 class="text-[16px] leading-[22px] font-semibold text-[#2e2018] line-clamp-2">${item.name}</h4>
           <div class="flex gap-2 mt-1 flex-wrap text-sm">
             <span class="text-[#8d7d72]">${item.calo} kcal</span>
             <span class="text-[#8d7d72]">•</span>
@@ -122,9 +220,9 @@ function smallCard(item, index) {
         </div>
         <div class="flex justify-between items-end">
           <span class="text-sm font-semibold text-[#8a6547]">${smartFoodUtils.formatPrice(item.price)}</span>
-          <button onclick='selectDish(${JSON.stringify(item).replace(/'/g, "&apos;")})' class="bg-[#f6efe8] text-[#7d6d63] p-1.5 rounded-lg active:scale-95 transition-all shadow-sm border border-[#eadfd5]">
+          <div class="bg-[#f6efe8] text-[#7d6d63] p-1.5 rounded-lg active:scale-95 transition-all shadow-sm border border-[#eadfd5]">
             <span class="material-symbols-outlined text-[20px] font-bold">add</span>
-          </button>
+          </div>
         </div>
       </div>
     </div>`;
@@ -156,24 +254,21 @@ async function hydrateRecommendation() {
     document.getElementById("reason-box").innerHTML = `
       <span class="material-symbols-outlined text-[#8a6547]" style="font-variation-settings:'FILL' 1;">info</span>
       <p class="text-sm leading-6 text-[#6f5544]">
-        Đề xuất vì thời tiết hiện tại là ${weather?.weather_vi || weather?.weather || "ổn định"}, độ khẩn cấp bữa ăn ở mức ${recommendation.urgency || "--"} và ngân sách phù hợp.
+        Đề xuất dựa trên thời tiết ${weather?.weather_vi || weather?.weather || "hiện tại"}, độ khẩn cấp ${recommendation.urgency || "--"} và ngân sách của bạn.
       </p>`;
 
     document.getElementById("match-score").textContent = `${Math.round(best?.match_pct || 96)}%`;
-    document.getElementById("insight-text").textContent = `Fuzzy logic đang ưu tiên món ${best?.meal_type === "fast" ? "ăn nhanh" : "bữa đầy đủ"} với mục tiêu khoảng ${Math.round(recommendation.cal_target || best?.calo || 0)} kcal.`;
+    document.getElementById("insight-text").textContent = `Fuzzy logic ưu tiên món ${best?.meal_type === "fast" ? "ăn nhanh" : "bữa đầy đủ"} khoảng ${Math.round(recommendation.cal_target || best?.calo || 0)} kcal.`;
     document.getElementById("best-choice").innerHTML = best ? bestCard(best) : "";
     document.getElementById("other-choices").innerHTML = others.map((item, index) => smallCard(item, index)).join("");
   } catch (error) {
     document.getElementById("reason-box").innerHTML = `
       <span class="material-symbols-outlined text-[#ba1a1a]" style="font-variation-settings:'FILL' 1;">error</span>
-      <p class="text-sm leading-6 text-[#6f5544]">Không tải được dữ liệu fuzzy từ backend: ${error.message}</p>`;
+      <p class="text-sm leading-6 text-[#6f5544]">Lỗi: ${error.message}</p>`;
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  window.selectDish = selectDish;
-  hydrateRecommendation();
-});
+document.addEventListener("DOMContentLoaded", hydrateRecommendation);
 </script>
 </body>
 </html>

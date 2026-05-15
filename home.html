@@ -29,6 +29,13 @@
         .nav-item { color: #8d7d72; transition: color 0.2s ease; }
         .nav-item.active { color: #765842; font-weight: 700; }
         input[type="range"] { accent-color: #8a6547; }
+
+        /* Animation cho Modal */
+        .animate-pop { animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
+        @keyframes popIn { from { opacity: 0; transform: scale(0.9) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        
+        .toast { position:fixed; bottom:100px; left:50%; transform:translateX(-50%) translateY(20px); background:#765842; color:#fff; border-radius:24px; padding:12px 24px; font-size:13px; opacity:0; transition:all 0.3s; z-index:999; pointer-events:none; }
+        .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
     </style>
 </head>
 <body class="text-[#1b1c19] antialiased">
@@ -112,7 +119,6 @@
             <section>
                 <div class="flex items-end justify-between mb-3">
                     <h3 class="text-[24px] leading-[30px] font-semibold text-[#765842]">Gợi ý món khác</h3>
-                    <button onclick="navigateTo('map_quanquen.html', 'tab-map')" class="text-sm font-semibold text-[#8a6547]">Xem tất cả</button>
                 </div>
                 <div id="suggestion-list" class="flex gap-4 overflow-x-auto hide-scrollbar pb-1"></div>
             </section>
@@ -120,7 +126,6 @@
             <section>
                 <div class="flex items-end justify-between mb-3">
                     <h3 class="text-[24px] leading-[30px] font-semibold text-[#765842]">Quán quen gần đây</h3>
-                    <button onclick="navigateTo('map_quanquen.html', 'tab-map')" class="text-sm font-semibold text-[#8a6547]">Xem tất cả</button>
                 </div>
                 <div id="recent-list" class="space-y-3"></div>
             </section>
@@ -133,8 +138,8 @@
                     <span class="text-[12px]">Trang chủ</span>
                 </button>
                 <button data-tab="tab-map" onclick="navigateTo('map.html', 'tab-map')" class="nav-item flex flex-col items-center gap-1">
-                    <span class="material-symbols-outlined">map</span>
-                    <span class="text-[12px]">Bản đồ</span>
+                    <span class="material-symbols-outlined">receipt_long</span>
+                    <span class="text-[12px]">Đơn hàng</span>
                 </button>
                 <button data-tab="tab-planner" onclick="navigateTo('planner.html', 'tab-planner')" class="nav-item flex flex-col items-center gap-1">
                     <span class="material-symbols-outlined">calendar_today</span>
@@ -148,6 +153,50 @@
         </nav>
     </div>
 
+    <div id="order-modal" class="fixed inset-0 z-[500] hidden items-center justify-center p-4 bg-[#241814]/60 backdrop-blur-sm">
+        <div class="w-full max-w-[390px] bg-[#fbf9f4] rounded-[32px] overflow-hidden shadow-2xl animate-pop">
+            <div class="h-1.5 w-full bg-[#765842]"></div>
+            <div class="p-6">
+                <div class="flex items-start justify-between mb-5">
+                    <div>
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-[#9c8a7d]">Xác nhận món ăn</p>
+                        <h3 id="modal-name" class="text-[22px] font-bold text-[#241814] mt-0.5 leading-tight">--</h3>
+                    </div>
+                    <button onclick="closeModal()" class="w-9 h-9 rounded-full bg-[#f0ebe7] flex items-center justify-center text-[#8a6547]">
+                        <span class="material-symbols-outlined text-[18px]">close</span>
+                    </button>
+                </div>
+
+                <div class="flex items-center justify-between bg-white border border-[#eee2d8] rounded-[24px] p-4 mb-5 shadow-sm">
+                    <span class="text-[14px] font-bold text-[#5a4a40]">Số lượng đặt</span>
+                    <div class="flex items-center gap-5">
+                        <button onclick="updateQty(-1)" class="w-9 h-9 rounded-full border border-[#eaded5] flex items-center justify-center text-[#8a6547] text-xl active:scale-90">-</button>
+                        <span id="modal-qty" class="text-[18px] font-black text-[#765842] w-6 text-center">1</span>
+                        <button onclick="updateQty(1)" class="w-9 h-9 rounded-full bg-[#765842] text-white flex items-center justify-center text-xl active:scale-90">+</button>
+                    </div>
+                </div>
+
+                <div class="rounded-[24px] bg-[#f7f3ef] p-5 mb-6 space-y-3">
+                    <div class="flex justify-between text-[13px]">
+                        <span class="text-[#8d7d72] font-medium">Nhà hàng:</span>
+                        <span id="modal-rest" class="font-bold text-[#765842]">--</span>
+                    </div>
+                    <div class="flex justify-between border-t border-[#eee2d8] pt-3">
+                        <span class="text-[#5a4a40] font-bold">Tổng thanh toán:</span>
+                        <span id="modal-total" class="font-black text-[#765842] text-[19px]">--</span>
+                    </div>
+                </div>
+
+                <button onclick="confirmOrder()" class="w-full py-4 rounded-[18px] bg-[#765842] text-white font-bold text-[16px] flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all">
+                    <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">shopping_bag</span>
+                    Đặt hàng ngay
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
     <script>
         const budgetBands = [
             { value: 100000, label: "Dưới 100k" },
@@ -155,6 +204,9 @@
             { value: 500000, label: "Dưới 500k" },
             { value: 1000000, label: "Dưới 1 triệu" }
         ];
+
+        let currentDish = null;
+        let currentQty = 1;
 
         function currentPayload() {
             const budgetIndex = Number(document.getElementById("budget-input").value);
@@ -195,7 +247,7 @@
                     <p class="mt-1 text-sm text-[#8d7d72]">Cách ${item.distance_km}km • ${Math.round(item.delivery_time)} phút</p>
                     <div class="mt-3 flex items-center justify-between">
                         <span class="font-semibold text-[#765842]">${smartFoodUtils.formatPrice(item.price)}</span>
-                        <button class="w-9 h-9 rounded-full bg-[#ffd6ba] text-[#7a5b45] flex items-center justify-center" onclick='selectDish(${JSON.stringify(item).replace(/'/g, "&apos;")})'>
+                        <button class="w-9 h-9 rounded-full bg-[#ffd6ba] text-[#7a5b45] flex items-center justify-center active:scale-90" onclick='openOrderModal(${JSON.stringify(item).replace(/'/g, "&apos;")})'>
                             <span class="material-symbols-outlined text-[18px]">add</span>
                         </button>
                     </div>
@@ -206,7 +258,7 @@
         function renderRecent(results) {
             const recentList = document.getElementById("recent-list");
             recentList.innerHTML = results.slice(0, 3).map((item) => `
-                <article class="glass-panel rounded-[22px] p-3 border border-white/70 soft-shadow flex items-center gap-4">
+                <article class="glass-panel rounded-[22px] p-3 border border-white/70 soft-shadow flex items-center gap-4 cursor-pointer active:scale-95 transition-transform" onclick='openOrderModal(${JSON.stringify(item).replace(/'/g, "&apos;")})'>
                     <div class="w-16 h-16 rounded-full bg-[#f3ede8] flex items-center justify-center text-2xl">🍽️</div>
                     <div class="flex-1">
                         <h4 class="font-semibold text-[#473328]">${item.rest_name}</h4>
@@ -220,9 +272,59 @@
             `).join("");
         }
 
-        function selectDish(item) {
-            smartFoodStore.setStored(smartFoodApi.STORAGE_KEYS.selectedDish, item);
-            navigateTo("detail.html");
+        // --- HÀM XỬ LÝ ĐẶT HÀNG MỚI ---
+        function openOrderModal(item) {
+            currentDish = item;
+            currentQty = 1;
+            document.getElementById('modal-name').textContent = item.name;
+            document.getElementById('modal-rest').textContent = item.rest_name;
+            document.getElementById('modal-qty').textContent = currentQty;
+            document.getElementById('modal-total').textContent = smartFoodUtils.formatPrice(item.price);
+            
+            document.getElementById('order-modal').classList.remove('hidden');
+            document.getElementById('order-modal').classList.add('flex');
+        }
+
+        function closeModal() {
+            document.getElementById('order-modal').classList.replace('flex', 'hidden');
+        }
+
+        function updateQty(val) {
+            currentQty = Math.max(1, currentQty + val);
+            document.getElementById('modal-qty').textContent = currentQty;
+            document.getElementById('modal-total').textContent = smartFoodUtils.formatPrice(currentDish.price * currentQty);
+        }
+
+        function confirmOrder() {
+            closeModal();
+            let orders = JSON.parse(localStorage.getItem('smart_food_orders') || '[]');
+            const newOrder = {
+                ...currentDish,
+                qty: currentQty,
+                totalPrice: currentDish.price * currentQty,
+                startTime: Date.now(),
+                orderId: 'ORD-' + Math.floor(100000 + Math.random() * 900000),
+                status: 'Đang chuẩn bị'
+            };
+            orders.push(newOrder);
+            localStorage.setItem('smart_food_orders', JSON.stringify(orders));
+            localStorage.setItem('last_order_id', newOrder.orderId);
+
+            showToast('🛒 Đang kết nối tài xế...');
+            
+            setTimeout(() => {
+                if(window.parent && window.parent.changeChannel) {
+                    window.parent.changeChannel('tracking.html', 'tab-map');
+                } else {
+                    window.location.href = 'tracking.html';
+                }
+            }, 1000);
+        }
+
+        function showToast(m) { 
+            const t = document.getElementById('toast'); 
+            t.innerText = m; t.classList.add('show'); 
+            setTimeout(() => t.classList.remove('show'), 2500); 
         }
 
         async function loadInitialData() {
@@ -278,7 +380,6 @@
             document.getElementById("recommend-btn").addEventListener("click", runRecommend);
             loadInitialData();
             setupStandaloneNav("tab-home");
-            window.selectDish = selectDish;
         });
     </script>
 </body>

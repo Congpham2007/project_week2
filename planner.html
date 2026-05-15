@@ -3,334 +3,337 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Thực đơn - Kế hoạch</title>
+    <title>Kế hoạch bữa ăn - Aura Cuisines</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-    <script src="navigation.js" defer></script>
-    <script src="api.js" defer></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <style>
-        ::-webkit-scrollbar {
-            display: none;
-        }
+        ::-webkit-scrollbar { display: none; }
+        html, body { -ms-overflow-style: none; scrollbar-width: none; overflow-x: hidden; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(180deg, #fffdfa 0%, #f5efea 100%); }
 
-        html, body {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-            overflow-x: hidden;
-        }
+        .stats-card, .meal-card, .panel { background: rgba(255,255,255,0.88); box-shadow: 0 18px 38px rgba(118,88,66,0.08); }
+        .macro-pill { box-shadow: 0 14px 28px rgba(118,88,66,0.08); }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(180deg, #fffdfa 0%, #f5efea 100%);
-        }
+        /* Vòng xoay Calo */
+        .cal-ring-wrap { position: relative; width: 112px; height: 112px; }
+        .cal-ring-wrap canvas { position: absolute; inset: 0; }
+        .cal-ring-inner { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 
-        .stats-card,
-        .meal-card,
-        .panel {
-            background: rgba(255, 255, 255, 0.88);
-            box-shadow: 0 18px 38px rgba(118, 88, 66, 0.08);
-        }
+        .accent-breakfast { background: #f4a55a; }
+        .accent-lunch     { background: #118ab2; }
+        .accent-dinner    { background: #6c5ce7; }
+        .accent-late      { background: #9c8a7d; }
 
-        .pill-bar {
-            border-radius: 9999px 9999px 18px 18px;
-        }
+        .meal-card { transition: box-shadow .2s, transform .2s; cursor: pointer; }
+        .meal-card:hover { box-shadow: 0 24px 48px rgba(118,88,66,0.15); transform: translateY(-2px); }
 
-        .chart-card {
-            overflow: hidden;
-        }
+        .toggle { position:relative; width:40px; height:22px; }
+        .toggle input { opacity:0; width:0; height:0; }
+        .toggle-slider { position:absolute; inset:0; background:#ded9d4; border-radius:11px; cursor:pointer; transition:.3s; }
+        .toggle-slider::before { content:''; position:absolute; top:3px; left:3px; width:16px; height:16px; background:#fff; border-radius:50%; transition:.3s; }
+        .toggle input:checked + .toggle-slider { background:#765842; }
+        .toggle input:checked + .toggle-slider::before { transform:translateX(18px); }
 
-        .kpi-track {
-            position: relative;
-            width: 28px;
-            height: 112px;
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-        }
+        .spinner { width:28px; height:28px; border:3px solid #eaded5; border-top-color:#765842; border-radius:50%; animation:spin .8s linear infinite; }
+        @keyframes spin { to { transform:rotate(360deg); } }
 
-        .kpi-target {
-            width: 28px;
-            border-radius: 9999px 9999px 16px 16px;
-            background: #ded9d4;
-        }
+        .toast { position:fixed; bottom:100px; left:50%; transform:translateX(-50%) translateY(20px); background:#765842; color:#fff; border-radius:24px; padding:10px 20px; font-size:13px; opacity:0; transition:all .3s; z-index:999; white-space:nowrap; pointer-events:none; }
+        .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
 
-        .kpi-actual {
-            position: absolute;
-            bottom: 0;
-            width: 18px;
-            border-radius: 9999px 9999px 14px 14px;
-            background: #74cdb9;
-            box-shadow: 0 8px 18px rgba(116, 205, 185, 0.2);
-        }
+        .form-card { background:rgba(255,255,255,0.88); border:1px solid #eee2d8; border-radius:28px; }
+        .warm-select { background:#fff; border:1.5px solid #eaded5; border-radius:12px; padding:10px 14px; width:100%; outline:none; appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238a6547' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; }
 
-        .nav-item {
-            color: #8d7d72;
-        }
+        .period-breakfast { color:#b37028; background:#fff3e0; }
+        .period-lunch     { color:#0d6986; background:#e0f4fb; }
+        .period-dinner    { color:#4a38a1; background:#ece8fb; }
+        .period-late      { color:#6b5c53; background:#f0ebe7; }
 
-        .nav-item.active {
-            color: #765842;
-            font-weight: 700;
-        }
-
-        .macro-pill {
-            box-shadow: 0 14px 28px rgba(118, 88, 66, 0.08);
-        }
+        iframe { border: none; width: 100%; height: 100%; }
+        .animate-fade-up { animation: fadeUp 0.4s ease-out both; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body class="text-[#1b1c19]">
-    <div class="w-full max-w-[430px] min-h-screen mx-auto bg-[#fbf9f4] pb-28">
-        <header class="px-5 pt-5 pb-1">
-            <div class="flex items-center justify-between">
-                <button onclick="navigateTo('home.html', 'tab-home')" class="w-10 h-10 rounded-full border border-[#eaded5] bg-white flex items-center justify-center text-[#8a6547]">
-                    <span class="material-symbols-outlined">close</span>
-                </button>
-                <h1 class="text-[24px] leading-[30px] font-bold text-[#765842]">Khám phá</h1>
-                <button class="w-10 h-10 rounded-full border border-[#eaded5] bg-white flex items-center justify-center text-[#8a6547]">
-                    <span class="material-symbols-outlined">search</span>
-                </button>
+<div class="w-full max-w-[430px] min-h-screen mx-auto bg-[#fbf9f4] pb-[130px] relative">
+
+    <header class="px-5 pt-5 pb-1">
+        <div class="flex items-center justify-between">
+            <button onclick="history.back()" class="w-10 h-10 rounded-full border border-[#eaded5] bg-white flex items-center justify-center text-[#8a6547]">
+                <span class="material-symbols-outlined">arrow_back</span>
+            </button>
+            <h1 class="text-[22px] font-bold text-[#765842]">Kế hoạch bữa ăn</h1>
+            <button onclick="location.reload()" class="w-10 h-10 rounded-full border border-[#eaded5] bg-white flex items-center justify-center text-[#8a6547]">
+                <span class="material-symbols-outlined">refresh</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="px-5 pt-3">
+        <section class="form-card p-4 mb-5 space-y-4">
+            <div>
+                <label class="text-[11px] font-bold uppercase tracking-widest text-[#9c8a7d] block mb-2 text-center">Lifestyle Profile</label>
+                <select id="profile" class="warm-select">
+                    <option value="Office Worker">💼 Office Worker</option>
+                    <option value="Student">🎓 Student</option>
+                    <option value="Gym">💪 Gym</option>
+                    <option value="Dieter">🥗 Dieter</option>
+                </select>
             </div>
-        </header>
+            <div class="flex items-center justify-between px-2">
+                <span class="text-[14px] text-[#5a4a40] font-medium">🌙 Bao gồm bữa khuya</span>
+                <label class="toggle">
+                    <input type="checkbox" id="late-night">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <button id="run-plan-btn" onclick="runPlan()" class="w-full py-3.5 rounded-[14px] bg-[#765842] text-white font-bold text-[15px] flex items-center justify-center gap-2 transition-all active:scale-95">
+                <span class="material-symbols-outlined text-[18px]" style="font-variation-settings:'FILL' 1">bolt</span>
+                Lập kế hoạch thông minh
+            </button>
+        </section>
 
-        <main class="px-5 pt-2">
-            <section class="space-y-1 mb-5">
-                <h2 class="text-[34px] leading-[40px] font-bold text-[#241814]">Kế hoạch hôm nay</h2>
-                <p id="planner-date" class="text-[13px] text-[#8d7d72]">Đang tải dữ liệu từ backend…</p>
-            </section>
-
-            <section class="grid grid-cols-2 gap-4 mb-5">
-                <div class="stats-card rounded-[28px] border border-[#eee2d8] p-5 flex flex-col items-center justify-center text-center">
-                    <p class="text-sm font-semibold uppercase tracking-[0.16em] text-[#7f7066] mb-3">Đã nạp</p>
-                    <div class="relative w-28 h-28 flex items-center justify-center">
-                        <div class="absolute inset-0 rounded-full border-[6px] border-[#ffd6ba]"></div>
-                        <div id="calorie-ring" class="absolute inset-0 rounded-full border-[6px] border-[#765842]" style="clip-path: polygon(0 0, 100% 0, 100% 56%, 0 56%);"></div>
-                        <div class="flex flex-col items-center">
-                            <span id="planner-total-cal" class="text-[32px] leading-[36px] font-bold text-[#765842]">0</span>
-                            <span class="text-sm text-[#7f7066]">/ <span id="planner-goal-cal">2,000</span></span>
-                        </div>
-                    </div>
-                    <p class="mt-3 text-[16px] font-medium text-[#765842]">kcal</p>
-                </div>
-
-                <div class="space-y-4 flex flex-col justify-between">
-                    <div class="macro-pill rounded-full bg-[#d8f3eb] px-5 py-4 flex items-center justify-between text-[#2c6a61]">
-                        <span class="text-[16px] font-medium">Carbs</span>
-                        <span id="macro-carbs" class="text-[16px] font-bold">0g</span>
-                    </div>
-                    <div class="macro-pill rounded-full bg-[#ffe7d7] px-5 py-4 flex items-center justify-between text-[#8a6547]">
-                        <span class="text-[16px] font-medium">Protein</span>
-                        <span id="macro-protein" class="text-[16px] font-bold">0g</span>
-                    </div>
-                    <div class="macro-pill rounded-full bg-[#efe2fb] px-5 py-4 flex items-center justify-between text-[#6f5a93]">
-                        <span class="text-[16px] font-medium">Fat</span>
-                        <span id="macro-fat" class="text-[16px] font-bold">0g</span>
+        <section id="stats-section" class="grid grid-cols-2 gap-4 mb-5 hidden animate-fade-up">
+            <div class="stats-card rounded-[28px] border border-[#eee2d8] p-5 flex flex-col items-center justify-center text-center">
+                <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-[#7f7066] mb-3">Đã nạp</p>
+                <div class="cal-ring-wrap mb-2">
+                    <canvas id="cal-canvas" width="112" height="112"></canvas>
+                    <div class="cal-ring-inner">
+                        <span id="total-cal" class="text-[26px] leading-[30px] font-bold text-[#765842]">0</span>
+                        <span class="text-[10px] text-[#7f7066]">/ 2000</span>
                     </div>
                 </div>
-            </section>
-
-            <section class="rounded-[32px] bg-[#e6d2ff] p-5 relative overflow-hidden shadow-[0_18px_38px_rgba(118,88,66,0.08)] mb-6">
-                <div class="absolute -right-10 -top-10 w-28 h-28 rounded-full bg-white/20 blur-xl"></div>
-                <div class="relative z-10 flex items-start gap-4">
-                    <div class="w-14 h-14 rounded-full bg-white flex items-center justify-center text-[#6f5a93] shadow-sm shrink-0">
-                        <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">auto_awesome</span>
-                    </div>
-                    <div>
-                        <h3 class="text-[16px] font-semibold text-[#5f4c84]">Gợi ý thông minh từ AI</h3>
-                        <p id="planner-ai-note" class="mt-2 text-[15px] leading-7 text-[#6f5a93]">Đang tạo gợi ý bữa ăn theo dữ liệu backend…</p>
-                    </div>
+                <p class="text-[14px] font-medium text-[#765842]">kcal</p>
+            </div>
+            <div class="space-y-2.5 flex flex-col justify-center">
+                <div class="macro-pill rounded-full bg-[#d8f3eb] px-4 py-2.5 flex items-center justify-between text-[#2c6a61]">
+                    <span class="text-[12px] font-medium">Carbs</span>
+                    <span id="macro-carbs" class="text-[12px] font-bold">0g</span>
                 </div>
-            </section>
+                <div class="macro-pill rounded-full bg-[#ffe7d7] px-4 py-2.5 flex items-center justify-between text-[#8a6547]">
+                    <span class="text-[12px] font-medium">Protein</span>
+                    <span id="macro-protein" class="text-[12px] font-bold">0g</span>
+                </div>
+                <div class="macro-pill rounded-full bg-[#efe2fb] px-4 py-2.5 flex items-center justify-between text-[#6f5a93]">
+                    <span class="text-[12px] font-medium">Fat</span>
+                    <span id="macro-fat" class="text-[12px] font-bold">0g</span>
+                </div>
+                <div class="macro-pill rounded-full bg-[#fff3e0] px-4 py-2.5 flex items-center justify-between text-[#8a6547]">
+                    <span class="text-[12px] font-medium">Tổng tiền</span>
+                    <span id="total-cost-stats" class="text-[12px] font-bold">0k</span>
+                </div>
+            </div>
+        </section>
 
-            <section class="mb-4 flex items-center justify-between">
+        <div id="loading-state" class="hidden flex-col items-center justify-center py-12 gap-4">
+            <div class="spinner"></div>
+            <p class="text-[13px] text-[#9c8a7d]">Đang phân tích dữ liệu...</p>
+        </div>
+
+        <div id="meal-list" class="space-y-4"></div>
+
+        <section id="map-section" class="mt-6 hidden animate-fade-up">
+            <h3 class="text-[18px] font-bold text-[#241814] mb-3 ml-1">Bản đồ lộ trình</h3>
+            <div id="map-wrap" class="rounded-[28px] overflow-hidden border border-[#eee2d8] w-full h-[240px] bg-[#f3ede8]"></div>
+        </section>
+    </main>
+</div>
+
+<div id="order-modal" class="fixed inset-0 z-[500] hidden items-center justify-center p-4" style="background:rgba(36,24,20,0.6);backdrop-filter:blur(6px)">
+    <div class="w-full max-w-[390px] bg-[#fbf9f4] rounded-[32px] overflow-hidden shadow-2xl animate-fade-up">
+        <div class="h-1.5 w-full" id="modal-accent-bar"></div>
+        <div class="p-6">
+            <div class="flex items-start justify-between mb-4">
                 <div>
-                    <h2 class="text-[34px] leading-[38px] font-bold text-[#241814]">Thực đơn</h2>
-                    <p class="mt-1 text-[13px] text-[#8d7d72]">Meal plan lấy từ backend, chart tuần là mock KPI</p>
+                    <p id="modal-period-label" class="text-[10px] font-bold uppercase tracking-widest text-[#9c8a7d]"></p>
+                    <h3 id="modal-name" class="text-[22px] font-bold text-[#241814] mt-0.5 leading-tight"></h3>
                 </div>
-                <button id="reload-plan-btn" class="text-sm font-semibold text-[#8a6547]">Tải lại</button>
-            </section>
-
-            <section id="meal-list" class="space-y-4"></section>
-
-            <section class="panel chart-card rounded-[28px] border border-white/70 p-4 mt-4">
-                <div class="flex items-center justify-between">
-                    <h3 class="text-[22px] leading-[28px] font-semibold text-[#473328]">Phân tích tuần</h3>
-                    <span class="text-xs uppercase tracking-[0.16em] text-[#9c8a7d]">Mock</span>
-                </div>
-
-                <div id="weekly-chart" class="mt-4 h-[166px] grid grid-cols-7 gap-1 items-end"></div>
-
-                <div class="mt-3 flex items-center justify-center gap-4 text-[13px] text-[#7f7066]">
-                    <div class="flex items-center gap-2">
-                        <span class="w-3 h-3 rounded-full bg-[#74cdb9]"></span>
-                        <span>Thực tế</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <span class="w-3 h-3 rounded-full bg-[#ded9d4]"></span>
-                        <span>Mục tiêu</span>
-                    </div>
-                </div>
-            </section>
-        </main>
-
-        <nav id="standalone-nav" class="hidden fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-white/92 backdrop-blur-xl border-t border-[#efe7df] rounded-t-[28px] px-4 py-4 shadow-[0_-10px_30px_rgba(118,88,66,0.12)]">
-            <div class="flex items-center justify-around">
-                <button data-tab="tab-home" onclick="navigateTo('home.html', 'tab-home')" class="nav-item flex flex-col items-center gap-1">
-                    <span class="material-symbols-outlined">home_app_logo</span>
-                    <span class="text-[12px]">Trang chủ</span>
-                </button>
-                <button data-tab="tab-map" onclick="navigateTo('map.html', 'tab-map')" class="nav-item flex flex-col items-center gap-1">
-                    <span class="material-symbols-outlined">map</span>
-                    <span class="text-[12px]">Bản đồ</span>
-                </button>
-                <button data-tab="tab-planner" onclick="navigateTo('planner.html', 'tab-planner')" class="nav-item flex flex-col items-center gap-1">
-                    <span class="material-symbols-outlined">calendar_today</span>
-                    <span class="text-[12px]">Kế hoạch</span>
-                </button>
-                <button data-tab="tab-settings" onclick="navigateTo('settings.html', 'tab-settings')" class="nav-item flex flex-col items-center gap-1">
-                    <span class="material-symbols-outlined">settings</span>
-                    <span class="text-[12px]">Cài đặt</span>
+                <button onclick="closeModal()" class="w-9 h-9 rounded-full bg-[#f0ebe7] flex items-center justify-center text-[#8a6547]">
+                    <span class="material-symbols-outlined text-[18px]">close</span>
                 </button>
             </div>
-        </nav>
-    </div>
 
-    <script>
-        const mealImages = {
-            Breakfast: "https://lh3.googleusercontent.com/aida-public/AB6AXuACFMRr20gAi1XL0t3zu4NEEVhSeKK4cTG4TGHq9ehwG6U0nIeSwQGg1MfPjlMU0lNo7FuI5MRRzcdn5jjyafoMBsP3Xonvc0gnMhV-t_6QUR2ji8atTw4yHA1WKSIAPhUQ2gJDRwL8kFq_EXvOngKvQYcuBC6LJldClAjR0cS3UJGaywURPmpRjJBYHU81Uo0kdC4PcYvB6oCicoJMpPoSRCkHUCtiSodXWDfoZMH90yWdZiGjV-ePyt8_uke0l7lcQL7xjlZUEmE",
-            Lunch: "https://lh3.googleusercontent.com/aida-public/AB6AXuD6hyxB9vG4BkneKdlNYPAlwuuL6cOSPXH_4oKlR52hLrOqjrWWtX-1ygmePulFBOLxoVIO0cPxo974V6MvCjz7fv9rYeiArH6nm54wHrBZj-QOhCPDnIyU9qEO2mw-ct_c7JypyYWXNEin68hP0Jvpogr5DJf5Umk-0y1DmwmVWJzUUfdJAouedC_E923PUJCIkXEBBsa9E6v2aAF_6u3URStXPyhogguEcGcR_mBEp7w1tOlwDdqNHC35_t1KT4F4MfWuP8urE_Y",
-            Dinner: "https://lh3.googleusercontent.com/aida-public/AB6AXuBbq0WKmwl75TinKgF3rQMUyPUDD_1Gy4wvQQJu5vllc-TTzraKP2J-5mk6kf5cFI2ALNzUzukhsWOAGMugVq6BybZor-STsKj5BoBidN9VYjQJAjd6ju0VqKmJtIZKudEoMU2dwJZDlxLbyrjmSUp1jOrgOqvesy811syuV2K9VCVKCI1tNIhwSfJ5okETic9nFd5yABaYf3t5lAMMAVPaR8gHBuHGH2o7Z1iPTIxyG8-_uZGEYfZ3VuaBPCbP37X8fZAs1cOtNlU"
-        };
-
-        const weeklyData = [
-            { day: "T2", actual: 62, target: 98 },
-            { day: "T3", actual: 58, target: 92 },
-            { day: "T4", actual: 71, target: 90 },
-            { day: "T5", actual: 84, target: 104 },
-            { day: "T6", actual: 49, target: 78 },
-            { day: "T7", actual: 54, target: 74 },
-            { day: "CN", actual: 45, target: 66 }
-        ];
-
-        function labelFromPeriod(period) {
-            return {
-                Breakfast: "Bữa sáng",
-                Lunch: "Bữa trưa",
-                Dinner: "Bữa tối",
-                "Late Night": "Bữa khuya"
-            }[period] || period;
-        }
-
-        function renderMeals(meals) {
-            const mealList = document.getElementById("meal-list");
-            mealList.innerHTML = meals.map((meal) => `
-                <article class="meal-card rounded-[24px] border border-white/70 p-3 flex items-center gap-3">
-                    <img alt="${meal.name}" class="w-14 h-14 rounded-[18px] object-cover" src="${meal.image || mealImages[meal.period] || mealImages.Breakfast}">
-                    <div class="flex-1">
-                        <p class="text-xs uppercase tracking-[0.18em] text-[#9c8a7d]">${meal.label || labelFromPeriod(meal.period)}</p>
-                        <h3 class="mt-0.5 text-[17px] leading-[22px] font-semibold text-[#241814]">${meal.name}</h3>
-                        <p class="mt-0.5 text-[16px] font-medium text-[#8a6547]">${meal.kcal || `${meal.calo} kcal`}</p>
-                    </div>
-                    <div class="w-9 h-9 rounded-full flex items-center justify-center" style="background:${meal.iconBg}; color:${meal.iconColor};">
-                        <span class="material-symbols-outlined text-[20px]">${meal.icon}</span>
-                    </div>
-                </article>
-            `).join("");
-        }
-
-        function renderChart() {
-            const chart = document.getElementById("weekly-chart");
-            chart.innerHTML = weeklyData.map((item) => `
-                <div class="min-w-0 h-full flex flex-col items-center justify-end gap-2">
-                    <div class="text-center leading-none space-y-1">
-                        <p class="text-[11px] font-semibold text-[#8e7b6f]">${item.target}%</p>
-                    </div>
-                    <div class="kpi-track">
-                        <div class="kpi-target" style="height:${item.target}px;"></div>
-                        <div class="kpi-actual" style="height:${item.actual}px;"></div>
-                    </div>
-                    <p class="text-[11px] font-medium text-[#74cdb9] leading-none">${item.actual}%</p>
-                    <span class="text-[11px] sm:text-xs ${item.day === 'T5' ? 'font-semibold text-[#765842]' : 'text-[#9c8a7d]'}">${item.day}</span>
+            <div class="flex items-center justify-between bg-white border border-[#eee2d8] rounded-2xl p-4 mb-5">
+                <span class="text-[14px] font-semibold text-[#5a4a40]">Số lượng món</span>
+                <div class="flex items-center gap-5">
+                    <button onclick="updateQty(-1)" class="w-9 h-9 rounded-full border border-[#eaded5] flex items-center justify-center text-[#8a6547] text-xl font-bold active:scale-90">-</button>
+                    <span id="modal-qty" class="text-[18px] font-bold text-[#765842] w-6 text-center">1</span>
+                    <button onclick="updateQty(1)" class="w-9 h-9 rounded-full bg-[#765842] text-white flex items-center justify-center text-xl font-bold active:scale-90">+</button>
                 </div>
-            `).join("");
+            </div>
+
+            <div class="rounded-[20px] bg-[#f7f3ef] p-4 mb-6 space-y-3">
+                <div class="flex justify-between text-[13px]">
+                    <span class="text-[#8d7d72]">Đơn giá:</span>
+                    <span id="modal-unit-price" class="font-bold text-[#765842]"></span>
+                </div>
+                <div class="flex justify-between border-t border-[#eee2d8] pt-2.5">
+                    <span class="text-[#5a4a40] font-bold">Tổng thanh toán:</span>
+                    <span id="modal-total-price" class="font-extrabold text-[#765842] text-[17px]"></span>
+                </div>
+            </div>
+
+            <button onclick="confirmOrder()" class="w-full py-4 rounded-[16px] bg-[#765842] text-white font-bold text-[16px] flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all">
+                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings:'FILL' 1">shopping_bag</span>
+                Xác nhận đặt đơn ngay
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+const API = ''; 
+let currentPlan = [];
+let currentDish = null;
+let currentQty = 1;
+const DISH_STORE = {};
+let dishIdx = 0;
+
+// Vẽ vòng Calo
+function drawCalRing(pct) {
+    const canvas = document.getElementById('cal-canvas');
+    if(!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const cx = 56, cy = 56, r = 48, lw = 8;
+    ctx.clearRect(0, 0, 112, 112);
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2);
+    ctx.strokeStyle = '#ffd6ba'; ctx.lineWidth = lw; ctx.stroke();
+    const angle = (pct / 100) * Math.PI * 2 - Math.PI / 2;
+    ctx.beginPath(); ctx.arc(cx, cy, r, -Math.PI/2, angle);
+    ctx.strokeStyle = '#765842'; ctx.lineWidth = lw; ctx.lineCap = 'round'; ctx.stroke();
+}
+
+const PERIOD_MAP = {
+    Breakfast:  { label:'Bữa sáng', emoji:'☀️', accent:'#f4a55a', pill:'period-breakfast', bar:'accent-breakfast' },
+    Lunch:      { label:'Bữa trưa', emoji:'🍱', accent:'#118ab2', pill:'period-lunch', bar:'accent-lunch' },
+    Dinner:     { label:'Bữa tối', emoji:'🌙', accent:'#6c5ce7', pill:'period-dinner', bar:'accent-dinner' },
+    'Late Night':{ label:'Bữa khuya', emoji:'⭐', accent:'#9c8a7d', pill:'period-late', bar:'accent-late' },
+};
+
+function periodMeta(p) { return PERIOD_MAP[p] || { label:p, emoji:'🍽️', accent:'#9c8a7d', pill:'period-late', bar:'accent-late' }; }
+
+async function runPlan() {
+    const btn = document.getElementById('run-plan-btn');
+    btn.disabled = true;
+    document.getElementById('loading-state').classList.remove('hidden');
+    document.getElementById('loading-state').classList.add('flex');
+    document.getElementById('meal-list').innerHTML = '';
+    document.getElementById('stats-section').classList.add('hidden');
+    document.getElementById('map-section').classList.add('hidden');
+
+    try {
+        const payload = { profile: document.getElementById('profile').value, late_night: document.getElementById('late-night').checked };
+        const r = await fetch(API + '/api/plan', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        const data = await r.json();
+        currentPlan = data.plan || [];
+
+        // 1. Cập nhật thống kê
+        document.getElementById('stats-section').classList.remove('hidden');
+        document.getElementById('total-cal').textContent = data.total_calo;
+        drawCalRing(Math.min(100, (data.total_calo / 2000) * 100));
+        
+        // Giả lập Macros
+        document.getElementById('macro-carbs').textContent = Math.round(data.total_calo * 0.5 / 4) + 'g';
+        document.getElementById('macro-protein').textContent = Math.round(data.total_calo * 0.25 / 4) + 'g';
+        document.getElementById('macro-fat').textContent = Math.round(data.total_calo * 0.25 / 9) + 'g';
+        const totalCost = currentPlan.reduce((s, d) => s + d.price, 0);
+        document.getElementById('total-cost-stats').textContent = (totalCost / 1000).toFixed(0) + 'k ₫';
+
+        // 2. Render danh sách món
+        document.getElementById('meal-list').innerHTML = currentPlan.map((d, i) => {
+            const key = 'd' + (dishIdx++);
+            DISH_STORE[key] = d;
+            const meta = periodMeta(d.period);
+            return `
+            <article class="meal-card rounded-[24px] border border-white/70 animate-fade-up bg-white p-4 flex items-center gap-3" onclick="openModal('${key}')">
+                <div class="w-12 h-12 rounded-[16px] flex items-center justify-center text-2xl shrink-0" style="background:${meta.accent}22">${meta.emoji}</div>
+                <div class="flex-1 min-w-0">
+                    <span class="text-[9px] font-bold uppercase ${meta.pill} px-2 py-0.5 rounded-full">${meta.label}</span>
+                    <h3 class="text-[15px] font-semibold text-[#241814] truncate mt-1">${d.name}</h3>
+                    <p class="text-[11px] text-[#9c8a7d] truncate">🏪 ${d.rest_name}</p>
+                </div>
+                <div class="text-right shrink-0">
+                    <p class="text-[15px] font-bold text-[#765842]">${d.calo} kcal</p>
+                    <p class="text-[11px] text-[#74cdb9] font-medium">~${Math.round(d.delivery_time)}p</p>
+                </div>
+            </article>`;
+        }).join('');
+
+        // 3. Hiển thị Map lộ trình (Folium)
+        const mapRes = await fetch(API + '/api/map', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: currentPlan }) });
+        const mapData = await mapRes.json();
+        if(mapData.map_url) {
+            document.getElementById('map-wrap').innerHTML = `<iframe src="${mapData.map_url}?t=${Date.now()}"></iframe>`;
+            document.getElementById('map-section').classList.remove('hidden');
         }
 
-        function normalizePlan(plan = []) {
-            return plan.slice(0, 3).map((item, index) => ({
-                ...item,
-                image: mealImages[item.period] || mealImages.Breakfast,
-                label: labelFromPeriod(item.period),
-                kcal: `${item.calo} kcal`,
-                icon: index === 0 ? "check_circle" : "schedule",
-                iconBg: index === 0 ? "#b4eee2" : "#fff6ef",
-                iconColor: index === 0 ? "#2f685e" : "#b18b6b"
-            }));
+    } catch (e) { console.error(e); }
+    finally {
+        document.getElementById('loading-state').classList.add('hidden');
+        btn.disabled = false;
+    }
+}
+
+function openModal(key) {
+    currentDish = DISH_STORE[key];
+    currentQty = 1;
+    document.getElementById('modal-qty').textContent = currentQty;
+    document.getElementById('modal-name').textContent = currentDish.name;
+    document.getElementById('modal-unit-price').textContent = (currentDish.price / 1000).toFixed(0) + 'k ₫';
+    document.getElementById('modal-total-price').textContent = (currentDish.price / 1000).toFixed(0) + 'k ₫';
+    
+    const meta = periodMeta(currentDish.period);
+    document.getElementById('modal-accent-bar').className = 'h-1.5 w-full ' + meta.bar;
+    document.getElementById('modal-period-label').textContent = meta.label;
+    
+    document.getElementById('order-modal').classList.remove('hidden');
+    document.getElementById('order-modal').classList.add('flex');
+}
+
+function updateQty(val) {
+    currentQty = Math.max(1, currentQty + val);
+    document.getElementById('modal-qty').textContent = currentQty;
+    const total = currentDish.price * currentQty;
+    document.getElementById('modal-total-price').textContent = (total / 1000).toFixed(0) + 'k ₫';
+}
+
+function closeModal() { document.getElementById('order-modal').classList.add('hidden'); }
+
+function confirmOrder() {
+    closeModal();
+    // 1. Lưu đơn vào danh sách để không bị mất đơn cũ
+    let orders = JSON.parse(localStorage.getItem('smart_food_orders') || '[]');
+    const newOrder = {
+        ...currentDish,
+        qty: currentQty,
+        totalPrice: currentDish.price * currentQty,
+        startTime: Date.now(),
+        orderId: 'ORD-' + Math.floor(100000 + Math.random() * 900000),
+        status: 'Đang chuẩn bị'
+    };
+    orders.push(newOrder);
+    localStorage.setItem('smart_food_orders', JSON.stringify(orders));
+    localStorage.setItem('last_order_id', newOrder.orderId);
+
+    // 2. Chuyển hướng sang tracking
+    const t = document.getElementById('toast');
+    t.textContent = '🛒 Đang kết nối tài xế...';
+    t.classList.add('show');
+    
+    setTimeout(() => {
+        if(window.parent && window.parent.changeChannel) {
+            window.parent.changeChannel('tracking.html', 'tab-map');
+        } else {
+            window.location.href = 'tracking.html';
         }
+    }, 1200);
+}
 
-        function formatToday() {
-            const today = new Date();
-            return today.toLocaleDateString("vi-VN", {
-                weekday: "long",
-                day: "numeric",
-                month: "numeric"
-            }).replace(/^./, (char) => char.toUpperCase());
-        }
-
-        function updatePlannerSummary(planResult) {
-            const totalCalo = Number(planResult?.total_calo || 0);
-            const goal = 2000;
-            const progress = Math.max(12, Math.min(100, Math.round((totalCalo / goal) * 100)));
-            const carbs = Math.round((totalCalo * 0.45) / 4);
-            const protein = Math.round((totalCalo * 0.25) / 4);
-            const fat = Math.round((totalCalo * 0.30) / 9);
-
-            document.getElementById("planner-date").textContent = formatToday();
-            document.getElementById("planner-total-cal").textContent = totalCalo.toLocaleString("vi-VN");
-            document.getElementById("planner-goal-cal").textContent = goal.toLocaleString("vi-VN");
-            document.getElementById("macro-carbs").textContent = `${carbs}g`;
-            document.getElementById("macro-protein").textContent = `${protein}g`;
-            document.getElementById("macro-fat").textContent = `${fat}g`;
-            document.getElementById("calorie-ring").style.clipPath = `polygon(0 0, 100% 0, 100% ${progress}%, 0 ${progress}%)`;
-
-            const dinner = planResult?.plan?.find((item) => item.period === "Dinner");
-            if (dinner) {
-                document.getElementById("planner-ai-note").textContent =
-                    `Bạn còn thiếu khoảng ${Math.max(10, Math.round(protein * 0.22))}g Protein hôm nay. Thử thêm một phần ${dinner.name.toLowerCase()} vào bữa tối để cân bằng dinh dưỡng nhé.`;
-            } else {
-                document.getElementById("planner-ai-note").textContent =
-                    "Meal plan đã được đồng bộ. Bạn có thể tải lại để lấy gợi ý bữa ăn mới từ backend.";
-            }
-        }
-
-        async function loadPlan() {
-            const button = document.getElementById("reload-plan-btn");
-            button.textContent = "Đang tải...";
-            try {
-                let planResult = smartFoodStore.getStored(smartFoodApi.STORAGE_KEYS.plan);
-                if (!planResult || !planResult.plan?.length) {
-                    planResult = await smartFoodApi.getPlan({ profile: "Office Worker", late_night: false });
-                    smartFoodStore.setStored(smartFoodApi.STORAGE_KEYS.plan, planResult);
-                }
-                updatePlannerSummary(planResult);
-                renderMeals(normalizePlan(planResult.plan));
-            } catch (error) {
-                renderMeals([]);
-                document.getElementById("planner-date").textContent = "Không tải được dữ liệu backend";
-                document.getElementById("planner-ai-note").textContent = "Backend chưa phản hồi nên planner chưa thể tạo gợi ý hôm nay.";
-                document.getElementById("meal-list").innerHTML = `<div class="text-sm text-[#8d7d72]">Không tải được kế hoạch từ backend: ${error.message}</div>`;
-            } finally {
-                button.textContent = "Tải lại";
-            }
-        }
-
-        document.addEventListener("DOMContentLoaded", () => {
-            loadPlan();
-            renderChart();
-            document.getElementById("reload-plan-btn").addEventListener("click", async () => {
-                sessionStorage.removeItem(smartFoodApi.STORAGE_KEYS.plan);
-                await loadPlan();
-            });
-            setupStandaloneNav("tab-planner");
-        });
-    </script>
+document.addEventListener('DOMContentLoaded', () => {
+    drawCalRing(0);
+});
+</script>
 </body>
 </html>

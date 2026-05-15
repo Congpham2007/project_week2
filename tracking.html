@@ -1,233 +1,225 @@
 <!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Theo dõi đơn hàng - Aura Cuisines</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="navigation.js" defer></script>
+    <script src="api.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <style>
+        ::-webkit-scrollbar { display: none; }
+        html, body { -ms-overflow-style: none; scrollbar-width: none; overflow-x: hidden; height: 100%; }
+        body { font-family: 'Inter', sans-serif; background: #fbf9f4; }
 
-<html lang="vi"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Theo dõi đơn hàng</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script src="navigation.js" defer></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "error": "#ba1a1a",
-                        "surface-tint": "#765842",
-                        "tertiary": "#685687",
-                        "on-tertiary-fixed": "#23113f",
-                        "on-tertiary-fixed-variant": "#4f3e6e",
-                        "on-primary": "#ffffff",
-                        "primary-fixed-dim": "#e6bfa4",
-                        "primary": "#765842",
-                        "outline": "#81756d",
-                        "surface-bright": "#fbf9f4",
-                        "secondary": "#2f685e",
-                        "primary-fixed": "#ffdcc4",
-                        "secondary-container": "#b4eee2",
-                        "on-surface": "#1b1c19",
-                        "primary-container": "#ffd6ba",
-                        "secondary-fixed-dim": "#99d2c6",
-                        "on-primary-container": "#7a5b45",
-                        "surface-container-lowest": "#ffffff",
-                        "on-secondary": "#ffffff",
-                        "tertiary-fixed": "#ebdcff",
-                        "on-primary-fixed": "#2b1706",
-                        "surface-container-highest": "#e4e2de",
-                        "on-secondary-container": "#366e64",
-                        "tertiary-fixed-dim": "#d2bdf5",
-                        "on-tertiary-container": "#6b598a",
-                        "on-secondary-fixed": "#00201c",
-                        "background": "#fbf9f4",
-                        "secondary-fixed": "#b4eee2",
-                        "surface": "#fbf9f4",
-                        "on-primary-fixed-variant": "#5c412c",
-                        "on-tertiary": "#ffffff",
-                        "on-error": "#ffffff",
-                        "inverse-surface": "#30312e",
-                        "surface-container": "#efeee9",
-                        "surface-dim": "#dbdad5",
-                        "on-surface-variant": "#4f453e",
-                        "inverse-on-surface": "#f2f1ec",
-                        "surface-variant": "#e4e2de",
-                        "inverse-primary": "#e6bfa4",
-                        "surface-container-high": "#eae8e3",
-                        "on-secondary-fixed-variant": "#124f47",
-                        "on-error-container": "#93000a",
-                        "on-background": "#1b1c19",
-                        "outline-variant": "#d3c4ba",
-                        "surface-container-low": "#f5f3ee",
-                        "tertiary-container": "#e8d7ff",
-                        "error-container": "#ffdad6"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "1rem",
-                        "lg": "2rem",
-                        "xl": "3rem",
-                        "full": "9999px"
-                    },
-                    "spacing": {
-                        "container-padding": "20px",
-                        "stack-md": "24px",
-                        "stack-sm": "12px",
-                        "stack-lg": "40px",
-                        "gutter": "16px",
-                        "unit": "8px"
-                    },
-                    "fontFamily": {
-                        "body-sm": ["Inter"],
-                        "headline-lg-mobile": ["Inter"],
-                        "body-lg": ["Inter"],
-                        "headline-lg": ["Inter"],
-                        "body-md": ["Inter"],
-                        "headline-md": ["Inter"],
-                        "label-lg": ["Inter"],
-                        "display-lg": ["Inter"],
-                        "label-md": ["Inter"]
-                    },
-                    "fontSize": {
-                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
-                        "headline-lg-mobile": ["28px", { "lineHeight": "34px", "fontWeight": "700" }],
-                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
-                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
-                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
-                        "headline-md": ["24px", { "lineHeight": "30px", "fontWeight": "600" }],
-                        "label-lg": ["14px", { "lineHeight": "18px", "fontWeight": "600" }],
-                        "display-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
-                        "label-md": ["12px", { "lineHeight": "16px", "fontWeight": "500" }]
-                    }
-                }
+        /* Vòng xoay đếm ngược đặc trưng của Planner */
+        .track-ring { position:absolute; inset:0; border-radius:50%; border:3px solid #eee2d8; }
+        .track-ring-fill { 
+            position:absolute; inset:0; border-radius:50%; 
+            border:3px solid #765842; border-right-color:transparent; 
+            animation: spin 1.5s linear infinite; 
+        }
+        @keyframes spin { to { transform:rotate(360deg); } }
+
+        /* Timeline dọc */
+        .tstep { border-left: 2px solid #eee2d8; margin-left: 11px; padding-left: 20px; position: relative; padding-bottom: 24px; transition: 0.4s; }
+        .tstep::before { content: ''; position: absolute; left: -7px; top: 0; width: 12px; height: 12px; border-radius: 50%; background: #eee2d8; border: 2px solid #fff; }
+        .tstep.done { border-left-color: #74cdb9; }
+        .tstep.done::before { background: #74cdb9; }
+        .tstep.active { border-left-color: #f4a55a; }
+        .tstep.active::before { background: #f4a55a; box-shadow: 0 0 0 4px rgba(244,165,90,0.15); }
+        .tstep:last-child { border-left-color: transparent; padding-bottom: 0; }
+
+        /* Bottom Sheet panel */
+        .bottom-sheet { 
+            background: white; 
+            border-radius: 32px 32px 0 0; 
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.06);
+            z-index: 40;
+        }
+
+        iframe { border: none; width: 100%; height: 100%; }
+        .fade-up { animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="text-[#1b1c19]">
+    <div class="w-full max-w-[430px] min-h-screen mx-auto relative flex flex-col">
+        
+        <header class="fixed top-0 inset-x-0 z-50 bg-white/80 backdrop-blur-md px-5 h-16 flex items-center justify-between">
+            <button onclick="goBack()" class="w-10 h-10 rounded-full bg-white border border-[#eaded5] flex items-center justify-center text-[#8a6547] active:scale-90 transition-all">
+                <span class="material-symbols-outlined">arrow_back</span>
+            </button>
+            <h1 class="text-[17px] font-bold text-[#765842]">Theo dõi đơn hàng</h1>
+            <div class="w-10"></div>
+        </header>
+
+        <div id="map-container" class="fixed inset-0 z-0 h-[55%] bg-[#f3ede8]">
+            <div class="flex items-center justify-center h-full text-[#9c8a7d] text-sm italic">
+                Đang nạp bản đồ tài xế...
+            </div>
+        </div>
+
+        <main class="mt-auto relative z-10 bottom-sheet p-6 pb-12 fade-up max-h-[70vh] overflow-y-auto">
+            <div class="w-12 h-1 bg-[#eee2d8] rounded-full mx-auto mb-6"></div>
+
+            <div class="flex justify-between items-start mb-6">
+                <div class="flex-1">
+                    <div class="flex items-center gap-2 mb-1.5">
+                        <div id="status-dot" class="w-2.5 h-2.5 rounded-full bg-[#74cdb9] animate-pulse"></div>
+                        <span id="order-status-text" class="text-[11px] font-bold text-[#2f685e] uppercase tracking-widest">Đang giao hàng</span>
+                    </div>
+                    <h2 id="countdown-timer" class="text-[36px] font-bold text-[#241814] leading-none mb-1">-- phút</h2>
+                    <p class="text-[13px] text-[#8d7d72]">Khoảng cách: <span id="dist-km" class="font-bold text-[#5a4a40]">--</span> km • <span id="id-label">#ORD...</span></p>
+                </div>
+                
+                <div class="relative w-16 h-16 shrink-0">
+                    <div class="track-ring"></div>
+                    <div id="ring-spinner" class="track-ring-fill"></div>
+                    <div class="absolute inset-0 flex items-center justify-center text-xl" id="center-icon">🛵</div>
+                </div>
+            </div>
+
+            <div class="bg-[#fbf9f4] border border-[#eee2d8] rounded-[24px] p-4 mb-6 flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-white border border-[#eee2d8] flex items-center justify-center text-2xl" id="item-emoji">🍔</div>
+                <div class="flex-1">
+                    <h3 id="item-name" class="font-bold text-[15px] text-[#241814]">Tên món ăn</h3>
+                    <p id="item-rest" class="text-[12px] text-[#8d7d72]">Nhà hàng</p>
+                </div>
+                <div class="text-right">
+                    <div id="item-qty" class="text-[12px] font-bold text-[#765842] bg-[#ffd6ba] px-2 py-0.5 rounded-lg mb-1">x1</div>
+                    <p id="item-price" class="text-[14px] font-bold text-[#765842]">0đ</p>
+                </div>
+            </div>
+
+            <div id="timeline-box" class="mb-8"></div>
+
+            <div class="flex items-center gap-3 border border-[#f0ebe7] rounded-[24px] p-3 bg-white shadow-sm mb-4">
+                <img class="w-11 h-11 rounded-full object-cover border-2 border-[#fdf3eb]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9RJSYa8veyO7N8IiZn1LCurJQ3R8KBeC5NVEp-Z91dTtT4s-sU7tpD4BsYsz_qlA3OE1FR4hBvXFfI4EBkADvQ9Kg9ApeIqrNpuyLjuBhXRQ-PyREkFcqFKK4N3nzY4E3bX2jvuMVRStKlgbT8UO2tK_XXioVqXgTqAEt87yJmBZJspa3GVkcFupooj_vMSpmBjXfwowcdyQ9kvd0Jbg49f4c-VEF8slVqsmlaPi_MC0qb2ZdUIR8SR3Bhl9pF1tGHvHP9c3K1Ss">
+                <div class="flex-1 text-left">
+                    <h3 class="font-bold text-[14px] text-[#241814]">Trần Văn Tài</h3>
+                    <p class="text-[11px] text-[#8d7d72]">4.9 ★ • 29A1-123.45</p>
+                </div>
+                <button class="w-10 h-10 rounded-full bg-[#765842] text-white flex items-center justify-center shadow-md active:scale-90 transition-all">
+                    <span class="material-symbols-outlined text-[18px]">call</span>
+                </button>
+            </div>
+
+            <button id="btn-finish" onclick="goBack()" class="hidden w-full py-4 rounded-[16px] bg-[#2f685e] text-white font-bold text-[15px] items-center justify-center gap-2 shadow-lg animate-bounce">
+                <span class="material-symbols-outlined">check_circle</span>
+                Xác nhận đã nhận hàng
+            </button>
+        </main>
+    </div>
+
+    <script>
+        let countdownInterval = null;
+
+        function goBack() {
+            if(window.parent && window.parent.changeChannel) {
+                window.parent.changeChannel('map.html', 'tab-map');
+            } else {
+                window.location.href = 'map.html';
             }
         }
+
+        function initTracking() {
+            // Lấy đơn hàng mới nhất từ danh sách
+            const orderId = localStorage.getItem('last_order_id');
+            const orders = JSON.parse(localStorage.getItem('smart_food_orders') || '[]');
+            const order = orders.find(o => o.orderId === orderId) || orders[orders.length - 1];
+
+            if (!order) {
+                alert("Không có đơn hàng nào đang giao!");
+                goBack();
+                return;
+            }
+
+            // Đổ dữ liệu
+            document.getElementById('id-label').textContent = '#' + (order.orderId || 'ORD-000');
+            document.getElementById('item-name').textContent = order.name;
+            document.getElementById('item-rest').textContent = order.rest_name;
+            document.getElementById('item-qty').textContent = 'x' + (order.qty || 1);
+            document.getElementById('item-price').textContent = (order.totalPrice / 1000).toFixed(0) + 'k ₫';
+            document.getElementById('item-emoji').textContent = order.meal_type === 'fast' ? '🍔' : '🍛';
+
+            // Nạp Map
+            document.getElementById('map-container').innerHTML = 
+                `<iframe src="/api/mini_map?lat=${order.lat}&lon=${order.lon}&name=${encodeURIComponent(order.rest_name)}"></iframe>`;
+
+            startLogic(order);
+        }
+
+        function startLogic(order) {
+            const steps = [
+                { text: 'Đã xác nhận đơn hàng', pct: 0 },
+                { text: 'Đang chuẩn bị món ăn', pct: 0.2 },
+                { text: 'Tài xế đang giao hàng', pct: 0.5 },
+                { text: 'Đang đến điểm giao', pct: 0.9 }
+            ];
+
+            const totalTime = (order.delivery_time || 15) * 60; // giây
+            
+            const update = () => {
+                const now = Date.now();
+                const elapsed = (now - order.startTime) / 1000;
+                const remain = Math.max(0, totalTime - elapsed);
+                const progress = Math.min(1, elapsed / totalTime);
+
+                // 1. Cập nhật đếm ngược
+                const mins = Math.ceil(remain / 60);
+                document.getElementById('countdown-timer').textContent = mins > 0 ? mins + ' phút' : 'Đã đến!';
+                document.getElementById('dist-km').textContent = (order.distance_km * (1 - progress)).toFixed(2);
+
+                // 2. Cập nhật Status
+                const statusTxt = document.getElementById('order-status-text');
+                if (progress < 0.2) {
+                    statusTxt.textContent = "Nhà hàng đã nhận đơn";
+                    document.getElementById('center-icon').textContent = '👨‍🍳';
+                } else if (progress < 0.5) {
+                    statusTxt.textContent = "Đang chuẩn bị món";
+                    document.getElementById('center-icon').textContent = '📦';
+                } else if (progress < 0.95) {
+                    statusTxt.textContent = "Đang giao hàng";
+                    document.getElementById('center-icon').textContent = '🛵';
+                }
+
+                // 3. Render Timeline
+                document.getElementById('timeline-box').innerHTML = steps.map(s => {
+                    let cls = progress >= s.pct + 0.1 ? 'done' : (progress >= s.pct ? 'active' : 'wait');
+                    return `<div class="tstep ${cls}"><div class="text-[14px] font-bold text-[#5a4a40]">${s.text}</div></div>`;
+                }).join('');
+
+                // 4. XỬ LÝ KHI HOÀN THÀNH (Yêu cầu của bạn)
+                if (remain <= 0) {
+                    clearInterval(countdownInterval);
+                    
+                    // Đổi trạng thái sang HOÀN THÀNH
+                    statusTxt.textContent = "Đã hoàn tất giao hàng";
+                    document.getElementById('countdown-timer').textContent = "Hoàn thành!";
+                    document.getElementById('status-dot').classList.remove('animate-pulse');
+                    document.getElementById('status-dot').classList.replace('bg-[#74cdb9]', 'bg-[#2f685e]');
+                    
+                    // Dừng vòng xoay và đổi icon
+                    const spinner = document.getElementById('ring-spinner');
+                    spinner.style.animation = 'none';
+                    spinner.style.borderRightColor = '#765842'; // Fill đầy vòng
+                    document.getElementById('center-icon').textContent = '✅';
+
+                    // Hiện nút xác nhận cuối cùng
+                    const btn = document.getElementById('btn-finish');
+                    btn.classList.remove('hidden');
+                    btn.classList.add('flex');
+                }
+            };
+
+            update();
+            countdownInterval = setInterval(update, 1000);
+        }
+
+        document.addEventListener("DOMContentLoaded", initTracking);
     </script>
-<style>
-    /* Giấu thanh cuộn xấu xí của trình duyệt */
-    ::-webkit-scrollbar { display: none; }
-    html, body { -ms-overflow-style: none; scrollbar-width: none; }
-
-    body {
-      min-height: max(884px, 100dvh);
-    }
-  </style>
-  </head>
-<body class="bg-background text-on-background font-body-md min-h-screen pb-[100px] md:pb-0">
-<!-- TopAppBar -->
-<header class="fixed top-0 w-full z-50 bg-surface/60 dark:bg-surface-dim/60 backdrop-blur-xl shadow-[0_20px_40px_-15px_rgba(118,88,66,0.08)]">
-<div class="flex items-center justify-between px-container-padding h-16 w-full max-w-md mx-auto">
-<button onclick="navigateTo('detail.html')" class="text-outline dark:text-outline-variant hover:opacity-80 transition-opacity">
-<span class="material-symbols-outlined">arrow_back</span>
-</button>
-<h1 class="font-headline-md text-headline-md text-primary dark:text-primary-fixed-dim">Theo dõi</h1>
-<button class="text-outline dark:text-outline-variant hover:opacity-80 transition-opacity">
-<span class="material-symbols-outlined">help_outline</span>
-</button>
-</div>
-</header>
-<main class="pt-24 px-container-padding max-w-md mx-auto space-y-stack-md">
-<!-- ETA & Status Card -->
-<section class="bg-surface-container-lowest rounded-xl shadow-[0_20px_40px_-15px_rgba(118,88,66,0.08)] p-6 relative overflow-hidden">
-<!-- Decorative gradient mesh bg -->
-<div class="absolute inset-0 bg-gradient-to-br from-primary-container/20 to-secondary-container/20 opacity-50 pointer-events-none"></div>
-<div class="relative z-10 flex flex-col items-center text-center">
-<p class="font-body-md text-body-md text-on-surface-variant mb-unit">Dự kiến giao hàng lúc</p>
-<h2 class="font-display-lg text-display-lg text-primary mb-stack-sm">12:45</h2>
-<div class="inline-flex items-center gap-2 bg-secondary-container text-on-secondary-container px-4 py-2 rounded-full">
-<span class="material-symbols-outlined text-label-md" style="font-variation-settings: 'FILL' 1;">pedal_bike</span>
-<span class="font-label-lg text-label-lg">Đang giao đến bạn</span>
-</div>
-</div>
-</section>
-<!-- Illustration Map Placeholder -->
-<section onclick="navigateTo('map.html', 'tab-map')" class="rounded-xl overflow-hidden shadow-sm h-48 bg-surface-variant relative cursor-pointer active:scale-[0.98] transition-transform">
-<img alt="Map" class="w-full h-full object-cover opacity-80" data-alt="A stylized, flat-design illustration of a city map from a top-down perspective, optimized for a modern mobile app interface. The map uses a soft, light-mode color palette with pastel mint greens for parks, soft cream for roads, and muted peach for specific building markers. A clean, subtle drop shadow highlights a specific route, blending modern startup minimalism with soft glassmorphism." data-location="Hanoi" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9LA7swmhDxvwNgrCV82TfRt_XGlcFkKY2Bd5iXroU4_H6e071_PjJbNfUgtQiZK3K4uB0LKyM8iSX0ufV6070iHo1OQ0WKTUEj4Vw1b4aWeYD-ZcA2xiC4V_tiRoE8UWA9n_9SMWPEJ_af3nC-M632zGmKz2s8KwKxLX4moHcjCp4qMYk0BQwheCDn-wvW4aPxNutDnce7YxavUFkWKeItzNJ47sIG3wsniMBgqVBKgaIbKGCrucHuU3fqQJZ7mB7i9k9PMyUH80"/>
-<!-- Overlay Pin -->
-<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-<div class="w-12 h-12 bg-primary text-on-primary rounded-full flex items-center justify-center shadow-lg shadow-primary/30">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">location_on</span>
-</div>
-</div>
-</section>
-<!-- Timeline -->
-<section class="bg-surface-container-lowest rounded-xl shadow-sm p-6">
-<h3 class="font-headline-md text-headline-md text-on-surface mb-stack-md">Tiến trình</h3>
-<div class="relative pl-6 space-y-6 before:absolute before:inset-0 before:ml-[11px] before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-surface-variant">
-<!-- Step 1: Done -->
-<div class="relative flex items-center justify-between">
-<div class="absolute left-[-24px] w-6 h-6 bg-primary rounded-full flex items-center justify-center shadow-sm shadow-primary/20 z-10">
-<span class="material-symbols-outlined text-on-primary text-[14px]" style="font-variation-settings: 'FILL' 1;">check</span>
-</div>
-<div>
-<p class="font-label-lg text-label-lg text-on-surface">Đã xác nhận</p>
-<p class="font-body-sm text-body-sm text-on-surface-variant">Nhà hàng đã nhận đơn</p>
-</div>
-<span class="font-label-md text-label-md text-on-surface-variant">12:15</span>
-</div>
-<!-- Step 2: Done -->
-<div class="relative flex items-center justify-between">
-<div class="absolute left-[-24px] w-6 h-6 bg-primary rounded-full flex items-center justify-center shadow-sm shadow-primary/20 z-10">
-<span class="material-symbols-outlined text-on-primary text-[14px]" style="font-variation-settings: 'FILL' 1;">check</span>
-</div>
-<div>
-<p class="font-label-lg text-label-lg text-on-surface">Đang chuẩn bị</p>
-<p class="font-body-sm text-body-sm text-on-surface-variant">Món ăn đang được nấu</p>
-</div>
-<span class="font-label-md text-label-md text-on-surface-variant">12:20</span>
-</div>
-<!-- Step 3: Active -->
-<div class="relative flex items-center justify-between">
-<div class="absolute left-[-24px] w-6 h-6 bg-secondary text-on-secondary rounded-full flex items-center justify-center shadow-md shadow-secondary/30 z-10 ring-4 ring-background">
-<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">directions_bike</span>
-</div>
-<div>
-<p class="font-label-lg text-label-lg text-secondary">Đang giao</p>
-<p class="font-body-sm text-body-sm text-on-surface-variant">Shipper đang trên đường</p>
-</div>
-<span class="font-label-md text-label-md text-secondary">12:30</span>
-</div>
-<!-- Step 4: Pending -->
-<div class="relative flex items-center justify-between opacity-50">
-<div class="absolute left-[-24px] w-6 h-6 bg-surface-variant rounded-full flex items-center justify-center z-10">
-<span class="material-symbols-outlined text-outline text-[14px]">home</span>
-</div>
-<div>
-<p class="font-label-lg text-label-lg text-on-surface">Đã đến</p>
-<p class="font-body-sm text-body-sm text-on-surface-variant">Nhận món ngon nhé</p>
-</div>
-<span class="font-label-md text-label-md text-on-surface-variant">--:--</span>
-</div>
-</div>
-</section>
-<!-- Driver Info -->
-<section class="bg-surface-container-lowest rounded-xl shadow-sm p-4 flex items-center gap-4">
-<div class="w-12 h-12 rounded-full overflow-hidden bg-surface-variant">
-<img alt="Driver" class="w-full h-full object-cover" data-alt="A close-up portrait of a friendly delivery driver wearing a modern, minimalist uniform. The lighting is soft and natural, emphasizing a professional and approachable mood. The background is slightly blurred with a bright, light-mode aesthetic, adhering to a sophisticated startup vibe." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9RJSYa8veyO7N8IiZn1LCurJQ3R8KBeC5NVEp-Z91dTtT4s-sU7tpD4BsYsz_qlA3OE1FR4hBvXFfI4EBkADvQ9Kg9ApeIqrNpuyLjuBhXRQ-PyREkFcqFKK4N3nzY4E3bX2jvuMVRStKlgbT8UO2tK_XXioVqXgTqAEt87yJmBZJspa3GVkcFupooj_vMSpmBjXfwowcdyQ9kvd0Jbg49f4c-VEF8slVqsmlaPi_MC0qb2ZdUIR8SR3Bhl9pF1tGHvHP9c3K1Ss"/>
-</div>
-<div class="flex-1">
-<p class="font-label-lg text-label-lg text-on-surface">Nguyễn Văn A</p>
-<div class="flex items-center gap-1 text-on-surface-variant">
-<span class="material-symbols-outlined text-[16px] text-[#facc15]" style="font-variation-settings: 'FILL' 1;">star</span>
-<span class="font-body-sm text-body-sm">4.9 • 59-E1 123.45</span>
-</div>
-</div>
-<button class="w-10 h-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center hover:opacity-80 transition-opacity">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">call</span>
-</button>
-<button class="w-10 h-10 rounded-full bg-surface-container text-on-surface flex items-center justify-center hover:opacity-80 transition-opacity">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">chat</span>
-</button>
-</section>
-<!-- Order Summary Lite -->
-<section class="bg-surface-container-lowest rounded-xl shadow-sm p-4 border border-outline-variant/30">
-<div class="flex items-center justify-between mb-2">
-<h4 class="font-label-lg text-label-lg text-on-surface">Mã đơn: #123456</h4>
-<button class="text-primary font-label-md text-label-md hover:underline">Chi tiết</button>
-</div>
-<p class="font-body-sm text-body-sm text-on-surface-variant">2x Bánh mì thập cẩm, 1x Trà đá</p>
-</section>
-</main>
-<!-- BottomNavBar (Hidden on Desktop) -->
-
-</body></html>
+</body>
+</html>

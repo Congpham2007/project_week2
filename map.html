@@ -3,529 +3,206 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Màn hình bản đồ - Khám phá</title>
+    <title>Đơn hàng của tôi</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@turf/turf@7.2.0/turf.min.js"></script>
     <script src="navigation.js" defer></script>
     <script src="api.js" defer></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <style>
         ::-webkit-scrollbar { display: none; }
-        html, body { -ms-overflow-style: none; scrollbar-width: none; overflow-x: hidden; }
+        html, body { -ms-overflow-style: none; scrollbar-width: none; overflow-x: hidden; height: 100%; }
+        body { font-family: 'Inter', sans-serif; background: #fbf9f4; color: #1b1c19; }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(180deg, #fffdf9 0%, #f4eeea 100%);
+        .glass-header { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(234, 222, 213, 0.5); }
+        
+        .order-card { 
+            background: white; 
+            border: 1px solid #eee2d8; 
+            box-shadow: 0 4px 15px rgba(118, 88, 66, 0.05); 
+            transition: transform 0.2s ease, opacity 0.3s ease; 
+        }
+        .order-card:active { transform: scale(0.98); }
+
+        /* Sửa lỗi CSS từ ảnh image_df287b.png */
+        .btn-confirm { 
+            background: #2f685e; 
+            color: white; 
+            padding: 8px 16px; 
+            border-radius: 12px; 
+            font-size: 11px; 
+            font-weight: bold; 
+            animation: popIn 0.3s ease; 
+            border: none;
+            cursor: pointer;
         }
 
-        .glass-button,
-        .glass-card {
-            background: rgba(255, 255, 255, 0.82);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+        @keyframes popIn { 
+            from { opacity: 0; transform: scale(0.8); } 
+            to { opacity: 1; transform: scale(1); } 
         }
 
-        .nav-item {
-            color: #8d7d72;
-        }
+        .tstep { border-left: 2px solid #eee2d8; margin-left: 11px; padding-left: 20px; position: relative; padding-bottom: 22px; }
+        .tstep::before { content: ''; position: absolute; left: -7px; top: 0; width: 12px; height: 12px; border-radius: 50%; background: #eee2d8; border: 2px solid #fff; }
+        .tstep.done { border-left-color: #74cdb9; } .tstep.done::before { background: #74cdb9; }
+        .tstep.active { border-left-color: #f4a55a; } .tstep.active::before { background: #f4a55a; }
 
-        .nav-item.active {
-            color: #765842;
-            font-weight: 700;
-        }
-
-        .map-shell {
-            position: relative;
-            background:
-                radial-gradient(circle at top right, rgba(180, 238, 226, 0.28), transparent 24%),
-                radial-gradient(circle at bottom left, rgba(255, 214, 186, 0.28), transparent 24%),
-                linear-gradient(180deg, rgba(255, 250, 245, 0.94), rgba(242, 237, 230, 0.98));
-            touch-action: none;
-            cursor: grab;
-        }
-
-        .geometry-stage {
-            position: absolute;
-            inset: 0;
-            transform-origin: center center;
-            transition: transform 0.25s ease;
-            will-change: transform;
-        }
-
-        .map-shell.dragging {
-            cursor: grabbing;
-        }
-
-        .geometry-svg {
-            width: 100%;
-            height: 100%;
-        }
-
-        .geometry-road {
-            fill: none;
-            stroke: rgba(95, 171, 160, 0.22);
-            stroke-width: 26;
-            stroke-linecap: round;
-        }
-
-        .geometry-road-outline {
-            fill: none;
-            stroke: rgba(255, 255, 255, 0.42);
-            stroke-width: 3;
-            stroke-linecap: round;
-        }
-
-        .geometry-route-glow {
-            fill: none;
-            stroke: rgba(180, 238, 226, 0.88);
-            stroke-width: 18;
-            stroke-linecap: round;
-        }
-
-        .geometry-route {
-            fill: none;
-            stroke: #2f685e;
-            stroke-width: 5;
-            stroke-linecap: round;
-            stroke-dasharray: 12 12;
-        }
-
-        .node-layer {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-        }
-
-        .floating-badge {
-            position: absolute;
-            transform: translate(-50%, -100%);
-            padding: 9px 16px;
-            border-radius: 9999px;
-            background: rgba(255,255,255,0.96);
-            color: #5e4839;
-            font-size: 13px;
-            font-weight: 700;
-            box-shadow: 0 10px 20px rgba(118, 88, 66, 0.14);
-            white-space: nowrap;
-            pointer-events: none;
-        }
-
-        .store-pin {
-            position: absolute;
-            transform: translate(-50%, -100%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            pointer-events: none;
-        }
-
-        .store-pin__head {
-            width: 56px;
-            height: 56px;
-            border-radius: 9999px;
-            background: #2f685e;
-            border: 4px solid #ffffff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #ffffff;
-            box-shadow: 0 12px 22px rgba(47,104,94,0.28);
-        }
-
-        .store-pin__tail {
-            width: 16px;
-            height: 16px;
-            transform: rotate(45deg);
-            background: #2f685e;
-            margin-top: -6px;
-        }
-
-        .courier-pin {
-            position: absolute;
-            transform: translate(-50%, -50%);
-            width: 48px;
-            height: 48px;
-            pointer-events: none;
-        }
-
-        .courier-pin__pulse {
-            position: absolute;
-            inset: 0;
-            border-radius: 9999px;
-            background: rgba(180, 238, 226, 0.72);
-            animation: pulse 1.8s infinite;
-        }
-
-        .courier-pin__dot {
-            position: relative;
-            z-index: 1;
-            width: 48px;
-            height: 48px;
-            border-radius: 9999px;
-            background: #ffffff;
-            border: 3px solid #2f685e;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #2f685e;
-            box-shadow: 0 12px 22px rgba(47,104,94,0.18);
-        }
-
-        .user-pin {
-            position: absolute;
-            transform: translate(-50%, -50%);
-            width: 18px;
-            height: 18px;
-            border-radius: 9999px;
-            background: #ffffff;
-            border: 3px solid #2f685e;
-            box-shadow: 0 0 0 12px rgba(47, 104, 94, 0.14);
-            pointer-events: none;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(0.82); opacity: 0.7; }
-            70% { transform: scale(1.2); opacity: 0; }
-            100% { transform: scale(1.2); opacity: 0; }
-        }
+        .bottom-sheet { background: white; border-radius: 32px 32px 0 0; box-shadow: 0 -10px 40px rgba(0,0,0,0.08); }
+        iframe { border: none; width: 100%; height: 100%; }
     </style>
 </head>
-<body class="text-[#1b1c19]">
-    <div class="w-full max-w-[430px] min-h-screen mx-auto bg-[#fbf9f4] relative overflow-hidden pb-28">
-        <header class="absolute top-0 inset-x-0 z-30 px-5 pt-6">
-            <div class="glass-card rounded-full px-4 py-3 border border-white/70 shadow-[0_12px_26px_rgba(118,88,66,0.1)] flex items-center justify-between">
-                <button onclick="navigateTo('home.html', 'tab-home')" class="w-9 h-9 rounded-full border border-[#e8dbd0] flex items-center justify-center text-[#8a6547]">
-                    <span class="material-symbols-outlined">close</span>
-                </button>
-                <h1 class="text-[24px] leading-[30px] font-bold text-[#765842]">Khám phá</h1>
-                <button class="w-9 h-9 rounded-full border border-[#e8dbd0] flex items-center justify-center text-[#8a6547]">
-                    <span class="material-symbols-outlined">search</span>
-                </button>
-            </div>
+<body>
+    <div class="w-full max-w-[430px] min-h-screen mx-auto relative flex flex-col pb-[100px]">
+        
+        <header id="main-header" class="fixed top-0 inset-x-0 z-50 glass-header px-5 h-16 flex items-center justify-between max-w-[430px] mx-auto">
+            <h1 id="map-title" class="text-[18px] font-bold text-[#765842]">Đơn hàng của tôi</h1>
+            <span class="material-symbols-outlined text-[#8a6547]">receipt_long</span>
         </header>
 
-        <main class="pt-24 px-5">
-            <section class="map-shell relative h-[690px] rounded-[34px] overflow-hidden border border-white/70">
-                <div id="geometry-stage" class="geometry-stage">
-                    <svg viewBox="0 0 1000 1400" class="geometry-svg" aria-hidden="true">
-                        <g id="road-layer"></g>
-                        <path id="route-glow" class="geometry-route-glow"></path>
-                        <path id="route-line" class="geometry-route"></path>
-                    </svg>
-                    <div id="node-layer" class="node-layer"></div>
-                </div>
-
-                <div id="store-badge" class="floating-badge hidden">Đang tải điểm đến…</div>
-
-                <div class="absolute right-4 top-[40%] z-20 flex flex-col gap-3">
-                    <button id="locate-btn" class="glass-button w-11 h-11 rounded-full shadow-[0_10px_20px_rgba(118,88,66,0.12)] flex items-center justify-center text-[#7f6d61] border border-white/70">
-                        <span class="material-symbols-outlined">my_location</span>
-                    </button>
-                    <div class="glass-card rounded-full overflow-hidden border border-white/70 shadow-[0_10px_20px_rgba(118,88,66,0.12)]">
-                        <button id="zoom-in-btn" class="w-11 h-11 flex items-center justify-center text-[#7f6d61] border-b border-[#ece1d8]">
-                            <span class="material-symbols-outlined">add</span>
-                        </button>
-                        <button id="zoom-out-btn" class="w-11 h-11 flex items-center justify-center text-[#7f6d61]">
-                            <span class="material-symbols-outlined">remove</span>
-                        </button>
-                    </div>
-                </div>
-
-                <section class="absolute inset-x-4 bottom-4 z-20">
-                    <div class="glass-card rounded-[28px] p-5 border border-white/70 shadow-[0_20px_40px_rgba(118,88,66,0.14)]">
-                        <div class="flex items-start justify-between gap-4">
-                            <div>
-                                <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#2f685e]">
-                                    <span class="w-2 h-2 rounded-full bg-[#2f685e] animate-pulse"></span>
-                                    <span>Đang giao hàng</span>
-                                </div>
-                                <h2 id="eta-range" class="mt-2 text-[40px] leading-[44px] font-bold text-[#241814] whitespace-nowrap">12 - 15 phút</h2>
-                                <p class="mt-1 text-sm text-[#7f7066] leading-5">
-                                    <span id="distance-line">Khoảng cách: 2.4 km • Đến lúc </span><span id="arrival-time" class="whitespace-nowrap">19:45</span>
-                                </p>
-                            </div>
-                            <div class="w-14 h-14 rounded-full bg-[#b4eee2] flex items-center justify-center">
-                                <span class="material-symbols-outlined text-[#2f685e] text-[28px]" style="font-variation-settings:'FILL' 1">pedal_bike</span>
-                            </div>
-                        </div>
-
-                        <div class="mt-4 h-2 rounded-full bg-[#ece4dc] overflow-hidden flex gap-1">
-                            <div class="w-[34%] rounded-full bg-[#2f685e]"></div>
-                            <div class="w-[34%] rounded-full bg-[#2f685e]/80"></div>
-                            <div class="flex-1 rounded-full bg-[#d7ccc3]"></div>
-                        </div>
-
-                        <div class="mt-4 flex items-center gap-3 rounded-[20px] bg-white/72 p-3 border border-white/60">
-                            <img alt="Nguyễn Văn An" class="w-12 h-12 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAM3yf8c-FZdgPtM8BeHdOZQtsZO7VStC4b8Nz7qIEQivGXF7Ry8ci_sGBwvsxc3oOPvXo90L8_tBNILOzZ0cECbBqShh5BTT4NDTQxGIiu5B5EtQfV2jQ8yfivm0kXbH4Ca913Zi1Nrc5EJewy6cf2M7wtmX4AbUF2fUg268N5juq0JwFJm0RtKOp3X5z669ECZQIW4tVUzLQnl-ahzbkvMGgDAnUxhpX9YLcBYp_s9242gU3UAB5G2S3fEOfem4JH_sUal7Of0g">
-                            <div class="flex-1">
-                                <h3 class="font-semibold text-[#473328]">Nguyễn Văn An</h3>
-                                <p class="text-xs text-[#7f7066] flex items-center gap-1">
-                                    <span class="material-symbols-outlined text-[14px] text-[#f2b544]" style="font-variation-settings:'FILL' 1">star</span>
-                                    <span>4.9 (120+ chuyến)</span>
-                                </p>
-                            </div>
-                            <button class="w-10 h-10 rounded-full bg-[#eddcfa] text-[#6e5f8f] flex items-center justify-center">
-                                <span class="material-symbols-outlined">chat</span>
-                            </button>
-                            <button class="w-10 h-10 rounded-full bg-[#2f685e] text-white flex items-center justify-center">
-                                <span class="material-symbols-outlined">call</span>
-                            </button>
-                        </div>
-                    </div>
-                </section>
-            </section>
-        </main>
-
-        <nav id="standalone-nav" class="hidden fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-white/92 backdrop-blur-xl border-t border-[#efe7df] rounded-t-[28px] px-4 py-4 shadow-[0_-10px_30px_rgba(118,88,66,0.12)]">
-            <div class="flex items-center justify-around">
-                <button data-tab="tab-home" onclick="navigateTo('home.html', 'tab-home')" class="nav-item flex flex-col items-center gap-1">
-                    <span class="material-symbols-outlined">home_app_logo</span>
-                    <span class="text-[12px]">Trang chủ</span>
-                </button>
-                <button data-tab="tab-map" onclick="navigateTo('map.html', 'tab-map')" class="nav-item flex flex-col items-center gap-1">
-                    <span class="material-symbols-outlined">map</span>
-                    <span class="text-[12px]">Bản đồ</span>
-                </button>
-                <button data-tab="tab-planner" onclick="navigateTo('planner.html', 'tab-planner')" class="nav-item flex flex-col items-center gap-1">
-                    <span class="material-symbols-outlined">calendar_today</span>
-                    <span class="text-[12px]">Kế hoạch</span>
-                </button>
-                <button data-tab="tab-settings" onclick="navigateTo('settings.html', 'tab-settings')" class="nav-item flex flex-col items-center gap-1">
-                    <span class="material-symbols-outlined">settings</span>
-                    <span class="text-[12px]">Cài đặt</span>
-                </button>
+        <main class="flex-1 mt-16 flex flex-col overflow-hidden">
+            <div id="empty-state" class="hidden flex-1 flex-col items-center justify-center p-10 text-center">
+                <div class="w-20 h-20 rounded-full bg-[#f3ede8] flex items-center justify-center mb-5 text-4xl">📦</div>
+                <h2 class="text-[18px] font-bold text-[#5a4a40]">Không có đơn hàng nào</h2>
             </div>
-        </nav>
+
+            <div id="list-state" class="hidden flex-1 p-5 space-y-4 overflow-y-auto">
+                <div id="order-items-container" class="space-y-4 pb-10"></div>
+            </div>
+
+            <div id="map-state" class="hidden fixed inset-0 z-[60] bg-[#f3ede8] max-w-[430px] mx-auto flex flex-col">
+                <div id="map-frame-container" class="absolute inset-0 z-0 h-[60%]"></div>
+                <button onclick="showOrderList()" class="absolute top-10 left-5 z-20 w-10 h-10 rounded-full bg-white shadow-lg flex items-center justify-center text-[#8a6547] border border-[#eee2d8]">
+                    <span class="material-symbols-outlined">arrow_back</span>
+                </button>
+                <div class="mt-auto relative z-10 bottom-sheet p-6 pb-12 overflow-y-auto max-h-[65vh]">
+                    <div class="w-12 h-1 bg-[#eee2d8] rounded-full mx-auto mb-6"></div>
+                    <div class="flex justify-between items-start mb-6">
+                        <div class="flex-1">
+                            <h2 id="det-eta" class="text-[34px] font-bold text-[#241814]">-- phút</h2>
+                            <p class="text-[13px] text-[#8d7d72]">Cách bạn: <span id="det-dist">--</span> km</p>
+                        </div>
+                        <div class="text-3xl">🛵</div>
+                    </div>
+                    <div id="det-timeline" class="mb-4"></div>
+                </div>
+            </div>
+        </main>
     </div>
 
     <script>
-        const USER_LOCATION = { lat: 10.7725, lon: 106.6980 };
-        let currentScale = 1;
-        let panX = 0;
-        let panY = 0;
-        let dragging = false;
-        let dragStartX = 0;
-        let dragStartY = 0;
-        let dragOriginX = 0;
-        let dragOriginY = 0;
+        let listInterval = null;
+        let detailInterval = null;
 
-        function fallbackDish() {
-            return {
-                name: "Bếp Chay Mint",
-                rest_name: "Bếp Chay Mint",
-                distance_km: 2.4,
-                delivery_time: 15,
-                lat: 10.786,
-                lon: 106.708,
-                price: 65000,
-                meal_type: "full"
-            };
+        function getOrders() {
+            return JSON.parse(localStorage.getItem('smart_food_orders') || '[]');
         }
 
-        function courierPoint(user, store) {
-            return turf.destination(
-                turf.point([user.lon, user.lat]),
-                turf.distance(turf.point([user.lon, user.lat]), turf.point([store.lon, store.lat])) * 0.62,
-                turf.bearing(turf.point([user.lon, user.lat]), turf.point([store.lon, store.lat]))
-            ).geometry.coordinates;
+        // Xóa đơn hàng khỏi danh sách
+        function deleteOrder(event, id) {
+            event.stopPropagation(); // Không cho nhảy vào màn hình chi tiết
+            let orders = getOrders().filter(o => (o.orderId || o.id) != id);
+            localStorage.setItem('smart_food_orders', JSON.stringify(orders));
+            showOrderList(); // Vẽ lại list
         }
 
-        function estimateArrival(minutesAway) {
-            const now = new Date();
-            now.setMinutes(now.getMinutes() + minutesAway);
-            return now.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" });
-        }
+        function showOrderList() {
+            clearInterval(detailInterval);
+            document.getElementById('map-state').classList.add('hidden');
+            document.getElementById('main-header').classList.remove('hidden');
+            
+            const orders = getOrders();
+            const container = document.getElementById('order-items-container');
+            const empty = document.getElementById('empty-state');
+            const list = document.getElementById('list-state');
 
-        function buildProjection(store, courier) {
-            const features = turf.featureCollection([
-                turf.point([USER_LOCATION.lon, USER_LOCATION.lat]),
-                turf.point([store.lon, store.lat]),
-                turf.point(courier)
-            ]);
-            const bbox = turf.bbox(features);
-            const padded = [bbox[0] - 0.01, bbox[1] - 0.01, bbox[2] + 0.01, bbox[3] + 0.01];
-            return {
-                bbox: padded,
-                project(lon, lat) {
-                    const x = ((lon - padded[0]) / (padded[2] - padded[0])) * 1000;
-                    const y = 1400 - ((lat - padded[1]) / (padded[3] - padded[1])) * 1400;
-                    return { x, y };
-                }
-            };
-        }
+            if (orders.length === 0) {
+                empty.classList.remove('hidden');
+                list.classList.add('hidden');
+            } else {
+                empty.classList.add('hidden');
+                list.classList.remove('hidden');
+                
+                // Render khung một lần
+                container.innerHTML = orders.map(o => {
+                    const id = o.orderId || o.id;
+                    return `
+                    <div id="card-${id}" onclick="viewDetail('${id}')" class="order-card rounded-[24px] p-4 flex items-center gap-4 cursor-pointer">
+                        <div class="w-14 h-14 rounded-[18px] bg-[#fdf3eb] text-[#c69a7b] flex items-center justify-center text-2xl shrink-0">🍲</div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex justify-between items-start mb-1">
+                                <span class="text-[10px] font-bold text-[#8a6547] uppercase tracking-widest">#${id.toString().slice(-6)}</span>
+                                <span id="st-txt-${id}" class="text-[10px] font-bold text-[#f4a55a]">Đang xử lý</span>
+                            </div>
+                            <h3 class="text-[15px] font-bold text-[#241814] truncate">${o.name} x${o.qty || 1}</h3>
+                            <p class="text-[12px] text-[#8d7d72] truncate">${o.rest_name}</p>
+                        </div>
+                        <div id="st-action-${id}" class="shrink-0">
+                            <span class="material-symbols-outlined text-[#eaded5]">chevron_right</span>
+                        </div>
+                    </div>`;
+                }).join('');
 
-        function roadPath(points, projector) {
-            return points.map((point, index) => {
-                const projected = projector(point[0], point[1]);
-                return `${index === 0 ? "M" : "L"} ${projected.x.toFixed(1)} ${projected.y.toFixed(1)}`;
-            }).join(" ");
-        }
-
-        function curvedRoute(userPoint, courierPointPx, storePoint) {
-            const cp1x = userPoint.x + (courierPointPx.x - userPoint.x) * 0.3;
-            const cp1y = userPoint.y - 40;
-            const cp2x = courierPointPx.x + (storePoint.x - courierPointPx.x) * 0.45;
-            const cp2y = courierPointPx.y - 50;
-            return `M ${userPoint.x.toFixed(1)} ${userPoint.y.toFixed(1)} Q ${cp1x.toFixed(1)} ${cp1y.toFixed(1)} ${courierPointPx.x.toFixed(1)} ${courierPointPx.y.toFixed(1)} Q ${cp2x.toFixed(1)} ${cp2y.toFixed(1)} ${storePoint.x.toFixed(1)} ${storePoint.y.toFixed(1)}`;
-        }
-
-        function buildRoadNetwork(store, projection) {
-            const [minLon, minLat, maxLon, maxLat] = projection.bbox;
-            const centerLon = (minLon + maxLon) / 2;
-            const centerLat = (minLat + maxLat) / 2;
-            const qLon = (maxLon - minLon) / 4;
-            const qLat = (maxLat - minLat) / 4;
-
-            return [
-                turf.lineString([
-                    [centerLon - qLon * 0.15, maxLat],
-                    [centerLon, centerLat + qLat * 0.2],
-                    [centerLon + qLon * 0.12, minLat]
-                ]),
-                turf.lineString([
-                    [minLon, centerLat - qLat * 0.1],
-                    [centerLon - qLon * 0.2, centerLat - qLat * 0.2],
-                    [maxLon, centerLat - qLat * 0.05]
-                ]),
-                turf.lineString([
-                    [minLon + qLon * 0.4, maxLat - qLat * 0.08],
-                    [minLon + qLon * 0.3, centerLat + qLat * 0.15],
-                    [minLon + qLon * 0.55, minLat + qLat * 0.18]
-                ]),
-                turf.lineString([
-                    [maxLon - qLon * 0.35, maxLat - qLat * 0.05],
-                    [maxLon - qLon * 0.15, centerLat - qLat * 0.18],
-                    [maxLon - qLon * 0.45, minLat + qLat * 0.14]
-                ]),
-                turf.lineString([
-                    [store.lon - qLon * 0.4, store.lat + qLat * 0.25],
-                    [store.lon - qLon * 0.12, store.lat + qLat * 0.04],
-                    [store.lon + qLon * 0.18, store.lat - qLat * 0.22]
-                ])
-            ].map((line) => roadPath(line.geometry.coordinates, projection.project));
-        }
-
-        function setStageScale(scale) {
-            currentScale = Math.max(0.92, Math.min(1.28, scale));
-            applyStageTransform();
-        }
-
-        function applyStageTransform() {
-            document.getElementById("geometry-stage").style.transform = `translate(${panX}px, ${panY}px) scale(${currentScale})`;
-        }
-
-        function resetView() {
-            panX = 0;
-            panY = 0;
-            currentScale = 1;
-            applyStageTransform();
-        }
-
-        function bindPan() {
-            const shell = document.querySelector(".map-shell");
-            const ignoreSelector = "#locate-btn, #zoom-in-btn, #zoom-out-btn, #store-badge, .glass-card button";
-
-            shell.addEventListener("pointerdown", (event) => {
-                if (event.target.closest(ignoreSelector)) return;
-                dragging = true;
-                dragStartX = event.clientX;
-                dragStartY = event.clientY;
-                dragOriginX = panX;
-                dragOriginY = panY;
-                shell.classList.add("dragging");
-            });
-
-            window.addEventListener("pointermove", (event) => {
-                if (!dragging) return;
-                panX = dragOriginX + (event.clientX - dragStartX);
-                panY = dragOriginY + (event.clientY - dragStartY);
-                applyStageTransform();
-            });
-
-            const stopDragging = () => {
-                dragging = false;
-                shell.classList.remove("dragging");
-            };
-
-            window.addEventListener("pointerup", stopDragging);
-            window.addEventListener("pointercancel", stopDragging);
-        }
-
-        function renderGeometryMap(dish) {
-            const store = {
-                lat: dish.lat || fallbackDish().lat,
-                lon: dish.lon || fallbackDish().lon
-            };
-            const courier = courierPoint(USER_LOCATION, store);
-            const projection = buildProjection(store, courier);
-
-            const roadLayer = document.getElementById("road-layer");
-            roadLayer.innerHTML = buildRoadNetwork(store, projection).map((path) => `
-                <g>
-                    <path d="${path}" class="geometry-road"></path>
-                    <path d="${path}" class="geometry-road-outline"></path>
-                </g>
-            `).join("");
-
-            const userPx = projection.project(USER_LOCATION.lon, USER_LOCATION.lat);
-            const courierPx = projection.project(courier[0], courier[1]);
-            const storePx = projection.project(store.lon, store.lat);
-
-            document.getElementById("route-glow").setAttribute("d", curvedRoute(userPx, courierPx, storePx));
-            document.getElementById("route-line").setAttribute("d", curvedRoute(userPx, courierPx, storePx));
-
-            const nodeLayer = document.getElementById("node-layer");
-            nodeLayer.innerHTML = `
-                <div class="user-pin" style="left:${userPx.x / 10}%; top:${userPx.y / 14}%;"></div>
-                <div class="courier-pin" style="left:${courierPx.x / 10}%; top:${courierPx.y / 14}%;">
-                    <div class="courier-pin__pulse"></div>
-                    <div class="courier-pin__dot">
-                        <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">directions_bike</span>
-                    </div>
-                </div>
-                <div class="store-pin" style="left:${storePx.x / 10}%; top:${storePx.y / 14}%;">
-                    <div class="store-pin__head">
-                        <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">storefront</span>
-                    </div>
-                    <div class="store-pin__tail"></div>
-                </div>
-            `;
-
-            const badge = document.getElementById("store-badge");
-            badge.textContent = dish.rest_name || dish.name || "Bếp Chay Mint";
-            badge.style.left = `${storePx.x / 10}%`;
-            badge.style.top = `${storePx.y / 14 - 3}%`;
-            badge.classList.remove("hidden");
-        }
-
-        async function loadTrackingMap() {
-            let selectedDish = smartFoodStore.getStored(smartFoodApi.STORAGE_KEYS.selectedDish);
-            if (!selectedDish) {
-                const recommendation = smartFoodStore.getStored(smartFoodApi.STORAGE_KEYS.recommend);
-                selectedDish = recommendation?.results?.[0] || fallbackDish();
+                updateStatus();
+                clearInterval(listInterval);
+                listInterval = setInterval(updateStatus, 1000);
             }
-
-            renderGeometryMap(selectedDish);
-
-            const etaMax = Math.max(12, Math.round(selectedDish.delivery_time || 15));
-            const etaMin = Math.max(8, etaMax - 3);
-            document.getElementById("eta-range").textContent = `${etaMin} - ${etaMax} phút`;
-            document.getElementById("distance-line").textContent = `Khoảng cách: ${selectedDish.distance_km || 2.4} km • Đến lúc `;
-            document.getElementById("arrival-time").textContent = estimateArrival(etaMax);
         }
 
-        document.addEventListener("DOMContentLoaded", async () => {
-            await loadTrackingMap();
-            bindPan();
-            applyStageTransform();
+        function updateStatus() {
+            const orders = getOrders();
+            const now = Date.now();
+            orders.forEach(o => {
+                const id = o.orderId || o.id;
+                const txt = document.getElementById(`st-txt-${id}`);
+                const action = document.getElementById(`st-action-${id}`);
+                if (!txt || !action) return;
 
-            document.getElementById("locate-btn").addEventListener("click", resetView);
-            document.getElementById("zoom-in-btn").addEventListener("click", () => setStageScale(currentScale + 0.08));
-            document.getElementById("zoom-out-btn").addEventListener("click", () => setStageScale(currentScale - 0.08));
+                const elapsed = now - o.startTime;
+                const total = (o.delivery_time || 15) * 60000;
+                const p = elapsed / total;
 
-            setupStandaloneNav("tab-map");
-        });
+                if (p >= 1) {
+                    txt.textContent = "Đã hoàn thành";
+                    txt.className = "text-[10px] font-bold text-[#2f685e]";
+                    if (!document.getElementById(`btn-del-${id}`)) {
+                        action.innerHTML = `<button id="btn-del-${id}" onclick="deleteOrder(event, '${id}')" class="btn-confirm">Xác nhận</button>`;
+                    }
+                } else if (p > 0.5) {
+                    txt.textContent = "Đang giao hàng";
+                    txt.className = "text-[10px] font-bold text-[#118ab2]";
+                }
+            });
+        }
+
+        function viewDetail(id) {
+            clearInterval(listInterval);
+            const order = getOrders().find(o => (o.orderId || o.id) == id);
+            if (!order) return;
+
+            document.getElementById('main-header').classList.add('hidden');
+            document.getElementById('list-state').classList.add('hidden');
+            document.getElementById('map-state').classList.remove('hidden');
+            
+            document.getElementById('map-frame-container').innerHTML = `<iframe src="/api/mini_map?lat=${order.lat}&lon=${order.lon}&name=${encodeURIComponent(order.rest_name)}"></iframe>`;
+
+            const updateDetail = () => {
+                const elapsed = (Date.now() - order.startTime) / 1000;
+                const total = (order.delivery_time || 15) * 60;
+                const progress = Math.min(1, elapsed / total);
+                document.getElementById('det-eta').textContent = progress < 1 ? Math.ceil((total - elapsed)/60) + " phút" : "Hoàn thành!";
+                document.getElementById('det-dist').textContent = (order.distance_km * (1 - progress)).toFixed(2);
+                
+                const steps = [{t:'Xác nhận', p:0}, {t:'Chuẩn bị', p:0.2}, {t:'Đang giao', p:0.5}, {t:'Đến nơi', p:0.9}];
+                document.getElementById('det-timeline').innerHTML = steps.map(s => {
+                    let cls = progress >= s.p + 0.1 ? 'done' : (progress >= s.p ? 'active' : 'wait');
+                    return `<div class="tstep ${cls}"><div class="text-[14px] font-bold text-[#5a4a40]">${s.t}</div></div>`;
+                }).join('');
+            };
+            updateDetail();
+            detailInterval = setInterval(updateDetail, 2000);
+        }
+
+        document.addEventListener("DOMContentLoaded", showOrderList);
     </script>
 </body>
 </html>
