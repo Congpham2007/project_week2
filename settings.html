@@ -1,0 +1,288 @@
+<!DOCTYPE html><html lang="vi" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-container": "#b4eee2",
+                    "surface": "#fbf9f4",
+                    "on-error": "#ffffff",
+                    "primary": "#765842",
+                    "surface-dim": "#dbdad5",
+                    "on-error-container": "#93000a",
+                    "on-primary-fixed-variant": "#5c412c",
+                    "surface-container-highest": "#e4e2de",
+                    "error-container": "#ffdad6",
+                    "on-primary-fixed": "#2b1706",
+                    "tertiary-fixed": "#ebdcff",
+                    "outline": "#81756d",
+                    "surface-container-low": "#f5f3ee",
+                    "on-background": "#1b1c19",
+                    "secondary": "#2f685e",
+                    "background": "#fbf9f4",
+                    "on-tertiary-container": "#6b598a",
+                    "on-tertiary-fixed": "#23113f",
+                    "inverse-primary": "#e6bfa4",
+                    "on-surface": "#1b1c19",
+                    "surface-tint": "#765842",
+                    "surface-variant": "#e4e2de",
+                    "inverse-surface": "#30312e",
+                    "tertiary-container": "#e8d7ff",
+                    "surface-container": "#efeee9",
+                    "primary-container": "#ffd6ba",
+                    "on-tertiary": "#ffffff",
+                    "primary-fixed": "#ffdcc4",
+                    "on-secondary-fixed": "#00201c",
+                    "on-primary": "#ffffff",
+                    "tertiary": "#685687",
+                    "surface-container-high": "#eae8e3",
+                    "tertiary-fixed-dim": "#d2bdf5",
+                    "primary-fixed-dim": "#e6bfa4",
+                    "on-secondary-container": "#366e64",
+                    "on-secondary": "#ffffff",
+                    "inverse-on-surface": "#f2f1ec",
+                    "on-secondary-fixed-variant": "#124f47",
+                    "secondary-fixed-dim": "#99d2c6",
+                    "on-primary-container": "#7a5b45",
+                    "secondary-fixed": "#b4eee2",
+                    "outline-variant": "#d3c4ba",
+                    "on-tertiary-fixed-variant": "#4f3e6e",
+                    "surface-bright": "#fbf9f4",
+                    "surface-container-lowest": "#ffffff",
+                    "on-surface-variant": "#4f453e",
+                    "error": "#ba1a1a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-sm": "12px",
+                    "stack-lg": "40px",
+                    "container-padding": "20px",
+                    "unit": "8px",
+                    "gutter": "16px",
+                    "stack-md": "24px"
+            },
+            "fontFamily": {
+                    "body-sm": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-lg": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "headline-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "34px", "fontWeight": "700"}],
+                    "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-lg": ["14px", {"lineHeight": "18px", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "30px", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+  /* Giấu thanh cuộn xấu xí của trình duyệt */
+    ::-webkit-scrollbar { display: none; }
+    html, body { -ms-overflow-style: none; scrollbar-width: none; }
+
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #fbf9f4;
+      }
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .glass-effect {
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+      }
+      .umbra-shadow {
+        box-shadow: 0 20px 40px -15px rgba(118, 88, 66, 0.08);
+      }
+      .peach-gradient {
+        background: linear-gradient(135deg, #ffd6ba 0%, #ffc1cc 100%);
+      }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface selection:bg-primary-container">
+<!-- Top AppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-container-padding h-16 w-full bg-surface/60 backdrop-blur-md dark:bg-surface-dim/60 shadow-[0_20px_40px_-15px_rgba(118,88,66,0.08)]">
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed-dim">Cài đặt</h1>
+<div class="flex items-center gap-stack-sm">
+<button class="p-2 rounded-full hover:bg-primary-container/20 transition-colors">
+<span class="material-symbols-outlined text-primary">notifications</span>
+</button>
+</div>
+</header>
+<main class="pt-20 pb-28 px-container-padding max-w-md mx-auto">
+<!-- User Profile Section -->
+<section class="mb-stack-lg flex flex-col items-center">
+<div class="relative group">
+<div class="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg">
+<img alt="Avatar" class="w-full h-full object-cover" data-alt="A professional and clean studio headshot of a friendly young Vietnamese man with a warm smile, set against a soft pastel peach background that matches the brand identity. The lighting is bright and high-key, emphasizing a modern startup aesthetic. The composition is focused and intimate, showcasing premium photographic quality with natural skin tones and elegant styling." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqdDgw21YoGlIaf052yEPPE0vNXcFEV6O36_-yKzMKGkDhafWcZFemMjWx9pmSaV4ddB9Fwxd99WcZ_XY7y8TGN9h60fE7qCW1VYLMajzK7IIDqGExXBzVhgSVJ-cCSSg2Q0awBOJfoJD49eJcDVW3DviIrCZzrwqSdYih3jR2ygn3U2yqCCzR6JtDJgc2PBgXcNhnq4N5vQukjVMDRN3JDk75fKpXDI_njFgloJmp_8Qd1tk5sA3em7Xp2JZlqcDXNh32cAJfMg0">
+</div>
+<button class="absolute bottom-0 right-0 p-2 peach-gradient text-on-primary-container rounded-full shadow-md active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[20px]">photo_camera</span>
+</button>
+</div>
+<h2 class="mt-stack-sm font-headline-md text-headline-md text-on-surface">Nguyễn Văn A</h2>
+<p class="font-body-sm text-body-sm text-outline mb-stack-sm">van.a@auracuisines.vn</p>
+<button class="px-6 py-2.5 rounded-full border border-outline-variant font-label-lg text-label-lg text-primary hover:bg-primary-container/10 transition-colors">
+                Chỉnh sửa hồ sơ
+            </button>
+</section>
+<!-- Account Settings Group -->
+<section class="mb-stack-lg">
+<h3 class="font-label-lg text-label-lg text-outline uppercase tracking-wider mb-stack-sm px-2">Tài khoản</h3>
+<div class="bg-white rounded-3xl overflow-hidden shadow-sm">
+<div class="flex items-center justify-between p-4 hover:bg-surface-container-low transition-colors cursor-pointer group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-2xl bg-primary-container/30 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">person</span>
+</div>
+<span class="font-body-md text-body-md">Thông tin cá nhân</span>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:translate-x-1 transition-transform">chevron_right</span>
+</div>
+<div class="h-px bg-surface-variant/50 mx-4"></div>
+<div class="flex items-center justify-between p-4 hover:bg-surface-container-low transition-colors cursor-pointer group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-2xl bg-secondary-container/30 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">location_on</span>
+</div>
+<span class="font-body-md text-body-md">Địa chỉ đã lưu</span>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:translate-x-1 transition-transform">chevron_right</span>
+</div>
+<div class="h-px bg-surface-variant/50 mx-4"></div>
+<div class="flex items-center justify-between p-4 hover:bg-surface-container-low transition-colors cursor-pointer group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-2xl bg-tertiary-container/30 flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary">credit_card</span>
+</div>
+<span class="font-body-md text-body-md">Phương thức thanh toán</span>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:translate-x-1 transition-transform">chevron_right</span>
+</div>
+</div>
+</section>
+<!-- App Preferences Group -->
+<section class="mb-stack-lg">
+<h3 class="font-label-lg text-label-lg text-outline uppercase tracking-wider mb-stack-sm px-2">Cài đặt ứng dụng</h3>
+<div class="bg-white rounded-3xl overflow-hidden shadow-sm">
+<!-- Notifications Toggle -->
+<div class="flex items-center justify-between p-4">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-2xl bg-primary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">notifications_active</span>
+</div>
+<span class="font-body-md text-body-md">Thông báo</span>
+</div>
+<div class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox">
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</div>
+</div>
+<div class="h-px bg-surface-variant/50 mx-4"></div>
+<!-- Dark Mode Toggle -->
+<div class="flex items-center justify-between p-4">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-2xl bg-surface-variant/40 flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant">dark_mode</span>
+</div>
+<span class="font-body-md text-body-md">Chế độ tối</span>
+</div>
+<div class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox">
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</div>
+</div>
+<div class="h-px bg-surface-variant/50 mx-4"></div>
+<!-- Language Picker -->
+<div class="flex items-center justify-between p-4 hover:bg-surface-container-low transition-colors cursor-pointer group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-2xl bg-secondary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">language</span>
+</div>
+<span class="font-body-md text-body-md">Ngôn ngữ</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="font-body-sm text-body-sm text-outline">Tiếng Việt</span>
+<span class="material-symbols-outlined text-outline group-hover:translate-x-1 transition-transform">chevron_right</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Support & Legal Group -->
+<section class="mb-stack-lg">
+<h3 class="font-label-lg text-label-lg text-outline uppercase tracking-wider mb-stack-sm px-2">Hỗ trợ &amp; Pháp lý</h3>
+<div class="bg-white rounded-3xl overflow-hidden shadow-sm">
+<div class="flex items-center justify-between p-4 hover:bg-surface-container-low transition-colors cursor-pointer group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-2xl bg-surface-variant/30 flex items-center justify-center">
+<span class="material-symbols-outlined text-outline">help_center</span>
+</div>
+<span class="font-body-md text-body-md">Trung tâm trợ giúp</span>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:translate-x-1 transition-transform">chevron_right</span>
+</div>
+<div class="h-px bg-surface-variant/50 mx-4"></div>
+<div class="flex items-center justify-between p-4 hover:bg-surface-container-low transition-colors cursor-pointer group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-2xl bg-surface-variant/30 flex items-center justify-center">
+<span class="material-symbols-outlined text-outline">verified_user</span>
+</div>
+<span class="font-body-md text-body-md">Chính sách bảo mật</span>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:translate-x-1 transition-transform">chevron_right</span>
+</div>
+<div class="h-px bg-surface-variant/50 mx-4"></div>
+<div class="flex items-center justify-between p-4 hover:bg-surface-container-low transition-colors cursor-pointer group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-2xl bg-surface-variant/30 flex items-center justify-center">
+<span class="material-symbols-outlined text-outline">description</span>
+</div>
+<span class="font-body-md text-body-md">Điều khoản sử dụng</span>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:translate-x-1 transition-transform">chevron_right</span>
+</div>
+</div>
+</section>
+<!-- Logout Button -->
+<button onclick="window.parent.location.href='login.html'" class="w-full py-4 rounded-3xl bg-error-container/20 text-error font-headline-md text-headline-md flex items-center justify-center gap-2 active:scale-[0.98] transition-all cursor-pointer hover:bg-error-container/30">
+<span class="material-symbols-outlined">logout</span>
+            Đăng xuất
+        </button>
+<p class="mt-stack-lg text-center font-label-md text-label-md text-outline-variant">
+            Phiên bản 2.4.0 (Aura Cuisines)
+        </p>
+</main>
+<!-- Bottom Navigation Bar -->
+
+
+
+</body></html>

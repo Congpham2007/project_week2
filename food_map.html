@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_401270c80ae5c782ca3a4e132ef9ac48 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_401270c80ae5c782ca3a4e132ef9ac48" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_401270c80ae5c782ca3a4e132ef9ac48 = L.map(
+                "map_401270c80ae5c782ca3a4e132ef9ac48",
+                {
+                    center: [10.7725, 106.698],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 14,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_31507a304a74867faea29ae1fd80cc1f = L.tileLayer(
+                "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 20,
+  "maxNativeZoom": 20,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors \u0026copy; \u003ca href=\"https://carto.com/attributions\"\u003eCARTO\u003c/a\u003e",
+  "subdomains": "abcd",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_31507a304a74867faea29ae1fd80cc1f.addTo(map_401270c80ae5c782ca3a4e132ef9ac48);
+        
+    
+            var marker_551a650f235c24e19f8ea5d7bf957765 = L.marker(
+                [10.7725, 106.698],
+                {
+}
+            ).addTo(map_401270c80ae5c782ca3a4e132ef9ac48);
+        
+    
+            var icon_3323e4c25cf2f4f269c564cfdefef175 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "black",
+  "iconColor": "white",
+  "icon": "home",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_98de355fffbd65c55eeb2aea0201ee1d = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_825d83927997095a752a7a9cc23c7da7 = $(`<div id="html_825d83927997095a752a7a9cc23c7da7" style="width: 100.0%; height: 100.0%;">📍 Vị trí của bạn</div>`)[0];
+                popup_98de355fffbd65c55eeb2aea0201ee1d.setContent(html_825d83927997095a752a7a9cc23c7da7);
+            
+        
+
+        marker_551a650f235c24e19f8ea5d7bf957765.bindPopup(popup_98de355fffbd65c55eeb2aea0201ee1d)
+        ;
+
+        
+    
+    
+                marker_551a650f235c24e19f8ea5d7bf957765.setIcon(icon_3323e4c25cf2f4f269c564cfdefef175);
+            
+    
+            var marker_1c81800ae01baed302948ce4dde556e4 = L.marker(
+                [10.771965, 106.705397],
+                {
+}
+            ).addTo(map_401270c80ae5c782ca3a4e132ef9ac48);
+        
+    
+            var icon_8e2e166974136b223979b326f2005f0f = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "orange",
+  "iconColor": "white",
+  "icon": "cutlery",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_4209576d214fab44746774222d2f1272 = L.popup({
+  "maxWidth": 220,
+});
+
+        
+            
+                var html_0725ab5a6006db1af499f4c13b8e8dcc = $(`<div id="html_0725ab5a6006db1af499f4c13b8e8dcc" style="width: 100.0%; height: 100.0%;"><b>☀️ Breakfast</b><br><b>Xôi Gà Xé</b><br>🏪 Quán Xôi Ngon<br>💰 45,000đ | 🔥 600 kcal<br>🚚 ~27 phút | 📍 1.4 km</div>`)[0];
+                popup_4209576d214fab44746774222d2f1272.setContent(html_0725ab5a6006db1af499f4c13b8e8dcc);
+            
+        
+
+        marker_1c81800ae01baed302948ce4dde556e4.bindPopup(popup_4209576d214fab44746774222d2f1272)
+        ;
+
+        
+    
+    
+                marker_1c81800ae01baed302948ce4dde556e4.setIcon(icon_8e2e166974136b223979b326f2005f0f);
+            
+    
+            var poly_line_ea3ec4017f45395d9345d894e62bf92e = L.polyline(
+                [[10.7725, 106.698], [10.771965, 106.705397]],
+                {"bubblingMouseEvents": true, "color": "#e17055", "dashArray": "5 5", "dashOffset": null, "fill": false, "fillColor": "#e17055", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.5, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_401270c80ae5c782ca3a4e132ef9ac48);
+        
+    
+            var marker_bed4ea0cf4374348ea8881ad20205338 = L.marker(
+                [10.761345, 106.69757],
+                {
+}
+            ).addTo(map_401270c80ae5c782ca3a4e132ef9ac48);
+        
+    
+            var icon_c220c91c3b1b328f7552e77ab597aa3d = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "cutlery",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_9ae3bcd31895d6b7de87f0eb1a3a38ca = L.popup({
+  "maxWidth": 220,
+});
+
+        
+            
+                var html_a78ff59b02680270ae7bdf06eb8d1952 = $(`<div id="html_a78ff59b02680270ae7bdf06eb8d1952" style="width: 100.0%; height: 100.0%;"><b>🍱 Lunch</b><br><b>Mì Ý Carbonara</b><br>🏪 Quán Mì Vip<br>💰 170,000đ | 🔥 880 kcal<br>🚚 ~22 phút | 📍 1 km</div>`)[0];
+                popup_9ae3bcd31895d6b7de87f0eb1a3a38ca.setContent(html_a78ff59b02680270ae7bdf06eb8d1952);
+            
+        
+
+        marker_bed4ea0cf4374348ea8881ad20205338.bindPopup(popup_9ae3bcd31895d6b7de87f0eb1a3a38ca)
+        ;
+
+        
+    
+    
+                marker_bed4ea0cf4374348ea8881ad20205338.setIcon(icon_c220c91c3b1b328f7552e77ab597aa3d);
+            
+    
+            var poly_line_2cb1ccdc800337df7e2f3de60d70354f = L.polyline(
+                [[10.7725, 106.698], [10.761345, 106.69757]],
+                {"bubblingMouseEvents": true, "color": "#0984e3", "dashArray": "5 5", "dashOffset": null, "fill": false, "fillColor": "#0984e3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.5, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_401270c80ae5c782ca3a4e132ef9ac48);
+        
+    
+            var marker_4b5873e9e8494f1ff6c56269d39ba1e4 = L.marker(
+                [10.762082, 106.683805],
+                {
+}
+            ).addTo(map_401270c80ae5c782ca3a4e132ef9ac48);
+        
+    
+            var icon_721b42d52d449e729d40f9db5cdec1c9 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "cutlery",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_c1a739bcb0a9ff7187ee1acd4d2c129b = L.popup({
+  "maxWidth": 220,
+});
+
+        
+            
+                var html_3ddf5b323d8cdfcc8fe1a6aa4a85cb1f = $(`<div id="html_3ddf5b323d8cdfcc8fe1a6aa4a85cb1f" style="width: 100.0%; height: 100.0%;"><b>🌙 Dinner</b><br><b>Lẩu Cá Linh Mùa Nước Nổi</b><br>🏪 Quán Lẩu Chuẩn<br>💰 305,000đ | 🔥 880 kcal<br>🚚 ~38 phút | 📍 2.9 km</div>`)[0];
+                popup_c1a739bcb0a9ff7187ee1acd4d2c129b.setContent(html_3ddf5b323d8cdfcc8fe1a6aa4a85cb1f);
+            
+        
+
+        marker_4b5873e9e8494f1ff6c56269d39ba1e4.bindPopup(popup_c1a739bcb0a9ff7187ee1acd4d2c129b)
+        ;
+
+        
+    
+    
+                marker_4b5873e9e8494f1ff6c56269d39ba1e4.setIcon(icon_721b42d52d449e729d40f9db5cdec1c9);
+            
+    
+            var poly_line_05a6303e386339d415e4b92322fd396a = L.polyline(
+                [[10.7725, 106.698], [10.762082, 106.683805]],
+                {"bubblingMouseEvents": true, "color": "#6c5ce7", "dashArray": "5 5", "dashOffset": null, "fill": false, "fillColor": "#6c5ce7", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.5, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_401270c80ae5c782ca3a4e132ef9ac48);
+        
+</script>
+</html>

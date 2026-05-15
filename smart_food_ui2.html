@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Food — AI Meal Planner</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0d0d0e;--panel:#161618;--card:#1e1e21;--border:#2a2a2f;--accent:#ff6b35;--accent2:#ffd166;--green:#06d6a0;--blue:#118ab2;--text:#e8e8ec;--muted:#6b6b7a;--radius:12px;--mono:'IBM Plex Mono',monospace}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;min-height:100vh;overflow-x:hidden}
+header{display:flex;align-items:center;justify-content:space-between;padding:18px 32px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(13,13,14,.94);backdrop-filter:blur(12px);z-index:200}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{width:34px;height:34px;background:var(--accent);border-radius:8px;display:grid;place-items:center;font-size:17px}
+.logo-text{font-size:1.05rem;font-weight:800}.logo-text span{color:var(--accent)}
+.weather-pill{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--border);border-radius:999px;padding:6px 16px;font-family:var(--mono);font-size:.78rem;cursor:pointer;transition:border-color .2s}
+.weather-pill:hover{border-color:var(--accent)}
+.w-dot{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+main{display:grid;grid-template-columns:320px 1fr;min-height:calc(100vh - 61px)}
+aside{border-right:1px solid var(--border);padding:24px 20px;overflow-y:auto;max-height:calc(100vh - 61px);position:sticky;top:61px}
+.content{padding:24px 28px;overflow-y:auto;max-height:calc(100vh - 61px)}
+.tabs{display:flex;background:var(--card);border-radius:var(--radius);padding:4px;margin-bottom:20px}
+.tab{flex:1;padding:8px;border:none;background:none;color:var(--muted);font-family:'Syne',sans-serif;font-size:.8rem;font-weight:600;cursor:pointer;border-radius:8px;transition:all .2s}
+.tab.active{background:var(--accent);color:#fff}
+.form-section{display:none}.form-section.active{display:block}
+.field{margin-bottom:18px}
+.field label{display:block;font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px}
+input[type=range]{-webkit-appearance:none;width:100%;height:4px;background:var(--border);border-radius:2px;outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--accent);border:3px solid var(--bg);box-shadow:0 0 0 2px var(--accent)}
+select{width:100%;padding:10px 12px;background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:8px;font-family:'Syne',sans-serif;font-size:.86rem;cursor:pointer;outline:none;transition:border-color .2s}
+select:focus{border-color:var(--accent)}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-top:1px solid var(--border)}
+.toggle-label{font-size:.86rem}
+.toggle{position:relative;width:42px;height:24px}.toggle input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;inset:0;background:var(--border);border-radius:12px;cursor:pointer;transition:.3s}
+.toggle-slider::before{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;background:#fff;border-radius:50%;transition:.3s}
+.toggle input:checked+.toggle-slider{background:var(--accent)}
+.toggle input:checked+.toggle-slider::before{transform:translateX(18px)}
+.btn{width:100%;padding:13px;border:none;border-radius:var(--radius);font-family:'Syne',sans-serif;font-size:.92rem;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:#e85d2a;transform:translateY(-1px)}
+.btn-secondary{background:var(--card);color:var(--text);border:1px solid var(--border);margin-top:10px}
+.btn-secondary:hover{border-color:var(--green);color:var(--green)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important}
+.insight-bar{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.insight-chip{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:5px 13px;font-family:var(--mono);font-size:.75rem;display:flex;align-items:center;gap:6px}
+.chip-val{color:var(--accent2);font-weight:500}
+.section-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px}
+.section-title{font-size:1.05rem;font-weight:700}
+.section-count{font-family:var(--mono);font-size:.73rem;color:var(--muted)}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(265px,1fr));gap:12px;margin-bottom:28px}
+.food-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;transition:all .25s;position:relative;overflow:hidden;animation:fadeUp .4s ease both;cursor:pointer}
+.food-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,107,53,.12)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.card-rank{position:absolute;top:11px;right:11px;width:22px;height:22px;background:var(--border);border-radius:50%;font-family:var(--mono);font-size:.68rem;display:grid;place-items:center;color:var(--muted)}
+.card-rank.top{background:var(--accent);color:#fff}
+.food-card h3{font-size:.95rem;font-weight:700;margin-bottom:3px;padding-right:28px;line-height:1.3}
+.card-rest{font-size:.74rem;color:var(--muted);margin-bottom:10px;font-style:italic}
+.card-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
+.tag{font-size:.67rem;font-family:var(--mono);padding:3px 7px;border-radius:4px;background:var(--bg);color:var(--muted)}
+.tag.fast{background:rgba(255,107,53,.15);color:var(--accent)}
+.tag.full{background:rgba(17,138,178,.15);color:var(--blue)}
+.tag.soup{background:rgba(6,214,160,.1);color:var(--green)}
+.card-stats{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:12px}
+.stat{background:var(--bg);border-radius:6px;padding:7px 9px}
+.stat-label{font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.stat-val{font-family:var(--mono);font-size:.86rem;font-weight:500;color:var(--text);margin-top:2px}
+.stat-val.price{color:var(--accent2)}.stat-val.delivery{color:var(--green)}
+.order-btn{width:100%;padding:9px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-family:'Syne',sans-serif;font-size:.82rem;font-weight:700;cursor:pointer;transition:all .2s}
+.order-btn:hover{background:#e85d2a}
+.plan-grid{display:flex;flex-direction:column;gap:12px}
+.plan-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;animation:fadeUp .4s ease both;display:grid;grid-template-columns:7px 1fr}
+.plan-accent-bar{background:var(--accent)}.plan-accent-bar.lunch{background:var(--blue)}.plan-accent-bar.dinner{background:#6c5ce7}.plan-accent-bar.late{background:var(--muted)}
+.plan-body{padding:14px 16px}
+.plan-period{font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:5px}
+.plan-name{font-size:.98rem;font-weight:700;margin-bottom:8px}
+.plan-meta{display:flex;flex-wrap:wrap;gap:10px;font-family:var(--mono);font-size:.74rem;color:var(--muted);margin-bottom:10px}
+.plan-meta .hl{color:var(--text)}
+.summary-bar{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;margin-top:14px}
+.summary-label{font-size:.78rem;color:var(--muted)}
+.summary-val{font-family:var(--mono);font-size:1.15rem;font-weight:500;color:var(--accent2)}
+.state-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:340px;color:var(--muted);text-align:center;gap:12px}
+.state-empty .icon{font-size:3.2rem}
+.state-empty h2{font-size:1.05rem;color:var(--text)}
+.state-empty p{font-size:.82rem;max-width:260px;line-height:1.6}
+.spinner{width:34px;height:34px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.map-frame-wrap{border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);margin-top:18px}
+.map-frame-wrap iframe{width:100%;height:440px;border:none;display:block}
+
+/* ORDER MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(5px)}
+.modal-overlay.open{display:flex}
+.modal{background:var(--panel);border:1px solid var(--border);border-radius:16px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;padding:28px;position:relative;animation:modalIn .28s ease}
+@keyframes modalIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+.modal-close{position:absolute;top:16px;right:16px;background:var(--card);border:1px solid var(--border);color:var(--muted);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:1rem;display:grid;place-items:center;transition:color .2s}
+.modal-close:hover{color:var(--text)}
+.modal h2{font-size:1.15rem;font-weight:700;margin-bottom:3px}
+.modal .sub{font-size:.8rem;color:var(--muted);margin-bottom:20px}
+.modal-dish-info{background:var(--card);border-radius:10px;padding:14px;margin-bottom:18px;display:flex;gap:14px;align-items:center}
+.dish-emoji{font-size:2.4rem}
+.dish-name-wrap h3{font-size:.98rem;font-weight:700}
+.dish-name-wrap p{font-size:.76rem;color:var(--muted);margin-top:3px;line-height:1.5}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.form-field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.form-field label{font-size:.71rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.form-field input,.form-field select,.form-field textarea{background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:9px 12px;font-family:'Syne',sans-serif;font-size:.85rem;outline:none;transition:border-color .2s;width:100%}
+.form-field input:focus,.form-field select:focus,.form-field textarea:focus{border-color:var(--accent)}
+.form-field textarea{resize:vertical;min-height:60px}
+.qty-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;padding:12px 14px;background:var(--card);border-radius:10px}
+.qty-label{font-size:.8rem;font-weight:600}
+.qty-ctrl{display:flex;align-items:center;gap:10px}
+.qty-btn{width:32px;height:32px;border:1px solid var(--border);background:var(--bg);color:var(--text);border-radius:7px;cursor:pointer;font-size:1.1rem;display:grid;place-items:center;transition:all .2s}
+.qty-btn:hover{border-color:var(--accent);color:var(--accent)}
+.qty-val{font-family:var(--mono);font-size:1.1rem;font-weight:700;min-width:28px;text-align:center;color:var(--accent2)}
+.order-summary{background:var(--bg);border-radius:10px;padding:14px;margin-bottom:18px}
+.orow{display:flex;justify-content:space-between;font-size:.83rem;padding:5px 0}
+.orow .lbl{color:var(--muted)}.orow .val{font-family:var(--mono);color:var(--text)}
+.orow.total{border-top:1px solid var(--border);margin-top:8px;padding-top:10px}
+.orow.total .val{color:var(--accent2);font-size:1rem;font-weight:700}
+.modal-mini-map{border-radius:8px;overflow:hidden;margin-bottom:18px;border:1px solid var(--border)}
+.modal-mini-map iframe{width:100%;height:190px;border:none;display:block}
+.btn-confirm{width:100%;padding:14px;background:var(--green);color:#0d0d0e;border:none;border-radius:var(--radius);font-family:'Syne',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;transition:all .2s}
+.btn-confirm:hover{background:#04c492;transform:translateY(-1px)}
+
+/* TRACKING */
+.tracking-screen{position:fixed;inset:0;background:var(--bg);z-index:600;display:none;flex-direction:column;align-items:center;justify-content:center;padding:32px;text-align:center;overflow-y:auto}
+.tracking-screen.open{display:flex}
+.tracking-anim{position:relative;width:160px;height:160px;margin-bottom:24px;flex-shrink:0}
+.track-ring{position:absolute;inset:0;border-radius:50%;border:3px solid var(--border)}
+.track-ring-fill{position:absolute;inset:0;border-radius:50%;border:3px solid var(--accent);border-right-color:transparent;animation:trackSpin 1.3s linear infinite}
+@keyframes trackSpin{to{transform:rotate(360deg)}}
+.track-icon{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:3.2rem}
+.tracking-screen h1{font-size:1.5rem;font-weight:800;margin-bottom:7px}
+.tracking-screen .tsub{font-size:.86rem;color:var(--muted);margin-bottom:28px;max-width:320px;line-height:1.6}
+.track-stats{display:flex;gap:20px;margin-bottom:28px;flex-wrap:wrap;justify-content:center}
+.track-stat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 22px;min-width:110px}
+.tstat-label{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
+.tstat-val{font-family:var(--mono);font-size:1.4rem;font-weight:600;color:var(--accent2)}
+.tstat-val.green{color:var(--green)}
+.track-progress-wrap{width:100%;max-width:360px;margin-bottom:24px}
+.tprog-labels{display:flex;justify-content:space-between;font-size:.73rem;color:var(--muted);margin-bottom:7px;font-family:var(--mono)}
+.tprog-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.tprog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px;transition:width 1s linear}
+.track-steps{display:flex;flex-direction:column;gap:9px;width:100%;max-width:360px;margin-bottom:28px}
+.tstep{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--card);border-radius:10px;border:1px solid var(--border);transition:border-color .4s}
+.tstep.done{border-color:var(--green)}.tstep.active{border-color:var(--accent2)}
+.tstep-icon{font-size:1.15rem}
+.tstep-text{font-size:.82rem;flex:1;text-align:left}
+.tstep-status{font-family:var(--mono);font-size:.7rem}
+.tstep.done .tstep-status{color:var(--green)}.tstep.active .tstep-status{color:var(--accent2)}.tstep.wait .tstep-status{color:var(--muted)}
+.btn-done{padding:12px 36px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);font-family:'Syne',sans-serif;font-size:.92rem;font-weight:700;cursor:pointer;transition:all .2s}
+.btn-done:hover{background:#e85d2a}
+.toast{position:fixed;bottom:22px;right:22px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:11px 16px;font-size:.83rem;transform:translateY(80px);opacity:0;transition:all .3s;z-index:999;max-width:260px}
+.toast.show{transform:translateY(0);opacity:1}.toast.ok{border-color:var(--green)}.toast.err{border-color:#ff4757}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+@media(max-width:768px){main{grid-template-columns:1fr}aside{position:static;max-height:none;border-right:none;border-bottom:1px solid var(--border)}.content{max-height:none}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">🍜</div>
+    <div class="logo-text">Smart<span>Food</span></div>
+  </div>
+  <div class="weather-pill" onclick="refreshWeather()">
+    <div class="w-dot"></div>
+    <span id="weather-text">Dang tai thoi tiet...</span>
+  </div>
+</header>
+
+<main>
+<aside>
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('quick')">🍽️ Tim Nhanh</button>
+    <button class="tab" onclick="switchTab('plan')">📅 Daily Plan</button>
+  </div>
+
+  <div class="form-section active" id="tab-quick">
+    <div class="field">
+      <label>Do doi <span id="hunger-label" style="color:var(--accent2)">7 / 10</span></label>
+      <input type="range" id="hunger" min="0" max="10" step="1" value="7" oninput="document.getElementById('hunger-label').textContent=this.value+' / 10'">
+    </div>
+    <div class="field">
+      <label>Thoi gian ranh <span id="time-label" style="color:var(--accent2)">45 phut</span></label>
+      <input type="range" id="time-avail" min="5" max="120" step="5" value="45" oninput="document.getElementById('time-label').textContent=this.value+' phut'">
+    </div>
+    <div class="field">
+      <label>Ngan sach</label>
+      <select id="budget">
+        <option value="100000">Duoi 100k</option>
+        <option value="300000">Duoi 300k</option>
+        <option value="500000" selected>Duoi 500k</option>
+        <option value="1000000">Duoi 1 trieu</option>
+        <option value="2000000">Khong gioi han</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Muc tieu suc khoe</label>
+      <select id="health">
+        <option value="Balanced" selected>Balanced</option>
+        <option value="Diet">Diet (An kieng)</option>
+        <option value="Bulking">Bulking (Tang co)</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Thoi tiet (manual)</label>
+      <select id="weather-override">
+        <option value="">Tu dong tu API</option>
+        <option value="Clear">☀️ Nang</option>
+        <option value="Rainy">🌧️ Mua</option>
+      </select>
+    </div>
+    <button class="btn btn-primary" onclick="runRecommend()" id="btn-recommend">🔍 TIM MON NGON</button>
+  </div>
+
+  <div class="form-section" id="tab-plan">
+    <div class="field">
+      <label>Lifestyle Profile</label>
+      <select id="profile">
+        <option value="Office Worker" selected>💼 Office Worker</option>
+        <option value="Student">🎓 Student</option>
+        <option value="Gym">💪 Gym</option>
+        <option value="Dieter">🥗 Dieter</option>
+      </select>
+    </div>
+    <div class="toggle-row">
+      <span class="toggle-label">🌙 Bao gom bua khuya</span>
+      <label class="toggle"><input type="checkbox" id="late-night"><span class="toggle-slider"></span></label>
+    </div>
+    <button class="btn btn-primary" onclick="runPlan()" id="btn-plan" style="margin-top:20px">🚀 LAP KE HOACH</button>
+    <button class="btn btn-secondary" onclick="showPlanMap()" id="btn-map" disabled>🗺️ XEM BAN DO LO TRINH</button>
+  </div>
+</aside>
+
+<div class="content" id="content-area">
+  <div class="state-empty" id="state-empty">
+    <div class="icon">🍜</div>
+    <h2>Chao mung den Smart Food!</h2>
+    <p>Dien thong tin roi nhan <b>Tim Mon Ngon</b> hoac <b>Lap Ke Hoach</b>.</p>
+    <p style="font-size:.73rem;color:var(--muted);margin-top:8px">Powered by Fuzzy Logic FIS</p>
+  </div>
+  <div id="result-area" style="display:none"></div>
+</div>
+</main>
+
+<!-- ORDER MODAL -->
+<div class="modal-overlay" id="order-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h2>🛒 Xac nhan don hang</h2>
+    <p class="sub">Kiem tra thong tin truoc khi dat</p>
+
+    <div class="modal-dish-info" id="modal-dish-info"></div>
+
+    <div class="qty-row">
+      <span class="qty-label">So luong mon</span>
+      <div class="qty-ctrl">
+        <button class="qty-btn" onclick="changeQty(-1)">−</button>
+        <span class="qty-val" id="qty-val">1</span>
+        <button class="qty-btn" onclick="changeQty(1)">+</button>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field">
+        <label>Ho ten nguoi nhan</label>
+        <input type="text" id="order-name" placeholder="Nguyen Van A">
+      </div>
+      <div class="form-field">
+        <label>So dien thoai</label>
+        <input type="tel" id="order-phone" placeholder="0901234567">
+      </div>
+    </div>
+    <div class="form-field">
+      <label>Dia chi giao hang</label>
+      <input type="text" id="order-address" placeholder="123 Nguyen Trai, Quan 5, TP.HCM">
+    </div>
+    <div class="form-field">
+      <label>Ghi chu them</label>
+      <textarea id="order-note" placeholder="It cay, khong hanh, de o cua..."></textarea>
+    </div>
+    <div class="form-field">
+      <label>Phuong thuc thanh toan</label>
+      <select id="order-payment">
+        <option value="cod">💵 Tien mat khi nhan hang (COD)</option>
+        <option value="momo">💜 Vi MoMo</option>
+        <option value="vnpay">🏦 VNPay</option>
+        <option value="card">💳 The ngan hang</option>
+      </select>
+    </div>
+
+    <div class="modal-mini-map" id="modal-mini-map"></div>
+
+    <div class="order-summary" id="order-summary"></div>
+
+    <button class="btn-confirm" onclick="confirmOrder()">✅ XAC NHAN DAT HANG</button>
+  </div>
+</div>
+
+<!-- TRACKING SCREEN -->
+<div class="tracking-screen" id="tracking-screen">
+  <div class="tracking-anim">
+    <div class="track-ring"></div>
+    <div class="track-ring-fill"></div>
+    <div class="track-icon" id="track-icon">👨‍🍳</div>
+  </div>
+  <h1 id="track-title">Don hang da duoc xac nhan!</h1>
+  <p class="tsub" id="track-sub">Nha hang dang chuan bi mon an cua ban</p>
+  <div class="track-stats">
+    <div class="track-stat">
+      <div class="tstat-label">Thoi gian con lai</div>
+      <div class="tstat-val" id="track-time">-- phut</div>
+    </div>
+    <div class="track-stat">
+      <div class="tstat-label">Quang duong con</div>
+      <div class="tstat-val green" id="track-dist">-- km</div>
+    </div>
+  </div>
+  <div class="track-progress-wrap">
+    <div class="tprog-labels"><span>Dat hang</span><span>Giao hang</span></div>
+    <div class="tprog-bar"><div class="tprog-fill" id="track-progress" style="width:0%"></div></div>
+  </div>
+  <div class="track-steps" id="track-steps"></div>
+  <button class="btn-done" id="btn-done" onclick="finishOrder()" style="display:none">🎉 Da nhan hang xong!</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = '';
+let planData = [];
+let currentDish = null;
+let orderQty = 1;
+let trackInterval = null;
+let trackSeconds = 0;
+let trackTotal = 0;
+// Global dish store - avoids JSON/encoding issues in onclick
+const DISH_STORE = {};
+let dishStoreIdx = 0;
+function storeDish(d){
+  const key = 'd'+(dishStoreIdx++);
+  DISH_STORE[key]=d;
+  return key;
+}
+
+async function loadWeather(){
+  try{
+    const r=await fetch(API+'/api/weather');
+    const w=await r.json();
+    const ic=w.weather==='Rain'||w.weather==='Rainy'?'🌧️':w.weather==='Clouds'?'⛅':w.weather==='Thunderstorm'?'⛈️':'☀️';
+    document.getElementById('weather-text').textContent=ic+' '+(w.weather_vi||w.weather)+' · '+w.temp+'°C';
+  }catch(e){document.getElementById('weather-text').textContent='⚠️ Khong lay duoc thoi tiet';}
+}
+function refreshWeather(){showToast('🔄 Dang cap nhat...','');loadWeather();}
+
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('active',(t==='quick'?0:1)===i));
+  document.getElementById('tab-quick').classList.toggle('active',t==='quick');
+  document.getElementById('tab-plan').classList.toggle('active',t==='plan');
+}
+
+function showToast(msg,type){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast '+(type||'ok')+' show';
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+function buildInsightBar(data){
+  const ul=data.urgency>6.5?'🔴 Cao':data.urgency>3.5?'🟡 TB':'🟢 Thap';
+  const tl=data.meal_score>5?'Bua day du':'An nhanh';
+  return '<div class="insight-bar">'+
+    '<div class="insight-chip">⚡ Urgency <span class="chip-val">'+ul+' ('+data.urgency+')</span></div>'+
+    '<div class="insight-chip">🍽️ Loai bua <span class="chip-val">'+tl+'</span></div>'+
+    '<div class="insight-chip">🔥 Cal muc tieu <span class="chip-val">'+Math.round(data.cal_target)+' kcal</span></div>'+
+    '<div class="insight-chip">☁️ '+(data.weather.weather_vi||data.weather.weather)+' <span class="chip-val">'+data.weather.temp+'°C</span></div>'+
+    '</div>';
+}
+
+// dishData replaced by storeDish
+
+function buildCard(d,rank){
+  const top=rank<=1?'top':'';
+  const priceK=(d.price/1000).toFixed(0);
+  const enc=storeDish(d);
+  // Fix: tách biến ra ngoài để tránh lỗi quote trong string concatenation
+  const mealClass = d.meal_type === 'fast' ? 'fast' : 'full';
+  const mealLabel = d.meal_type === 'fast' ? '⚡ An nhanh' : '🍱 Day du';
+  const styleClass = d.style === 'soup' ? 'soup' : '';
+  const styleLabel = d.style === 'soup' ? '🍲 Canh' : '🥢 Kho';
+  return '<div class="food-card" style="animation-delay:'+(rank*.06)+'s">'+
+    '<div class="card-rank '+top+'">'+(rank+1)+'</div>'+
+    '<h3>'+d.name+'</h3>'+
+    '<div class="card-rest">🏪 '+d.rest_name+'</div>'+
+    '<div class="card-tags"><span class="tag '+mealClass+'">'+mealLabel+'</span>'+
+    '<span class="tag '+styleClass+'">'+styleLabel+'</span></div>'+
+    '<div class="card-stats">'+
+    '<div class="stat"><div class="stat-label">Gia</div><div class="stat-val price">'+priceK+'k</div></div>'+
+    '<div class="stat"><div class="stat-label">Calories</div><div class="stat-val">'+d.calo+' kcal</div></div>'+
+    '<div class="stat"><div class="stat-label">Giao hang</div><div class="stat-val delivery">~'+d.delivery_time+' phut</div></div>'+
+    '<div class="stat"><div class="stat-label">Khoang cach</div><div class="stat-val">'+d.distance_km+' km</div></div>'+
+    '</div>'+
+    '<button class="order-btn" onclick="openOrder(\''+enc+'\')">🛒 Dat ngay</button>'+
+    '</div>';
+}
+
+function buildPlanCard(d,i){
+  const bc=d.period==='Lunch'?'lunch':d.period==='Dinner'?'dinner':d.period==='Late Night'?'late':'';
+  const em={Breakfast:'☀️',Lunch:'🍱',Dinner:'🌙','Late Night':'⭐'}[d.period]||'🍽️';
+  const enc=storeDish(d);
+  return '<div class="plan-card" style="animation-delay:'+(i*.1)+'s">'+
+    '<div class="plan-accent-bar '+bc+'"></div>'+
+    '<div class="plan-body">'+
+    '<div class="plan-period">'+em+' '+d.period+'</div>'+
+    '<div class="plan-name">'+d.name+'</div>'+
+    '<div class="plan-meta">'+
+    '<span>🏪 '+d.rest_name+'</span>'+
+    '<span>💰 <span class="hl">'+(d.price/1000).toFixed(0)+'k</span></span>'+
+    '<span>🔥 <span class="hl">'+d.calo+' kcal</span></span>'+
+    '<span>🚚 ~<span class="hl">'+d.delivery_time+' phut</span></span>'+
+    '<span>📍 <span class="hl">'+d.distance_km+' km</span></span>'+
+    '</div>'+
+    '<button class="order-btn" onclick="openOrder(\''+enc+'\')">🛒 Dat mon nay</button>'+
+    '</div></div>';
+}
+
+async function runRecommend(){
+  const btn=document.getElementById('btn-recommend');
+  btn.disabled=true;btn.textContent='⏳ Dang xu ly...';
+  setLoading();
+  try{
+    const payload={hunger:parseFloat(document.getElementById('hunger').value),time_avail:parseFloat(document.getElementById('time-avail').value),budget:parseFloat(document.getElementById('budget').value),health:document.getElementById('health').value,weather:document.getElementById('weather-override').value||undefined};
+    const r=await fetch(API+'/api/recommend',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    const data=await r.json();
+    if(!data.results) throw new Error('Khong nhan duoc du lieu');
+    let html=buildInsightBar(data);
+    html+='<div class="section-head"><div class="section-title">Goi y cho ban</div><div class="section-count">'+data.results.length+' ket qua</div></div>';
+    html+='<div class="cards-grid">';
+    data.results.forEach((d,i)=>{html+=buildCard(d,i);});
+    html+='</div>';
+    showResult(html);
+    showToast('✅ Tim thay '+data.results.length+' mon!','ok');
+  }catch(e){
+    showResult('<div class="state-empty"><div class="icon">❌</div><h2>Loi ket noi</h2><p>'+e.message+'</p></div>');
+    showToast('❌ '+e.message,'err');
+  }
+  btn.disabled=false;btn.textContent='🔍 TIM MON NGON';
+}
+
+async function runPlan(){
+  const btn=document.getElementById('btn-plan');
+  btn.disabled=true;btn.textContent='⏳ Dang len ke hoach...';
+  setLoading();
+  try{
+    const payload={profile:document.getElementById('profile').value,late_night:document.getElementById('late-night').checked};
+    const r=await fetch(API+'/api/plan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    const data=await r.json();
+    planData=data.plan;
+    const w=data.weather;
+    const wi=w.weather==='Rain'?'🌧️':w.weather==='Clouds'?'⛅':'☀️';
+    let html='<div class="insight-bar">'+
+      '<div class="insight-chip">'+wi+' '+(w.weather_vi||w.weather)+' <span class="chip-val">'+w.temp+'°C</span></div>'+
+      '<div class="insight-chip">👤 Profile <span class="chip-val">'+payload.profile+'</span></div>'+
+      '<div class="insight-chip">🍽️ So bua <span class="chip-val">'+data.plan.length+'</span></div>'+
+      '<div class="insight-chip">📊 Tong calo <span class="chip-val">'+data.total_calo+' kcal</span></div>'+
+      '</div>';
+    html+='<div class="section-head"><div class="section-title">Ke hoach an hom nay</div></div>';
+    html+='<div class="plan-grid">';
+    data.plan.forEach((d,i)=>{html+=buildPlanCard(d,i);});
+    html+='</div>';
+    const totalPrice=data.plan.reduce((s,d)=>s+d.price,0);
+    html+='<div class="summary-bar">'+
+      '<div><div class="summary-label">Tong calo</div><div class="summary-val">'+data.total_calo+' kcal</div></div>'+
+      '<div><div class="summary-label">So bua</div><div class="summary-val">'+data.plan.length+' bua</div></div>'+
+      '<div><div class="summary-label">Chi phi</div><div class="summary-val">'+(totalPrice/1000).toFixed(0)+'k</div></div>'+
+      '</div>';
+    html+='<div style="margin-top:12px"><button class="btn btn-secondary" onclick="showPlanMap()">🗺️ Xem ban do lo trinh</button></div>';
+    showResult(html);
+    document.getElementById('btn-map').disabled=false;
+    showToast('✅ Ke hoach da san!','ok');
+  }catch(e){
+    showResult('<div class="state-empty"><div class="icon">❌</div><h2>Loi</h2><p>'+e.message+'</p></div>');
+    showToast('❌ '+e.message,'err');
+  }
+  btn.disabled=false;btn.textContent='🚀 LAP KE HOACH';
+}
+
+async function showPlanMap(){
+  if(!planData.length){showToast('⚠️ Chay planner truoc!','err');return;}
+  try{
+    const r=await fetch(API+'/api/map',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({items:planData})});
+    const data=await r.json();
+    if(data.error) throw new Error(data.error);
+    let existing=document.getElementById('map-wrap');
+    if(existing) existing.remove();
+    const wrap=document.createElement('div');
+    wrap.id='map-wrap';wrap.className='map-frame-wrap';
+    wrap.innerHTML='<iframe src="'+data.map_url+'?t='+Date.now()+'" title="Food Map"></iframe>';
+    document.getElementById('result-area').appendChild(wrap);
+    wrap.scrollIntoView({behavior:'smooth'});
+    showToast('🗺️ Ban do da tai!','ok');
+  }catch(e){showToast('❌ '+e.message,'err');}
+}
+
+// ── ORDER FLOW ────────────────────────────────────────────
+function openOrder(key){
+  try{
+    if(DISH_STORE[key]) currentDish = DISH_STORE[key];
+    else currentDish = JSON.parse(decodeURIComponent(key));
+  }catch(e){ console.error('openOrder error',e); return; }
+  orderQty=1;
+  document.getElementById('qty-val').textContent='1';
+
+  const emojis={pork:'🥩',beef:'🥩',chicken:'🍗',seafood:'🦐',veg:'🥗',egg:'🥚',mixed:'🍱',poultry:'🍗',meat:'🥩'};
+  const em=emojis[currentDish.protein]||'🍽️';
+  document.getElementById('modal-dish-info').innerHTML=
+    '<div class="dish-emoji">'+em+'</div>'+
+    '<div class="dish-name-wrap">'+
+    '<h3>'+currentDish.name+'</h3>'+
+    '<p>🏪 '+currentDish.rest_name+'<br>📍 '+currentDish.distance_km+' km &nbsp;|&nbsp; 🚚 ~'+currentDish.delivery_time+' phut giao hang<br>🔥 '+currentDish.calo+' kcal / phan</p>'+
+    '</div>';
+
+  document.getElementById('modal-mini-map').innerHTML=
+    '<iframe src="/api/mini_map?lat='+currentDish.lat+'&lon='+currentDish.lon+'&name='+encodeURIComponent(currentDish.rest_name)+'" style="width:100%;height:190px;border:none;border-radius:8px"></iframe>';
+
+  updateOrderSummary();
+  document.getElementById('order-modal').classList.add('open');
+}
+
+function closeModal(){document.getElementById('order-modal').classList.remove('open');}
+
+function changeQty(d){
+  orderQty=Math.max(1,Math.min(10,orderQty+d));
+  document.getElementById('qty-val').textContent=orderQty;
+  updateOrderSummary();
+}
+
+function updateOrderSummary(){
+  if(!currentDish) return;
+  const sub=currentDish.price*orderQty;
+  const ship=Math.round(currentDish.distance_km*5000);
+  const total=sub+ship;
+  document.getElementById('order-summary').innerHTML=
+    '<div class="orow"><span class="lbl">'+currentDish.name+' x'+orderQty+'</span><span class="val">'+(sub/1000).toFixed(0)+'k ₫</span></div>'+
+    '<div class="orow"><span class="lbl">Phi giao hang (~'+currentDish.distance_km+'km)</span><span class="val">'+(ship/1000).toFixed(0)+'k ₫</span></div>'+
+    '<div class="orow"><span class="lbl">Khuyen mai</span><span class="val" style="color:var(--green)">-0k ₫</span></div>'+
+    '<div class="orow total"><span class="lbl">Tong cong</span><span class="val">'+(total/1000).toFixed(0)+'k ₫</span></div>';
+}
+
+function confirmOrder(){
+  const name=document.getElementById('order-name').value.trim();
+  const phone=document.getElementById('order-phone').value.trim();
+  const addr=document.getElementById('order-address').value.trim();
+  if(!name||!phone||!addr){showToast('⚠️ Vui long dien day du thong tin!','err');return;}
+  closeModal();
+  startTracking();
+}
+
+// ── TRACKING ─────────────────────────────────────────────
+function startTracking(){
+  if(!currentDish) return;
+  const totalMin=currentDish.delivery_time;
+  const totalSec=Math.round(totalMin*60);
+  trackTotal=totalSec; trackSeconds=totalSec;
+
+  const STEPS=[
+    {icon:'✅',text:'Don hang duoc xac nhan',   pct:0.00},
+    {icon:'👨‍🍳',text:'Nha hang dang chuan bi',   pct:0.15},
+    {icon:'📦',text:'Mon an da dong goi xong',   pct:0.45},
+    {icon:'🛵',text:'Tai xe dang giao hang',      pct:0.65},
+    {icon:'📍',text:'Sap den noi giao hang',      pct:0.88},
+  ];
+
+  function renderSteps(p){
+    return STEPS.map(s=>{
+      let cls='wait',lbl='Cho...';
+      if(p>=s.pct+0.18){cls='done';lbl='Hoan thanh ✓';}
+      else if(p>=s.pct){cls='active';lbl='Dang xu ly...';}
+      return '<div class="tstep '+cls+'"><div class="tstep-icon">'+s.icon+'</div><div class="tstep-text">'+s.text+'</div><div class="tstep-status">'+lbl+'</div></div>';
+    }).join('');
+  }
+
+  const ts=document.getElementById('tracking-screen');
+  ts.classList.add('open');
+  document.getElementById('track-title').textContent='Don hang da duoc xac nhan!';
+  document.getElementById('track-sub').textContent='Giao toi ban trong ~'+totalMin.toFixed(0)+' phut · '+currentDish.rest_name;
+  document.getElementById('track-time').textContent=Math.ceil(totalMin)+' phut';
+  document.getElementById('track-dist').textContent=currentDish.distance_km+' km';
+  document.getElementById('track-progress').style.width='0%';
+  document.getElementById('btn-done').style.display='none';
+  document.getElementById('track-steps').innerHTML=renderSteps(0);
+
+  clearInterval(trackInterval);
+  trackInterval=setInterval(()=>{
+    trackSeconds--;
+    if(trackSeconds<=0){
+      clearInterval(trackInterval);
+      document.getElementById('track-icon').textContent='🎉';
+      document.getElementById('track-title').textContent='Da giao hang thanh cong!';
+      document.getElementById('track-sub').textContent='Cam on ban! Chuc ngon mieng 🍜';
+      document.getElementById('track-time').textContent='0 phut';
+      document.getElementById('track-dist').textContent='0 km';
+      document.getElementById('track-progress').style.width='100%';
+      document.getElementById('track-steps').innerHTML=renderSteps(1);
+      document.getElementById('btn-done').style.display='inline-block';
+      return;
+    }
+    const p=(trackTotal-trackSeconds)/trackTotal;
+    const mLeft=Math.ceil(trackSeconds/60);
+    const dLeft=(currentDish.distance_km*(1-p)).toFixed(2);
+    document.getElementById('track-time').textContent=mLeft+' phut';
+    document.getElementById('track-dist').textContent=dLeft+' km';
+    document.getElementById('track-progress').style.width=(p*100).toFixed(1)+'%';
+    document.getElementById('track-steps').innerHTML=renderSteps(p);
+    if(p<0.3) document.getElementById('track-icon').textContent='👨‍🍳';
+    else if(p<0.55) document.getElementById('track-icon').textContent='📦';
+    else document.getElementById('track-icon').textContent='🛵';
+  },1000);
+}
+
+function finishOrder(){
+  clearInterval(trackInterval);
+  document.getElementById('tracking-screen').classList.remove('open');
+  showToast('🎉 Cam on ban! Chuc ngon mieng!','ok');
+}
+
+function setLoading(){
+  document.getElementById('state-empty').style.display='none';
+  const a=document.getElementById('result-area');
+  a.style.display='flex';a.style.justifyContent='center';a.style.alignItems='center';a.style.minHeight='300px';
+  a.innerHTML='<div class="spinner"></div>';
+}
+function showResult(html){
+  const a=document.getElementById('result-area');
+  a.style.display='block';a.style.minHeight='';a.style.justifyContent='';a.style.alignItems='';
+  a.innerHTML=html;
+  document.getElementById('state-empty').style.display='none';
+}
+
+loadWeather();
+</script>
+</body>
+</html>

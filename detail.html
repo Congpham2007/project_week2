@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Restaurant Detail</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "error": "#ba1a1a",
+                      "surface-tint": "#765842",
+                      "tertiary": "#685687",
+                      "on-tertiary-fixed": "#23113f",
+                      "on-tertiary-fixed-variant": "#4f3e6e",
+                      "on-primary": "#ffffff",
+                      "primary-fixed-dim": "#e6bfa4",
+                      "primary": "#765842",
+                      "outline": "#81756d",
+                      "surface-bright": "#fbf9f4",
+                      "secondary": "#2f685e",
+                      "primary-fixed": "#ffdcc4",
+                      "secondary-container": "#b4eee2",
+                      "on-surface": "#1b1c19",
+                      "primary-container": "#ffd6ba",
+                      "secondary-fixed-dim": "#99d2c6",
+                      "on-primary-container": "#7a5b45",
+                      "surface-container-lowest": "#ffffff",
+                      "on-secondary": "#ffffff",
+                      "tertiary-fixed": "#ebdcff",
+                      "on-primary-fixed": "#2b1706",
+                      "surface-container-highest": "#e4e2de",
+                      "on-secondary-container": "#366e64",
+                      "tertiary-fixed-dim": "#d2bdf5",
+                      "on-tertiary-container": "#6b598a",
+                      "on-secondary-fixed": "#00201c",
+                      "background": "#fbf9f4",
+                      "secondary-fixed": "#b4eee2",
+                      "surface": "#fbf9f4",
+                      "on-primary-fixed-variant": "#5c412c",
+                      "on-tertiary": "#ffffff",
+                      "on-error": "#ffffff",
+                      "inverse-surface": "#30312e",
+                      "surface-container": "#efeee9",
+                      "surface-dim": "#dbdad5",
+                      "on-surface-variant": "#4f453e",
+                      "inverse-on-surface": "#f2f1ec",
+                      "surface-variant": "#e4e2de",
+                      "inverse-primary": "#e6bfa4",
+                      "surface-container-high": "#eae8e3",
+                      "on-secondary-fixed-variant": "#124f47",
+                      "on-error-container": "#93000a",
+                      "on-background": "#1b1c19",
+                      "outline-variant": "#d3c4ba",
+                      "surface-container-low": "#f5f3ee",
+                      "tertiary-container": "#e8d7ff",
+                      "error-container": "#ffdad6"
+              },
+              "borderRadius": {
+                      "DEFAULT": "1rem",
+                      "lg": "2rem",
+                      "xl": "3rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "container-padding": "20px",
+                      "stack-md": "24px",
+                      "stack-sm": "12px",
+                      "stack-lg": "40px",
+                      "gutter": "16px",
+                      "unit": "8px"
+              },
+              "fontFamily": {
+                      "body-sm": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "body-md": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "label-lg": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "label-md": ["Inter"]
+              },
+              "fontSize": {
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "headline-lg-mobile": ["28px", {"lineHeight": "34px", "fontWeight": "700"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "headline-md": ["24px", {"lineHeight": "30px", "fontWeight": "600"}],
+                      "label-lg": ["14px", {"lineHeight": "18px", "fontWeight": "600"}],
+                      "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        /* Giấu thanh cuộn xấu xí của trình duyệt */
+    ::-webkit-scrollbar { display: none; }
+    html, body { -ms-overflow-style: none; scrollbar-width: none; }
+        /* Hide scrollbar for horizontal scroll areas but keep functionality */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md text-body-md antialiased pb-[100px]">
+<!-- Hero Image & Floating Header -->
+<header class="relative w-full h-[320px]">
+<button onclick="window.parent.changeChannel('fuzzy.html')" class="absolute top-6 left-4 z-50 w-10 h-10 rounded-full bg-white/80 backdrop-blur-md shadow-md flex items-center justify-center text-[#765842] hover:bg-white active:scale-95 transition-all cursor-pointer">
+    <span class="material-symbols-outlined">arrow_back</span>
+</button>
+<img alt="Restaurant Hero Image" class="absolute inset-0 w-full h-full object-cover" data-alt="A mouth-watering, top-down view of a modern Asian fusion feast spread across a rustic wooden table. The focal point is a steaming bowl of rich, amber-colored broth with perfectly arranged noodles, seared pork belly, and bright green scallions. Surrounding the bowl are elegant, minimalist ceramic plates holding delicate dim sum and vibrant, fresh spring rolls. The lighting is soft, warm, and natural, creating a candy-coated, premium aesthetic with deep, appetizing shadows and bright highlights that emphasize the textures of the food. The overall mood is inviting, sophisticated, and perfect for a high-end food delivery app." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhtfDX4W05gi-7GjCd-zE4Pam4idx9ZWgZR6_nDS_r6PuFqoLND9bH63rNtHcmEMTD2gNstO8sBHew38LY3kQtswO_IyCsMD6chURyf71qhRte_C2Lk-bQEFcSWXayN68PUT6VuplKZ-9wqq-AJ6SqW2_qPHNCaxcU0JynUkgwS34jmAG6GBNd20KS6QB3HKXoA6S02BJohw9ksAP4y31PFmyjbKN2azaYQPTNzuF4Jmrz5lpDrty3lvKzrxBr215BxoMPtY9IpNg"/>
+<!-- Gradient Overlay for better readability if needed, though mostly for the top bar area here -->
+<div class="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/10 pointer-events-none"></div>
+<!-- Floating Glassmorphism Nav -->
+
+</header>
+<!-- Restaurant Info Card (Overlapping Hero) -->
+<main class="relative z-20 -mt-10 mx-0 bg-surface-container-lowest rounded-t-xl px-container-padding pt-stack-md pb-stack-sm shadow-[0_-10px_40px_-10px_rgba(118,88,66,0.15)]">
+<div class="flex justify-between items-start mb-unit">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Bếp Chay Mộc Nhiên</h1>
+<div class="flex flex-col items-end">
+<div class="flex items-center gap-1 bg-primary-container text-on-primary-container px-2 py-1 rounded-lg">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-lg text-label-lg">4.8</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant mt-1">200+ đánh giá</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-stack-sm">Ẩm thực thuần chay, Tươi ngon mỗi ngày</p>
+<!-- Meta Info Row -->
+<div class="flex items-center gap-4 mb-stack-sm font-label-md text-label-md text-on-surface">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-outline text-[18px]">schedule</span>
+<span>25 - 35 phút</span>
+</div>
+<div class="w-1 h-1 rounded-full bg-outline-variant"></div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-outline text-[18px]">location_on</span>
+<span>2.4 km</span>
+</div>
+<div class="w-1 h-1 rounded-full bg-outline-variant"></div>
+<div class="flex items-center gap-1 text-primary">
+<span class="material-symbols-outlined text-[18px]">local_activity</span>
+<span>Mã giảm 20k</span>
+</div>
+</div>
+<!-- Category Chips -->
+<div class="flex gap-2 overflow-x-auto no-scrollbar py-2">
+<span class="whitespace-nowrap px-4 py-2 rounded-full bg-secondary-container/40 text-on-secondary-container font-label-lg text-label-lg border border-secondary-container/50">Món chay</span>
+<span class="whitespace-nowrap px-4 py-2 rounded-full bg-tertiary-container/40 text-on-tertiary-container font-label-lg text-label-lg border border-tertiary-container/50">Tốt cho sức khỏe</span>
+<span class="whitespace-nowrap px-4 py-2 rounded-full bg-surface-container text-on-surface-variant font-label-lg text-label-lg">Giao nhanh</span>
+</div>
+</main>
+<!-- Menu Section -->
+<section class="mt-unit">
+<!-- Sticky Menu Categories -->
+<div class="sticky top-0 bg-background/90 backdrop-blur-xl z-30 px-container-padding py-3 flex gap-3 overflow-x-auto no-scrollbar border-b border-surface-variant/30">
+<button class="whitespace-nowrap px-5 py-2.5 rounded-full bg-primary text-on-primary font-label-lg text-label-lg shadow-sm">Phổ biến</button>
+<button class="whitespace-nowrap px-5 py-2.5 rounded-full bg-surface-container-lowest text-on-surface-variant font-label-lg text-label-lg border border-outline-variant/30">Món chính</button>
+<button class="whitespace-nowrap px-5 py-2.5 rounded-full bg-surface-container-lowest text-on-surface-variant font-label-lg text-label-lg border border-outline-variant/30">Khai vị</button>
+<button class="whitespace-nowrap px-5 py-2.5 rounded-full bg-surface-container-lowest text-on-surface-variant font-label-lg text-label-lg border border-outline-variant/30">Đồ uống</button>
+</div>
+<!-- Menu List (Floating Items) -->
+<div class="px-container-padding py-stack-sm flex flex-col gap-gutter">
+<!-- Item 1 -->
+<div class="flex bg-surface-container-lowest rounded-[20px] p-3 shadow-[0_12px_24px_-10px_rgba(118,88,66,0.06)] border border-surface-variant/20">
+<img alt="Salad Bowl" class="w-[100px] h-[100px] rounded-[14px] object-cover" data-alt="A brightly lit, vibrant salad bowl shot from a 45-degree angle. The bowl is filled with fresh, crisp greens, perfectly sliced avocado, vibrant red cherry tomatoes, and a sprinkle of toasted seeds. The styling is clean and minimalist, set against a soft, creamy background that enhances the natural, healthy colors of the ingredients. The lighting is studio-quality, casting a soft, appealing glow on the food, evoking a premium, candy-coated aesthetic suitable for a high-end healthy eating app." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDN94wEg2IO4tiL8UXjQI6t4i-WUU9rV-T2wyOfQOFbjntHDNHvuhHO7aqwgfZMys62uBnNsXutUQ0Zm6KNhN366t_gGWxo052NM7ph-XfpOEbeTzT-l2KwflHK8VKJs4_iJAac8iPyDD6RfXi2apoGxf9wc4GPvxHEzXz0T6AD_FPKcHJGj30oOYdmpUnPPDPSSxUId6xxXgFjhDWD0qZWAmC5i_JxTTs4Mp73MQzJs3JklKPYZGdG5V2n6qw8B4DbC1kwawhWmgU"/>
+<div class="ml-4 flex flex-col justify-between flex-1 py-1">
+<div>
+<h3 class="font-headline-md text-[18px] leading-[24px] font-semibold text-on-surface mb-1">Salad Bơ Hạt Macca</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">Rau mầm, bơ sáp Đà Lạt, hạt macca rang, sốt chanh dây chua ngọt.</p>
+</div>
+<div class="flex justify-between items-center mt-2">
+<span class="font-label-lg text-label-lg text-primary">85.000đ</span>
+<button class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-[20px]">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="flex bg-surface-container-lowest rounded-[20px] p-3 shadow-[0_12px_24px_-10px_rgba(118,88,66,0.06)] border border-surface-variant/20">
+<img alt="Pumpkin Soup" class="w-[100px] h-[100px] rounded-[14px] object-cover" data-alt="A beautifully presented bowl of creamy pumpkin soup with a delicate swirl of coconut cream on top. The soup is garnished with toasted pumpkin seeds and a small sprig of fresh herb. The bowl sits on a smooth, light-colored wooden table bathed in soft, diffused morning light. The overall composition is minimal, elegant, and warm, featuring the soft pastel and cream tones indicative of a modern startup brand's premium UI design." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNuMkjUVJ2A4zpCuicXIxBM5SjAvEkdvsrgJG7iTPFttRD6lL31i7k_J-1FPv6LseUG_wg8BuARvqExMtK8M7PzvHadJkIR_aNrLUi7-2BHAUkXdKtKbpp6yAmjSwl0yJFpER-3oSmpLs5zWqUm2nDYvkRzFMavl4gWY86GSQTyZKOin0WaAEYfpXvdrjy9rtOlyprfxewD_RFuEr2ERsc0kGl443ruBfwgx46ZrW8YS2dQnF3dNam3hku_LsNA4YOOmRzCAxAFXU"/>
+<div class="ml-4 flex flex-col justify-between flex-1 py-1">
+<div>
+<h3 class="font-headline-md text-[18px] leading-[24px] font-semibold text-on-surface mb-1">Súp Bí Đỏ Kem Dừa</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">Bí đỏ hữu cơ, cốt dừa béo ngậy, ăn kèm bánh mì nướng tỏi.</p>
+</div>
+<div class="flex justify-between items-center mt-2">
+<span class="font-label-lg text-label-lg text-primary">55.000đ</span>
+<button class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-[20px]">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="flex bg-surface-container-lowest rounded-[20px] p-3 shadow-[0_12px_24px_-10px_rgba(118,88,66,0.06)] border border-surface-variant/20">
+<img alt="Veggie Burger" class="w-[100px] h-[100px] rounded-[14px] object-cover" data-alt="A close-up shot of a gourmet veggie burger on a pristine white ceramic plate. The burger features a thick, beautifully seared plant-based patty, fresh lettuce, a slice of vegan cheese, and a glossy, toasted brioche bun. The background is a soft, out-of-focus pastel mint green, providing a fresh and clean contrast to the warm tones of the burger. The lighting creates a subtle, candy-coated sheen on the bun, reflecting a high-end, appetizing food presentation." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfVOkyjxbuplh3wZs1EQnPyvkA0lGM7XasKkodFMOpbqwgVecTbJX4RsNsZOg0sJPUQT2_QdEfAnHbG4IbC_JoGLDDMp8RRw6rBuOJVcQTA5iUxXGPUGkJHH_OCFn7WHIa49jTGisMSbkkRfC6ImMxr-3gYlSiTY-tWbliC6IexvJF_lIixsnx4x1OHwfsghTg2WT4OxbiOWCQTbgLhTfkYSYb9xCCT6iGKfxxNT4Gg_W29FZtZlnSZNErWAQ6eD0olnlAs8vmcEM"/>
+<div class="ml-4 flex flex-col justify-between flex-1 py-1">
+<div>
+<h3 class="font-headline-md text-[18px] leading-[24px] font-semibold text-on-surface mb-1">Burger Nấm Phô Mai</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">Nhân nấm đùi gà nướng BBQ, phô mai thuần chay, rau xà lách giòn.</p>
+</div>
+<div class="flex justify-between items-center mt-2">
+<span class="font-label-lg text-label-lg text-primary">120.000đ</span>
+<button class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-[20px]">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Item 4 -->
+<div class="flex bg-surface-container-lowest rounded-[20px] p-3 shadow-[0_12px_24px_-10px_rgba(118,88,66,0.06)] border border-surface-variant/20">
+<img alt="Matcha Latte" class="w-[100px] h-[100px] rounded-[14px] object-cover" data-alt="A refreshing, vibrant green matcha latte served in an elegant, double-walled glass cup. The drink features clear layers of iced milk at the bottom and deep green matcha at the top, with condensation slowly dripping down the glass. The setting is a minimalist, light-flooded cafe table top with a soft, out-of-focus background in cream white. The lighting highlights the fresh, revitalizing nature of the beverage, perfectly matching a soft glassmorphism UI style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmHnqU7LGSE7ovbD9mpiPU8T1cZoP0rjMHKKZFUtOPCeNR61hZkWd2qRVZ7koegcFubhqklmSrKvjJO750oFNm4-5R2GBDPF2t4yrmO2dqgl6xZdTt5dMieee6s_c1bHklGP2cHyD930E2kK9p0BngWGdIDv3fsR6vexkK8GJaQJ0YA-bMmDDqftb7TLHy6HT8tel-MSNZ-G1X-w-ooakOWJh-hr_KWuwckmrPDWlIvXjUfvRtUEFlzGTl9yeKsX9tOMCUTWf1BLo"/>
+<div class="ml-4 flex flex-col justify-between flex-1 py-1">
+<div>
+<h3 class="font-headline-md text-[18px] leading-[24px] font-semibold text-on-surface mb-1">Matcha Sữa Hạt</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">Trà xanh Uji Nhật Bản pha cùng sữa hạnh nhân tự làm.</p>
+</div>
+<div class="flex justify-between items-center mt-2">
+<span class="font-label-lg text-label-lg text-primary">65.000đ</span>
+<button class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-[20px]">add</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Fixed Bottom CTA (Glassmorphism) -->
+<div class="fixed bottom-0 left-0 w-full px-container-padding py-4 bg-surface-container-lowest/80 backdrop-blur-xl border-t border-surface-variant/40 z-50 shadow-[0_-20px_40px_-15px_rgba(118,88,66,0.08)]">
+<div class="flex items-center justify-between gap-4">
+<div class="relative">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center text-primary relative">
+<span class="material-symbols-outlined">shopping_bag</span>
+<!-- Badge -->
+<span class="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-error text-on-error font-label-md text-[10px] flex items-center justify-center border-2 border-surface-container-lowest">2</span>
+</div>
+</div>
+<button onclick="window.parent.changeChannel('tracking.html')" class="flex-1 bg-gradient-to-r from-primary-fixed to-primary-container text-on-primary-container py-3.5 px-6 rounded-full font-label-lg text-label-lg flex items-center justify-between shadow-sm active:scale-[0.98] transition-transform">
+<span>Thanh toán</span>
+<span class="font-bold">140.000đ</span>
+</button>
+</div>
+</div>
+</body></html>
