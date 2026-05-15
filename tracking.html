@@ -1,237 +1,4 @@
 <!DOCTYPE html>
-<<<<<<< HEAD
-
-<html lang="vi"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Theo dõi đơn hàng</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "error": "#ba1a1a",
-                        "surface-tint": "#765842",
-                        "tertiary": "#685687",
-                        "on-tertiary-fixed": "#23113f",
-                        "on-tertiary-fixed-variant": "#4f3e6e",
-                        "on-primary": "#ffffff",
-                        "primary-fixed-dim": "#e6bfa4",
-                        "primary": "#765842",
-                        "outline": "#81756d",
-                        "surface-bright": "#fbf9f4",
-                        "secondary": "#2f685e",
-                        "primary-fixed": "#ffdcc4",
-                        "secondary-container": "#b4eee2",
-                        "on-surface": "#1b1c19",
-                        "primary-container": "#ffd6ba",
-                        "secondary-fixed-dim": "#99d2c6",
-                        "on-primary-container": "#7a5b45",
-                        "surface-container-lowest": "#ffffff",
-                        "on-secondary": "#ffffff",
-                        "tertiary-fixed": "#ebdcff",
-                        "on-primary-fixed": "#2b1706",
-                        "surface-container-highest": "#e4e2de",
-                        "on-secondary-container": "#366e64",
-                        "tertiary-fixed-dim": "#d2bdf5",
-                        "on-tertiary-container": "#6b598a",
-                        "on-secondary-fixed": "#00201c",
-                        "background": "#fbf9f4",
-                        "secondary-fixed": "#b4eee2",
-                        "surface": "#fbf9f4",
-                        "on-primary-fixed-variant": "#5c412c",
-                        "on-tertiary": "#ffffff",
-                        "on-error": "#ffffff",
-                        "inverse-surface": "#30312e",
-                        "surface-container": "#efeee9",
-                        "surface-dim": "#dbdad5",
-                        "on-surface-variant": "#4f453e",
-                        "inverse-on-surface": "#f2f1ec",
-                        "surface-variant": "#e4e2de",
-                        "inverse-primary": "#e6bfa4",
-                        "surface-container-high": "#eae8e3",
-                        "on-secondary-fixed-variant": "#124f47",
-                        "on-error-container": "#93000a",
-                        "on-background": "#1b1c19",
-                        "outline-variant": "#d3c4ba",
-                        "surface-container-low": "#f5f3ee",
-                        "tertiary-container": "#e8d7ff",
-                        "error-container": "#ffdad6"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "1rem",
-                        "lg": "2rem",
-                        "xl": "3rem",
-                        "full": "9999px"
-                    },
-                    "spacing": {
-                        "container-padding": "20px",
-                        "stack-md": "24px",
-                        "stack-sm": "12px",
-                        "stack-lg": "40px",
-                        "gutter": "16px",
-                        "unit": "8px"
-                    },
-                    "fontFamily": {
-                        "body-sm": ["Inter"],
-                        "headline-lg-mobile": ["Inter"],
-                        "body-lg": ["Inter"],
-                        "headline-lg": ["Inter"],
-                        "body-md": ["Inter"],
-                        "headline-md": ["Inter"],
-                        "label-lg": ["Inter"],
-                        "display-lg": ["Inter"],
-                        "label-md": ["Inter"]
-                    },
-                    "fontSize": {
-                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
-                        "headline-lg-mobile": ["28px", { "lineHeight": "34px", "fontWeight": "700" }],
-                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
-                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
-                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
-                        "headline-md": ["24px", { "lineHeight": "30px", "fontWeight": "600" }],
-                        "label-lg": ["14px", { "lineHeight": "18px", "fontWeight": "600" }],
-                        "display-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
-                        "label-md": ["12px", { "lineHeight": "16px", "fontWeight": "500" }]
-                    }
-                }
-            }
-        }
-    </script>
-<style>
-    /* Giấu thanh cuộn xấu xí của trình duyệt */
-    ::-webkit-scrollbar { display: none; }
-    html, body { -ms-overflow-style: none; scrollbar-width: none; }
-
-    body {
-      min-height: max(884px, 100dvh);
-    }
-  </style>
-  </head>
-<body class="bg-background text-on-background font-body-md min-h-screen pb-[100px] md:pb-0">
-<!-- TopAppBar -->
-<header class="fixed top-0 w-full z-50 bg-surface/60 dark:bg-surface-dim/60 backdrop-blur-xl shadow-[0_20px_40px_-15px_rgba(118,88,66,0.08)]">
-<div class="flex items-center justify-between px-container-padding h-16 w-full max-w-md mx-auto">
-<button onclick="window.parent.changeChannel('detail.html')" class="text-outline dark:text-outline-variant hover:opacity-80 transition-opacity">
-<span class="material-symbols-outlined">arrow_back</span>
-</button>
-<h1 class="font-headline-md text-headline-md text-primary dark:text-primary-fixed-dim">Theo dõi</h1>
-<button class="text-outline dark:text-outline-variant hover:opacity-80 transition-opacity">
-<span class="material-symbols-outlined">help_outline</span>
-</button>
-</div>
-</header>
-<main class="pt-24 px-container-padding max-w-md mx-auto space-y-stack-md">
-<!-- ETA & Status Card -->
-<section class="bg-surface-container-lowest rounded-xl shadow-[0_20px_40px_-15px_rgba(118,88,66,0.08)] p-6 relative overflow-hidden">
-<!-- Decorative gradient mesh bg -->
-<div class="absolute inset-0 bg-gradient-to-br from-primary-container/20 to-secondary-container/20 opacity-50 pointer-events-none"></div>
-<div class="relative z-10 flex flex-col items-center text-center">
-<p class="font-body-md text-body-md text-on-surface-variant mb-unit">Dự kiến giao hàng lúc</p>
-<h2 class="font-display-lg text-display-lg text-primary mb-stack-sm">12:45</h2>
-<div class="inline-flex items-center gap-2 bg-secondary-container text-on-secondary-container px-4 py-2 rounded-full">
-<span class="material-symbols-outlined text-label-md" style="font-variation-settings: 'FILL' 1;">pedal_bike</span>
-<span class="font-label-lg text-label-lg">Đang giao đến bạn</span>
-</div>
-</div>
-</section>
-<!-- Illustration Map Placeholder -->
-<section onclick="window.parent.changeChannel('map.html', 'tab-map')" class="rounded-xl overflow-hidden shadow-sm h-48 bg-surface-variant relative cursor-pointer active:scale-[0.98] transition-transform">
-<img alt="Map" class="w-full h-full object-cover opacity-80" data-alt="A stylized, flat-design illustration of a city map from a top-down perspective, optimized for a modern mobile app interface. The map uses a soft, light-mode color palette with pastel mint greens for parks, soft cream for roads, and muted peach for specific building markers. A clean, subtle drop shadow highlights a specific route, blending modern startup minimalism with soft glassmorphism." data-location="Hanoi" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9LA7swmhDxvwNgrCV82TfRt_XGlcFkKY2Bd5iXroU4_H6e071_PjJbNfUgtQiZK3K4uB0LKyM8iSX0ufV6070iHo1OQ0WKTUEj4Vw1b4aWeYD-ZcA2xiC4V_tiRoE8UWA9n_9SMWPEJ_af3nC-M632zGmKz2s8KwKxLX4moHcjCp4qMYk0BQwheCDn-wvW4aPxNutDnce7YxavUFkWKeItzNJ47sIG3wsniMBgqVBKgaIbKGCrucHuU3fqQJZ7mB7i9k9PMyUH80"/>
-<!-- Overlay Pin -->
-<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-<div class="w-12 h-12 bg-primary text-on-primary rounded-full flex items-center justify-center shadow-lg shadow-primary/30">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">location_on</span>
-</div>
-</div>
-</section>
-<!-- Timeline -->
-<section class="bg-surface-container-lowest rounded-xl shadow-sm p-6">
-<h3 class="font-headline-md text-headline-md text-on-surface mb-stack-md">Tiến trình</h3>
-<div class="relative pl-6 space-y-6 before:absolute before:inset-0 before:ml-[11px] before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-surface-variant">
-<!-- Step 1: Done -->
-<div class="relative flex items-center justify-between">
-<div class="absolute left-[-24px] w-6 h-6 bg-primary rounded-full flex items-center justify-center shadow-sm shadow-primary/20 z-10">
-<span class="material-symbols-outlined text-on-primary text-[14px]" style="font-variation-settings: 'FILL' 1;">check</span>
-</div>
-<div>
-<p class="font-label-lg text-label-lg text-on-surface">Đã xác nhận</p>
-<p class="font-body-sm text-body-sm text-on-surface-variant">Nhà hàng đã nhận đơn</p>
-</div>
-<span class="font-label-md text-label-md text-on-surface-variant">12:15</span>
-</div>
-<!-- Step 2: Done -->
-<div class="relative flex items-center justify-between">
-<div class="absolute left-[-24px] w-6 h-6 bg-primary rounded-full flex items-center justify-center shadow-sm shadow-primary/20 z-10">
-<span class="material-symbols-outlined text-on-primary text-[14px]" style="font-variation-settings: 'FILL' 1;">check</span>
-</div>
-<div>
-<p class="font-label-lg text-label-lg text-on-surface">Đang chuẩn bị</p>
-<p class="font-body-sm text-body-sm text-on-surface-variant">Món ăn đang được nấu</p>
-</div>
-<span class="font-label-md text-label-md text-on-surface-variant">12:20</span>
-</div>
-<!-- Step 3: Active -->
-<div class="relative flex items-center justify-between">
-<div class="absolute left-[-24px] w-6 h-6 bg-secondary text-on-secondary rounded-full flex items-center justify-center shadow-md shadow-secondary/30 z-10 ring-4 ring-background">
-<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">directions_bike</span>
-</div>
-<div>
-<p class="font-label-lg text-label-lg text-secondary">Đang giao</p>
-<p class="font-body-sm text-body-sm text-on-surface-variant">Shipper đang trên đường</p>
-</div>
-<span class="font-label-md text-label-md text-secondary">12:30</span>
-</div>
-<!-- Step 4: Pending -->
-<div class="relative flex items-center justify-between opacity-50">
-<div class="absolute left-[-24px] w-6 h-6 bg-surface-variant rounded-full flex items-center justify-center z-10">
-<span class="material-symbols-outlined text-outline text-[14px]">home</span>
-</div>
-<div>
-<p class="font-label-lg text-label-lg text-on-surface">Đã đến</p>
-<p class="font-body-sm text-body-sm text-on-surface-variant">Nhận món ngon nhé</p>
-</div>
-<span class="font-label-md text-label-md text-on-surface-variant">--:--</span>
-</div>
-</div>
-</section>
-<!-- Driver Info -->
-<section class="bg-surface-container-lowest rounded-xl shadow-sm p-4 flex items-center gap-4">
-<div class="w-12 h-12 rounded-full overflow-hidden bg-surface-variant">
-<img alt="Driver" class="w-full h-full object-cover" data-alt="A close-up portrait of a friendly delivery driver wearing a modern, minimalist uniform. The lighting is soft and natural, emphasizing a professional and approachable mood. The background is slightly blurred with a bright, light-mode aesthetic, adhering to a sophisticated startup vibe." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9RJSYa8veyO7N8IiZn1LCurJQ3R8KBeC5NVEp-Z91dTtT4s-sU7tpD4BsYsz_qlA3OE1FR4hBvXFfI4EBkADvQ9Kg9ApeIqrNpuyLjuBhXRQ-PyREkFcqFKK4N3nzY4E3bX2jvuMVRStKlgbT8UO2tK_XXioVqXgTqAEt87yJmBZJspa3GVkcFupooj_vMSpmBjXfwowcdyQ9kvd0Jbg49f4c-VEF8slVqsmlaPi_MC0qb2ZdUIR8SR3Bhl9pF1tGHvHP9c3K1Ss"/>
-</div>
-<div class="flex-1">
-<p class="font-label-lg text-label-lg text-on-surface">Nguyễn Văn A</p>
-<div class="flex items-center gap-1 text-on-surface-variant">
-<span class="material-symbols-outlined text-[16px] text-[#facc15]" style="font-variation-settings: 'FILL' 1;">star</span>
-<span class="font-body-sm text-body-sm">4.9 • 59-E1 123.45</span>
-</div>
-</div>
-<button class="w-10 h-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center hover:opacity-80 transition-opacity">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">call</span>
-</button>
-<button class="w-10 h-10 rounded-full bg-surface-container text-on-surface flex items-center justify-center hover:opacity-80 transition-opacity">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">chat</span>
-</button>
-</section>
-<!-- Order Summary Lite -->
-<section class="bg-surface-container-lowest rounded-xl shadow-sm p-4 border border-outline-variant/30">
-<div class="flex items-center justify-between mb-2">
-<h4 class="font-label-lg text-label-lg text-on-surface">Mã đơn: #123456</h4>
-<button class="text-primary font-label-md text-label-md hover:underline">Chi tiết</button>
-</div>
-<p class="font-body-sm text-body-sm text-on-surface-variant">2x Bánh mì thập cẩm, 1x Trà đá</p>
-</section>
-</main>
-<!-- BottomNavBar (Hidden on Desktop) -->
-
-</body></html>
-=======
 <html lang="vi">
 <head>
     <meta charset="utf-8">
@@ -316,7 +83,7 @@
             </div>
 
             <div class="bg-[#fbf9f4] border border-[#eee2d8] rounded-[24px] p-4 mb-6 flex items-center gap-4">
-                <div class="w-12 h-12 rounded-2xl bg-white border border-[#eee2d8] flex items-center justify-center text-2xl" id="item-emoji">🍔</div>
+                <img id="item-emoji" class="w-12 h-12 rounded-2xl object-cover border border-[#eee2d8] shrink-0" src="" alt="Món ăn">
                 <div class="flex-1">
                     <h3 id="item-name" class="font-bold text-[15px] text-[#241814]">Tên món ăn</h3>
                     <p id="item-rest" class="text-[12px] text-[#8d7d72]">Nhà hàng</p>
@@ -376,7 +143,9 @@
             document.getElementById('item-rest').textContent = order.rest_name;
             document.getElementById('item-qty').textContent = 'x' + (order.qty || 1);
             document.getElementById('item-price').textContent = (order.totalPrice / 1000).toFixed(0) + 'k ₫';
-            document.getElementById('item-emoji').textContent = order.meal_type === 'fast' ? '🍔' : '🍛';
+            const imgEl = document.getElementById('item-emoji');
+            imgEl.src = order.image_url;
+            imgEl.onerror = function() { this.src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=150&q=80'; };
 
             // Nạp Map
             document.getElementById('map-container').innerHTML = 
@@ -456,4 +225,3 @@
     </script>
 </body>
 </html>
->>>>>>> 05845629517b63be87990d750165bf8548d0c33b
