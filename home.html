@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html><html lang="vi"><head>
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
@@ -324,3 +325,391 @@
 
 
 </body></html>
+=======
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Khám phá - Màn hình chính</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <script src="navigation.js" defer></script>
+    <script src="api.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <style>
+        ::-webkit-scrollbar { display: none; }
+        html, body { -ms-overflow-style: none; scrollbar-width: none; overflow-x: hidden; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(255, 214, 186, 0.55), transparent 22%),
+                linear-gradient(180deg, #fffdfa 0%, #f8f3ee 100%);
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.72);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+        }
+        .soft-shadow { box-shadow: 0 20px 40px -15px rgba(118, 88, 66, 0.08); }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .nav-item { color: #8d7d72; transition: color 0.2s ease; }
+        .nav-item.active { color: #765842; font-weight: 700; }
+        input[type="range"] { accent-color: #8a6547; }
+
+        /* Animation cho Modal */
+        .animate-pop { animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
+        @keyframes popIn { from { opacity: 0; transform: scale(0.9) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        
+        .toast { position:fixed; bottom:100px; left:50%; transform:translateX(-50%) translateY(20px); background:#765842; color:#fff; border-radius:24px; padding:12px 24px; font-size:13px; opacity:0; transition:all 0.3s; z-index:999; pointer-events:none; }
+        .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+    </style>
+</head>
+<body class="text-[#1b1c19] antialiased">
+    <div class="w-full max-w-[430px] min-h-screen mx-auto bg-[#fbf9f4] px-5 pt-8 pb-28">
+        <main class="space-y-5">
+            <section class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-[#85766c]">Xin chào,</p>
+                    <h1 class="text-[30px] leading-[36px] font-bold text-[#5e4839]">Nguyễn Văn A</h1>
+                </div>
+                <button onclick="navigateTo('settings.html', 'tab-settings')" class="w-12 h-12 rounded-full bg-white border border-[#f2e7df] shadow-sm flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[#8a6547]">person</span>
+                </button>
+            </section>
+
+            <section class="relative bg-white rounded-full flex items-center px-5 py-4 shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-[#efe5de]">
+                <span class="material-symbols-outlined text-[#c0afa2]">search</span>
+                <input class="w-full bg-transparent border-none focus:ring-0 pl-3 text-[#5e4839] placeholder:text-[#b5a499]" placeholder="Tìm món ăn, nhà hàng..." type="text">
+            </section>
+
+            <section id="weather-card" class="rounded-[28px] p-5 bg-gradient-to-br from-[#a8e6cf] via-[#c1f0e2] to-[#d5deff] soft-shadow">
+                <div class="flex items-start justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-2xl bg-white/25 flex items-center justify-center">
+                            <span id="weather-icon" class="text-[28px]">☀️</span>
+                        </div>
+                        <div>
+                            <p class="text-xs uppercase tracking-[0.24em] text-white/70">Thời tiết hôm nay</p>
+                            <h2 id="weather-title" class="text-2xl font-bold text-white">Đang tải</h2>
+                        </div>
+                    </div>
+                    <span id="weather-temp" class="text-3xl font-bold text-white">--°C</span>
+                </div>
+                <p id="weather-note" class="mt-4 text-sm text-white/80">Đang đồng bộ thời tiết thực tế từ backend.</p>
+            </section>
+
+            <section class="glass-panel rounded-[28px] p-5 border border-white/60 soft-shadow">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-2xl font-semibold text-[#765842]">Tìm kiếm thông minh</h3>
+                    <span class="text-sm text-[#947e6d]">Fuzzy thật</span>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex items-center justify-between mb-2 text-sm">
+                            <span class="text-[#7a6b61]">Mức độ đói</span>
+                            <span id="hunger-label" class="font-semibold text-[#765842]">7 / 10</span>
+                        </div>
+                        <input id="hunger-input" class="w-full" max="10" min="0" step="1" type="range" value="7">
+                    </div>
+                    <div>
+                        <div class="flex items-center justify-between mb-2 text-sm">
+                            <span class="text-[#7a6b61]">Ngân sách</span>
+                            <span id="budget-label" class="font-semibold text-[#765842]">Dưới 300k</span>
+                        </div>
+                        <input id="budget-input" class="w-full" max="3" min="0" step="1" type="range" value="1">
+                    </div>
+                    <div>
+                        <div class="flex items-center justify-between mb-2 text-sm">
+                            <span class="text-[#7a6b61]">Thời gian có sẵn</span>
+                            <span id="time-label" class="font-semibold text-[#765842]">30 phút</span>
+                        </div>
+                        <input id="time-input" class="w-full" max="120" min="5" step="5" type="range" value="30">
+                    </div>
+                    <div>
+                        <div class="flex items-center justify-between mb-2 text-sm">
+                            <span class="text-[#7a6b61]">Mục tiêu sức khỏe</span>
+                        </div>
+                        <select id="health-input" class="w-full rounded-2xl border border-[#efe5de] bg-white/80 px-4 py-3 text-[#5e4839] focus:border-[#ffd6ba] focus:ring-1 focus:ring-[#ffd6ba]">
+                            <option value="Balanced">Balanced</option>
+                            <option value="Diet">Diet</option>
+                            <option value="Bulking">Bulking</option>
+                        </select>
+                    </div>
+                </div>
+                <button id="recommend-btn" class="w-full mt-5 rounded-[20px] bg-[#ffd6ba] py-4 font-semibold text-[#7a5b45] shadow-[0_12px_24px_-12px_rgba(118,88,66,0.24)] flex items-center justify-center gap-2">
+                    <span>Tìm món ăn phù hợp</span>
+                    <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+                </button>
+            </section>
+
+            <section>
+                <div class="flex items-end justify-between mb-3">
+                    <h3 class="text-[24px] leading-[30px] font-semibold text-[#765842]">Gợi ý món khác</h3>
+                </div>
+                <div id="suggestion-list" class="flex gap-4 overflow-x-auto hide-scrollbar pb-1"></div>
+            </section>
+
+            <section>
+                <div class="flex items-end justify-between mb-3">
+                    <h3 class="text-[24px] leading-[30px] font-semibold text-[#765842]">Quán quen gần đây</h3>
+                </div>
+                <div id="recent-list" class="space-y-3"></div>
+            </section>
+        </main>
+
+        <nav id="standalone-nav" class="hidden fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-white/92 backdrop-blur-xl border-t border-[#efe7df] rounded-t-[28px] px-4 py-4 shadow-[0_-10px_30px_rgba(118,88,66,0.12)]">
+            <div class="flex items-center justify-around">
+                <button data-tab="tab-home" onclick="navigateTo('home.html', 'tab-home')" class="nav-item flex flex-col items-center gap-1">
+                    <span class="material-symbols-outlined">home_app_logo</span>
+                    <span class="text-[12px]">Trang chủ</span>
+                </button>
+                <button data-tab="tab-map" onclick="navigateTo('map.html', 'tab-map')" class="nav-item flex flex-col items-center gap-1">
+                    <span class="material-symbols-outlined">receipt_long</span>
+                    <span class="text-[12px]">Đơn hàng</span>
+                </button>
+                <button data-tab="tab-planner" onclick="navigateTo('planner.html', 'tab-planner')" class="nav-item flex flex-col items-center gap-1">
+                    <span class="material-symbols-outlined">calendar_today</span>
+                    <span class="text-[12px]">Kế hoạch</span>
+                </button>
+                <button data-tab="tab-settings" onclick="navigateTo('settings.html', 'tab-settings')" class="nav-item flex flex-col items-center gap-1">
+                    <span class="material-symbols-outlined">settings</span>
+                    <span class="text-[12px]">Cài đặt</span>
+                </button>
+            </div>
+        </nav>
+    </div>
+
+    <div id="order-modal" class="fixed inset-0 z-[500] hidden items-center justify-center p-4 bg-[#241814]/60 backdrop-blur-sm">
+        <div class="w-full max-w-[390px] bg-[#fbf9f4] rounded-[32px] overflow-hidden shadow-2xl animate-pop">
+            <div class="h-1.5 w-full bg-[#765842]"></div>
+            <div class="p-6">
+                <div class="flex items-start justify-between mb-5">
+                    <div>
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-[#9c8a7d]">Xác nhận món ăn</p>
+                        <h3 id="modal-name" class="text-[22px] font-bold text-[#241814] mt-0.5 leading-tight">--</h3>
+                    </div>
+                    <button onclick="closeModal()" class="w-9 h-9 rounded-full bg-[#f0ebe7] flex items-center justify-center text-[#8a6547]">
+                        <span class="material-symbols-outlined text-[18px]">close</span>
+                    </button>
+                </div>
+
+                <div class="flex items-center justify-between bg-white border border-[#eee2d8] rounded-[24px] p-4 mb-5 shadow-sm">
+                    <span class="text-[14px] font-bold text-[#5a4a40]">Số lượng đặt</span>
+                    <div class="flex items-center gap-5">
+                        <button onclick="updateQty(-1)" class="w-9 h-9 rounded-full border border-[#eaded5] flex items-center justify-center text-[#8a6547] text-xl active:scale-90">-</button>
+                        <span id="modal-qty" class="text-[18px] font-black text-[#765842] w-6 text-center">1</span>
+                        <button onclick="updateQty(1)" class="w-9 h-9 rounded-full bg-[#765842] text-white flex items-center justify-center text-xl active:scale-90">+</button>
+                    </div>
+                </div>
+
+                <div class="rounded-[24px] bg-[#f7f3ef] p-5 mb-6 space-y-3">
+                    <div class="flex justify-between text-[13px]">
+                        <span class="text-[#8d7d72] font-medium">Nhà hàng:</span>
+                        <span id="modal-rest" class="font-bold text-[#765842]">--</span>
+                    </div>
+                    <div class="flex justify-between border-t border-[#eee2d8] pt-3">
+                        <span class="text-[#5a4a40] font-bold">Tổng thanh toán:</span>
+                        <span id="modal-total" class="font-black text-[#765842] text-[19px]">--</span>
+                    </div>
+                </div>
+
+                <button onclick="confirmOrder()" class="w-full py-4 rounded-[18px] bg-[#765842] text-white font-bold text-[16px] flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all">
+                    <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">shopping_bag</span>
+                    Đặt hàng ngay
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script>
+        const budgetBands = [
+            { value: 100000, label: "Dưới 100k" },
+            { value: 300000, label: "Dưới 300k" },
+            { value: 500000, label: "Dưới 500k" },
+            { value: 1000000, label: "Dưới 1 triệu" }
+        ];
+
+        let currentDish = null;
+        let currentQty = 1;
+
+        function currentPayload() {
+            const budgetIndex = Number(document.getElementById("budget-input").value);
+            return {
+                hunger: Number(document.getElementById("hunger-input").value),
+                time_avail: Number(document.getElementById("time-input").value),
+                budget: budgetBands[budgetIndex].value,
+                health: document.getElementById("health-input").value
+            };
+        }
+
+        function updateLabels() {
+            document.getElementById("hunger-label").textContent = `${document.getElementById("hunger-input").value} / 10`;
+            document.getElementById("time-label").textContent = `${document.getElementById("time-input").value} phút`;
+            document.getElementById("budget-label").textContent = budgetBands[Number(document.getElementById("budget-input").value)].label;
+        }
+
+        function renderWeather(weather) {
+            if (!weather) return;
+            document.getElementById("weather-icon").textContent = smartFoodUtils.weatherIcon(weather.weather);
+            document.getElementById("weather-title").textContent = weather.weather_vi || weather.weather || "Nắng đẹp";
+            document.getElementById("weather-temp").textContent = `${Math.round(weather.temp || 0)}°C`;
+            document.getElementById("weather-note").textContent = `Độ ẩm ${weather.humidity || "--"}% • Gió ${weather.wind || "--"} km/h • Gợi ý sẽ tự điều chỉnh theo thời tiết hiện tại.`;
+        }
+
+        function renderSuggestions(results) {
+            const suggestionList = document.getElementById("suggestion-list");
+            suggestionList.innerHTML = results.slice(0, 5).map((item, index) => `
+                <article class="min-w-[220px] rounded-[24px] bg-white p-3 soft-shadow border border-[#efe6de] shrink-0">
+                    <div class="relative h-32 rounded-[18px] overflow-hidden bg-[#f3ede8] flex items-center justify-center">
+                        <img alt="${item.name}" class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=900&q=80">
+                        <div class="absolute top-2 right-2 bg-white/88 rounded-full px-2 py-1 text-xs font-semibold text-[#5e4839] flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[14px] text-[#2f685e]">star</span>
+                            <span>${smartFoodUtils.buildMatch(index, item.match_pct).replace('% Match', '')}</span>
+                        </div>
+                    </div>
+                    <h4 class="mt-3 font-semibold text-[#473328] line-clamp-1">${item.name}</h4>
+                    <p class="mt-1 text-sm text-[#8d7d72]">Cách ${item.distance_km}km • ${Math.round(item.delivery_time)} phút</p>
+                    <div class="mt-3 flex items-center justify-between">
+                        <span class="font-semibold text-[#765842]">${smartFoodUtils.formatPrice(item.price)}</span>
+                        <button class="w-9 h-9 rounded-full bg-[#ffd6ba] text-[#7a5b45] flex items-center justify-center active:scale-90" onclick='openOrderModal(${JSON.stringify(item).replace(/'/g, "&apos;")})'>
+                            <span class="material-symbols-outlined text-[18px]">add</span>
+                        </button>
+                    </div>
+                </article>
+            `).join("");
+        }
+
+        function renderRecent(results) {
+            const recentList = document.getElementById("recent-list");
+            recentList.innerHTML = results.slice(0, 3).map((item) => `
+                <article class="glass-panel rounded-[22px] p-3 border border-white/70 soft-shadow flex items-center gap-4 cursor-pointer active:scale-95 transition-transform" onclick='openOrderModal(${JSON.stringify(item).replace(/'/g, "&apos;")})'>
+                    <div class="w-16 h-16 rounded-full bg-[#f3ede8] flex items-center justify-center text-2xl">🍽️</div>
+                    <div class="flex-1">
+                        <h4 class="font-semibold text-[#473328]">${item.rest_name}</h4>
+                        <p class="text-sm text-[#8d7d72]">${item.name} • Cách ${item.distance_km}km</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="material-symbols-outlined text-[#b59f93] text-[18px]">favorite</span>
+                        <p class="mt-1 text-sm font-semibold text-[#2f685e]">~${Math.round(item.delivery_time)} phút</p>
+                    </div>
+                </article>
+            `).join("");
+        }
+
+        // --- HÀM XỬ LÝ ĐẶT HÀNG MỚI ---
+        function openOrderModal(item) {
+            currentDish = item;
+            currentQty = 1;
+            document.getElementById('modal-name').textContent = item.name;
+            document.getElementById('modal-rest').textContent = item.rest_name;
+            document.getElementById('modal-qty').textContent = currentQty;
+            document.getElementById('modal-total').textContent = smartFoodUtils.formatPrice(item.price);
+            
+            document.getElementById('order-modal').classList.remove('hidden');
+            document.getElementById('order-modal').classList.add('flex');
+        }
+
+        function closeModal() {
+            document.getElementById('order-modal').classList.replace('flex', 'hidden');
+        }
+
+        function updateQty(val) {
+            currentQty = Math.max(1, currentQty + val);
+            document.getElementById('modal-qty').textContent = currentQty;
+            document.getElementById('modal-total').textContent = smartFoodUtils.formatPrice(currentDish.price * currentQty);
+        }
+
+        function confirmOrder() {
+            closeModal();
+            let orders = JSON.parse(localStorage.getItem('smart_food_orders') || '[]');
+            const newOrder = {
+                ...currentDish,
+                qty: currentQty,
+                totalPrice: currentDish.price * currentQty,
+                startTime: Date.now(),
+                orderId: 'ORD-' + Math.floor(100000 + Math.random() * 900000),
+                status: 'Đang chuẩn bị'
+            };
+            orders.push(newOrder);
+            localStorage.setItem('smart_food_orders', JSON.stringify(orders));
+            localStorage.setItem('last_order_id', newOrder.orderId);
+
+            showToast('🛒 Đang kết nối tài xế...');
+            
+            setTimeout(() => {
+                if(window.parent && window.parent.changeChannel) {
+                    window.parent.changeChannel('tracking.html', 'tab-map');
+                } else {
+                    window.location.href = 'tracking.html';
+                }
+            }, 1000);
+        }
+
+        function showToast(m) { 
+            const t = document.getElementById('toast'); 
+            t.innerText = m; t.classList.add('show'); 
+            setTimeout(() => t.classList.remove('show'), 2500); 
+        }
+
+        async function loadInitialData() {
+            try {
+                const weather = await smartFoodApi.getWeather();
+                smartFoodStore.setStored(smartFoodApi.STORAGE_KEYS.weather, weather);
+                renderWeather(weather);
+            } catch (error) {
+                document.getElementById("weather-note").textContent = "Không lấy được thời tiết từ backend, đang dùng giao diện fallback.";
+            }
+
+            let recommendation = smartFoodStore.getStored(smartFoodApi.STORAGE_KEYS.recommend);
+            if (!recommendation || !recommendation.results) {
+                try {
+                    recommendation = await smartFoodApi.getRecommend(currentPayload());
+                    smartFoodStore.setStored(smartFoodApi.STORAGE_KEYS.recommend, recommendation);
+                } catch (error) {
+                    recommendation = { results: [] };
+                }
+            }
+
+            renderSuggestions(recommendation.results || []);
+            renderRecent(recommendation.results || []);
+        }
+
+        async function runRecommend() {
+            const button = document.getElementById("recommend-btn");
+            button.disabled = true;
+            button.querySelector("span").textContent = "Đang tính toán...";
+            try {
+                const payload = currentPayload();
+                const recommendation = await smartFoodApi.getRecommend(payload);
+                smartFoodStore.setStored(smartFoodApi.STORAGE_KEYS.recommendPayload, payload);
+                smartFoodStore.setStored(smartFoodApi.STORAGE_KEYS.recommend, recommendation);
+                renderSuggestions(recommendation.results || []);
+                renderRecent(recommendation.results || []);
+                navigateTo("fuzzy.html");
+            } catch (error) {
+                button.querySelector("span").textContent = "Lỗi kết nối backend";
+            } finally {
+                setTimeout(() => {
+                    button.disabled = false;
+                    button.querySelector("span").textContent = "Tìm món ăn phù hợp";
+                }, 600);
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            updateLabels();
+            ["hunger-input", "budget-input", "time-input"].forEach((id) => {
+                document.getElementById(id).addEventListener("input", updateLabels);
+            });
+            document.getElementById("recommend-btn").addEventListener("click", runRecommend);
+            loadInitialData();
+            setupStandaloneNav("tab-home");
+        });
+    </script>
+</body>
+</html>
+>>>>>>> 05845629517b63be87990d750165bf8548d0c33b

@@ -1,0 +1,1863 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aura Cuisines — Smart Food AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@400,0&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════ TOKENS ═══════════════ */
+:root {
+  --bg: #fbf9f4;
+  --bg2: #f5efe8;
+  --white: #ffffff;
+  --card: rgba(255,255,255,0.88);
+  --border: #efe5de;
+  --brown: #5e4839;
+  --brown-mid: #765842;
+  --brown-light: #8a6547;
+  --muted: #8d7d72;
+  --muted2: #b6a89d;
+  --peach: #ffd6ba;
+  --peach-dark: #f7c4a0;
+  --green: #2f9e7f;
+  --green-light: #a8e6cf;
+  --radius: 24px;
+  --radius-sm: 16px;
+  --shadow: 0 20px 40px -15px rgba(118,88,66,0.1);
+  --shadow-md: 0 12px 30px -8px rgba(118,88,66,0.15);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--brown);
+  -webkit-font-smoothing: antialiased;
+}
+::-webkit-scrollbar { display: none; }
+
+/* ═══════════════ APP SHELL ═══════════════ */
+.app-shell {
+  width: 100%;
+  max-width: 430px;
+  height: 100dvh;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  position: relative;
+  overflow: hidden;
+}
+
+/* ═══════════════ SCREENS ═══════════════ */
+.screen {
+  display: none;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: 90px;
+  -webkit-overflow-scrolling: touch;
+}
+.screen.active { display: block; }
+
+/* ═══════════════ NAV BAR ═══════════════ */
+.nav-bar {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
+  border-radius: 28px 28px 0 0;
+  padding: 12px 8px 20px;
+  display: flex;
+  justify-content: space-around;
+  z-index: 100;
+  box-shadow: 0 -8px 30px rgba(118,88,66,0.08);
+}
+.nav-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--muted2);
+  transition: color 0.2s;
+  padding: 6px 12px;
+  border-radius: 14px;
+  min-width: 64px;
+}
+.nav-btn.active { color: var(--brown-mid); }
+.nav-btn .material-symbols-outlined { font-size: 22px; }
+.nav-btn span:last-child { font-size: 11px; font-weight: 600; }
+.nav-btn.active .nav-icon-wrap {
+  background: var(--peach);
+  border-radius: 12px;
+  padding: 6px 14px;
+}
+
+/* ═══════════════ SHARED COMPONENTS ═══════════════ */
+.glass-card {
+  background: var(--card);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,0.7);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.section-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--brown-mid);
+}
+.pill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--peach);
+  color: var(--brown-mid);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+.pill-badge.green { background: rgba(47,158,127,0.15); color: var(--green); }
+
+/* ═══════════════ SCREEN 1: HOME ═══════════════ */
+#screen-home {
+  padding: 0 20px 90px;
+}
+.home-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 40px 0 20px;
+}
+.home-header .greeting p { font-size: 13px; color: var(--muted); }
+.home-header .greeting h1 { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; color: var(--brown); }
+.avatar-btn {
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+}
+
+.weather-banner {
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  background: linear-gradient(135deg, #a8e6cf 0%, #c1f0e2 50%, #d5deff 100%);
+  box-shadow: var(--shadow);
+  margin-bottom: 16px;
+}
+.weather-banner .top-row { display: flex; align-items: center; justify-content: space-between; }
+.weather-banner .icon-wrap {
+  width: 46px; height: 46px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px;
+}
+.weather-banner .winfo p { font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em; color: rgba(255,255,255,0.75); }
+.weather-banner .winfo h2 { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; color: white; margin-top: 2px; }
+.weather-banner .wtemp { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800; color: white; }
+.weather-banner .wnote { font-size: 12px; color: rgba(255,255,255,0.8); margin-top: 10px; }
+
+.search-section {
+  display: flex;
+  align-items: center;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 12px 20px;
+  gap: 10px;
+  box-shadow: 0 8px 20px -8px rgba(118,88,66,0.1);
+  margin-bottom: 16px;
+}
+.search-section input {
+  flex: 1; border: none; outline: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px; color: var(--brown);
+  background: transparent;
+}
+.search-section input::placeholder { color: var(--muted2); }
+
+/* Smart search card on home */
+.smart-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  margin-bottom: 20px;
+}
+.smart-card h3 { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: var(--brown-mid); margin-bottom: 16px; }
+.field-group { margin-bottom: 14px; }
+.field-group .field-header { display: flex; justify-content: space-between; margin-bottom: 7px; }
+.field-group .field-label { font-size: 13px; color: var(--muted); }
+.field-group .field-value { font-size: 13px; font-weight: 600; color: var(--brown-mid); }
+input[type=range] {
+  -webkit-appearance: none;
+  width: 100%; height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--brown-mid);
+  border: 3px solid white;
+  box-shadow: 0 2px 8px rgba(118,88,66,0.3);
+}
+.fancy-select {
+  width: 100%;
+  padding: 11px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--brown);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238d7d72' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+}
+.fancy-select:focus { border-color: var(--peach-dark); }
+
+.find-btn {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 20px;
+  background: var(--peach);
+  color: var(--brown-mid);
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 12px 24px -10px rgba(138,101,71,0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
+  margin-top: 16px;
+}
+.find-btn:active { transform: scale(0.98); }
+.find-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* Horizontal scroll suggestions */
+.h-scroll { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 4px; }
+.h-scroll::-webkit-scrollbar { display: none; }
+
+.dish-card-h {
+  min-width: 190px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 12px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+.dish-card-h:active { transform: scale(0.97); }
+.dish-card-h .img-wrap {
+  width: 100%; height: 110px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--bg2);
+  margin-bottom: 10px;
+  position: relative;
+}
+.dish-card-h .img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+.dish-card-h .badge-rating {
+  position: absolute; top: 8px; right: 8px;
+  background: rgba(255,255,255,0.9);
+  border-radius: 999px;
+  padding: 3px 8px;
+  font-size: 11px; font-weight: 600;
+  display: flex; align-items: center; gap: 3px;
+  color: var(--brown);
+}
+.dish-card-h h4 { font-size: 13px; font-weight: 600; color: var(--brown); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dish-card-h .meta { font-size: 12px; color: var(--muted); }
+.dish-card-h .bottom-row { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; }
+.dish-card-h .price { font-weight: 700; color: var(--brown-mid); font-size: 13px; }
+.add-btn {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--peach);
+  color: var(--brown-mid);
+  border: none;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  transition: background 0.2s;
+}
+.add-btn:hover { background: var(--peach-dark); }
+
+/* Recent restaurants */
+.recent-card {
+  background: var(--card);
+  border: 1px solid rgba(255,255,255,0.7);
+  border-radius: 20px;
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: var(--shadow);
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.recent-card:active { transform: scale(0.98); }
+.recent-icon {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: var(--bg2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px;
+  flex-shrink: 0;
+}
+.recent-info { flex: 1; }
+.recent-info h4 { font-size: 14px; font-weight: 600; color: var(--brown); }
+.recent-info p { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.recent-time { font-size: 12px; font-weight: 600; color: var(--green); white-space: nowrap; }
+
+/* ═══════════════ SCREEN 2: TRACKING ═══════════════ */
+#screen-tracking {
+  display: none;
+  padding: 0 20px 90px;
+}
+#screen-tracking.active { display: block; }
+.track-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 36px 0 24px;
+  text-align: center;
+}
+.track-ring-wrap {
+  position: relative;
+  width: 150px; height: 150px;
+  margin-bottom: 24px;
+}
+.track-ring-bg, .track-ring-fill {
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  border: 5px solid transparent;
+}
+.track-ring-bg { border-color: var(--border); }
+.track-ring-fill {
+  border-color: var(--brown-mid);
+  border-right-color: transparent;
+  animation: trackSpin 1.4s linear infinite;
+}
+@keyframes trackSpin { to { transform: rotate(360deg); } }
+.track-emoji {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 48px;
+}
+.track-hero h1 { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; color: var(--brown); }
+.track-hero .tsub { font-size: 13px; color: var(--muted); margin-top: 6px; max-width: 280px; line-height: 1.6; }
+
+.track-stats-row { display: flex; gap: 12px; margin-bottom: 20px; }
+.track-stat-box {
+  flex: 1;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 16px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+.track-stat-box .tval { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800; color: var(--brown-mid); }
+.track-stat-box .tval.green { color: var(--green); }
+.track-stat-box .tlbl { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+.track-progress-bar-wrap { margin-bottom: 20px; }
+.tprog-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+.tprog-track { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+.tprog-fill { height: 100%; background: linear-gradient(90deg, var(--peach-dark), var(--brown-mid)); border-radius: 4px; transition: width 1s linear; }
+
+.track-steps { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
+.tstep {
+  display: flex; align-items: center; gap: 12px;
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  padding: 12px 16px;
+  transition: border-color 0.4s;
+}
+.tstep.done { border-color: var(--green); background: rgba(47,158,127,0.04); }
+.tstep.active { border-color: var(--brown-mid); background: rgba(118,88,66,0.04); }
+.tstep .step-icon { font-size: 20px; flex-shrink: 0; }
+.tstep .step-text { flex: 1; font-size: 13px; color: var(--brown); }
+.tstep .step-status { font-size: 11px; font-weight: 600; }
+.tstep.done .step-status { color: var(--green); }
+.tstep.active .step-status { color: var(--brown-mid); }
+.tstep.wait .step-status { color: var(--muted2); }
+
+/* Map section in tracking */
+.map-section {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  margin-bottom: 20px;
+}
+.map-section .map-header {
+  padding: 14px 18px;
+  display: flex; align-items: center; gap: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.map-section .map-header h4 { font-size: 14px; font-weight: 600; color: var(--brown); }
+.map-section iframe { width: 100%; height: 220px; border: none; display: block; }
+.map-placeholder {
+  height: 220px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 8px;
+  background: var(--bg2);
+}
+.map-placeholder .mp-icon { font-size: 40px; }
+.map-placeholder p { font-size: 12px; color: var(--muted); text-align: center; max-width: 200px; }
+
+.done-btn {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 20px;
+  background: var(--green);
+  color: white;
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  display: none;
+  transition: transform 0.2s;
+}
+.done-btn.visible { display: block; }
+
+/* ═══════════════ SCREEN 3: PLANNER ═══════════════ */
+#screen-planner { padding: 0 20px 90px; }
+.planner-header { padding: 36px 0 20px; }
+.planner-header h1 { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; color: var(--brown); }
+.planner-header p { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+.planner-config {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  margin-bottom: 16px;
+}
+.planner-config h3 { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; color: var(--brown-mid); margin-bottom: 16px; }
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-top: 1px solid var(--border);
+}
+.toggle-label { font-size: 13px; color: var(--brown); }
+.toggle { position: relative; width: 44px; height: 24px; }
+.toggle input { opacity: 0; width: 0; height: 0; }
+.toggle-slider {
+  position: absolute; inset: 0;
+  background: var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 18px; height: 18px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.3s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+.toggle input:checked + .toggle-slider { background: var(--brown-mid); }
+.toggle input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+.plan-run-btn {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 20px;
+  background: var(--brown-mid);
+  color: white;
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 12px 24px -10px rgba(118,88,66,0.35);
+  transition: transform 0.2s;
+  margin-top: 16px;
+}
+.plan-run-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* Plan meal cards */
+.plan-meal-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  margin-bottom: 12px;
+  display: grid;
+  grid-template-columns: 7px 1fr;
+}
+.plan-accent { background: var(--peach-dark); }
+.plan-accent.lunch { background: #74b3ce; }
+.plan-accent.dinner { background: #9b8ec4; }
+.plan-accent.late { background: var(--muted2); }
+.plan-body { padding: 16px 18px; }
+.plan-period-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 5px; }
+.plan-dish-name { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; color: var(--brown); margin-bottom: 8px; }
+.plan-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.plan-meta-chip { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--muted); }
+.plan-meta-chip .val { color: var(--brown); font-weight: 600; }
+.order-small-btn {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 14px;
+  background: var(--peach);
+  color: var(--brown-mid);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.order-small-btn:hover { background: var(--peach-dark); }
+
+.plan-summary-bar {
+  background: var(--brown-mid);
+  border-radius: 20px;
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-around;
+  margin-top: 4px;
+  margin-bottom: 16px;
+}
+.plan-sum-item { text-align: center; }
+.plan-sum-item .sv { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800; color: var(--peach); }
+.plan-sum-item .sl { font-size: 11px; color: rgba(255,255,255,0.65); margin-top: 2px; }
+
+/* ═══════════════ SCREEN 4: SETTINGS ═══════════════ */
+#screen-settings { padding: 0 20px 90px; }
+.settings-header { padding: 36px 0 24px; }
+.settings-header h1 { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; color: var(--brown); }
+.settings-section {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  margin-bottom: 16px;
+}
+.settings-section-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  padding: 14px 18px 8px;
+}
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-top: 1px solid var(--border);
+  cursor: pointer;
+}
+.settings-row:first-of-type { border-top: none; }
+.settings-row .srow-left { display: flex; align-items: center; gap: 12px; }
+.settings-row .srow-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: var(--bg2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+}
+.settings-row .srow-label { font-size: 14px; color: var(--brown); font-weight: 500; }
+.settings-row .srow-value { font-size: 13px; color: var(--muted); }
+
+/* ═══════════════ RESULT CARDS (recommend) ═══════════════ */
+.rec-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 16px;
+  box-shadow: var(--shadow);
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  animation: fadeUp 0.4s ease both;
+}
+.rec-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.rec-card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+.rec-card-img-wrap {
+  width: 72px; height: 72px;
+  border-radius: 16px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: var(--bg2);
+}
+.rec-card-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+.rec-card-info { flex: 1; }
+.rec-card-info h3 { font-size: 15px; font-weight: 700; color: var(--brown); line-height: 1.3; margin-bottom: 3px; }
+.rec-card-info .rest { font-size: 12px; color: var(--muted); font-style: italic; margin-bottom: 6px; }
+.rec-card-tags { display: flex; gap: 5px; flex-wrap: wrap; }
+.rec-tag {
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+.rec-tag.fast { background: rgba(247,196,160,0.4); color: var(--brown-mid); }
+.rec-tag.full { background: rgba(116,179,206,0.2); color: #3a7a9c; }
+.rec-tag.soup { background: rgba(47,158,127,0.15); color: var(--green); }
+.rec-rank {
+  font-family: 'Syne', sans-serif;
+  font-size: 18px; font-weight: 800;
+  color: var(--border);
+  flex-shrink: 0;
+}
+.rec-rank.top { color: var(--peach-dark); }
+.rec-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 12px; }
+.rec-stat { background: var(--bg); border-radius: 10px; padding: 7px 8px; }
+.rec-stat .rs-lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; }
+.rec-stat .rs-val { font-size: 12px; font-weight: 700; color: var(--brown); margin-top: 2px; }
+.rec-stat .rs-val.price { color: var(--brown-mid); }
+.rec-stat .rs-val.delivery { color: var(--green); }
+.order-btn-full {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 14px;
+  background: var(--peach);
+  color: var(--brown-mid);
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.order-btn-full:hover { background: var(--peach-dark); }
+
+/* Insight chips */
+.insight-row { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 16px; }
+.ichip {
+  display: flex; align-items: center; gap: 5px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 12px; color: var(--muted);
+}
+.ichip .ival { color: var(--brown-mid); font-weight: 600; }
+
+/* ═══════════════ ORDER MODAL ═══════════════ */
+.overlay {
+  position: fixed; inset: 0;
+  background: rgba(94,72,57,0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 500;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+}
+.overlay.open { display: flex; }
+.modal-sheet {
+  background: white;
+  border-radius: 32px 32px 0 0;
+  padding: 28px 24px 40px;
+  width: 100%;
+  max-width: 430px;
+  max-height: 90dvh;
+  overflow-y: auto;
+  animation: slideUp 0.35s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+.modal-drag { width: 40px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 20px; }
+.modal-sheet h2 { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: var(--brown); margin-bottom: 4px; }
+.modal-sheet .msub { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+.modal-dish-preview {
+  background: var(--bg);
+  border-radius: 18px;
+  padding: 14px;
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 18px;
+}
+.modal-dish-preview .dp-img { width: 64px; height: 64px; border-radius: 14px; overflow: hidden; background: var(--border); flex-shrink: 0; }
+.modal-dish-preview .dp-img img { width: 100%; height: 100%; object-fit: cover; }
+.modal-dish-preview h3 { font-size: 15px; font-weight: 700; color: var(--brown); }
+.modal-dish-preview p { font-size: 12px; color: var(--muted); line-height: 1.6; margin-top: 4px; }
+
+.qty-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--bg);
+  border-radius: 16px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+}
+.qty-bar .qlbl { font-size: 14px; font-weight: 600; color: var(--brown); }
+.qty-controls { display: flex; align-items: center; gap: 12px; }
+.qty-btn {
+  width: 34px; height: 34px;
+  border: 1.5px solid var(--border);
+  background: white;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 20px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--brown-mid);
+  transition: border-color 0.2s;
+}
+.qty-btn:hover { border-color: var(--brown-mid); }
+.qty-num { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: var(--brown-mid); min-width: 28px; text-align: center; }
+
+.form-field { margin-bottom: 12px; }
+.form-field label { display: block; font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+.form-field input, .form-field select, .form-field textarea {
+  width: 100%;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 11px 14px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: var(--brown);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.form-field input:focus, .form-field select:focus, .form-field textarea:focus { border-color: var(--brown-mid); }
+.form-field textarea { resize: vertical; min-height: 60px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 4px; }
+.mini-map-wrap { border-radius: 16px; overflow: hidden; border: 1px solid var(--border); margin-bottom: 16px; }
+.mini-map-wrap iframe { width: 100%; height: 170px; border: none; display: block; }
+
+.order-summary { background: var(--bg); border-radius: 16px; padding: 14px; margin-bottom: 18px; }
+.orow { display: flex; justify-content: space-between; padding: 5px 0; }
+.orow .ol { font-size: 13px; color: var(--muted); }
+.orow .or { font-size: 13px; color: var(--brown); font-weight: 600; }
+.orow.total { border-top: 1px solid var(--border); margin-top: 8px; padding-top: 10px; }
+.orow.total .ol { font-weight: 700; color: var(--brown); }
+.orow.total .or { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 800; color: var(--brown-mid); }
+
+.confirm-btn {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 20px;
+  background: var(--green);
+  color: white;
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 12px 24px -10px rgba(47,158,127,0.4);
+}
+.confirm-btn:hover { transform: translateY(-1px); box-shadow: 0 16px 28px -10px rgba(47,158,127,0.45); }
+
+/* ═══════════════ SPINNER / EMPTY ═══════════════ */
+.spinner-wrap { display: flex; justify-content: center; align-items: center; min-height: 200px; }
+.spinner {
+  width: 40px; height: 40px;
+  border: 3px solid var(--border);
+  border-top-color: var(--brown-mid);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
+.empty-state .esi { font-size: 48px; margin-bottom: 12px; }
+.empty-state h3 { font-size: 16px; font-weight: 600; color: var(--brown); margin-bottom: 6px; }
+.empty-state p { font-size: 13px; line-height: 1.6; }
+
+/* ═══════════════ TOAST ═══════════════ */
+.toast {
+  position: fixed;
+  bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: var(--brown);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  opacity: 0;
+  transition: all 0.3s;
+  z-index: 999;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.err { background: #c0392b; }
+.toast.ok { background: var(--green); }
+
+/* Section spacing */
+.sec { margin-bottom: 20px; }
+.sec-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.see-all { font-size: 13px; font-weight: 600; color: var(--brown-light); background: none; border: none; cursor: pointer; }
+</style>
+</head>
+<body>
+<div class="app-shell">
+
+  <!-- ═══ SCREEN 1: HOME ═══ -->
+  <div id="screen-home" class="screen active">
+    <div style="padding:0 20px">
+
+      <div class="home-header">
+        <div class="greeting">
+          <p>Xin chào,</p>
+          <h1>Nguyễn Văn A 👋</h1>
+        </div>
+        <button class="avatar-btn" onclick="showScreen('screen-settings')">
+          <span class="material-symbols-outlined" style="color:var(--brown-light)">person</span>
+        </button>
+      </div>
+
+      <!-- Weather -->
+      <div class="weather-banner" id="weather-banner">
+        <div class="top-row">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div class="icon-wrap"><span id="w-icon">⏳</span></div>
+            <div class="winfo">
+              <p>Thời tiết hôm nay</p>
+              <h2 id="w-title">Đang tải...</h2>
+            </div>
+          </div>
+          <span id="w-temp" class="wtemp">--°C</span>
+        </div>
+        <p id="w-note" class="wnote">Đang đồng bộ thời tiết từ backend...</p>
+      </div>
+
+      <!-- Search bar -->
+      <div class="search-section">
+        <span class="material-symbols-outlined" style="color:var(--muted2);font-size:20px">search</span>
+        <input type="text" placeholder="Tìm món ăn, nhà hàng...">
+      </div>
+
+      <!-- Smart Search Card -->
+      <div class="smart-card">
+        <h3>🤖 Tìm kiếm thông minh</h3>
+        <div class="field-group">
+          <div class="field-header">
+            <span class="field-label">Mức độ đói</span>
+            <span class="field-value" id="h-hunger-label">7 / 10</span>
+          </div>
+          <input type="range" id="h-hunger" min="0" max="10" step="1" value="7"
+            oninput="document.getElementById('h-hunger-label').textContent=this.value+' / 10'">
+        </div>
+        <div class="field-group">
+          <div class="field-header">
+            <span class="field-label">Ngân sách</span>
+            <span class="field-value" id="h-budget-label">Dưới 500k</span>
+          </div>
+          <input type="range" id="h-budget-slider" min="0" max="4" step="1" value="2"
+            oninput="updateBudgetLabel()">
+        </div>
+        <div class="field-group">
+          <div class="field-header">
+            <span class="field-label">Thời gian rảnh</span>
+            <span class="field-value" id="h-time-label">45 phút</span>
+          </div>
+          <input type="range" id="h-time" min="5" max="120" step="5" value="45"
+            oninput="document.getElementById('h-time-label').textContent=this.value+' phút'">
+        </div>
+        <div class="field-group">
+          <div class="field-header">
+            <span class="field-label">Mục tiêu sức khỏe</span>
+          </div>
+          <select id="h-health" class="fancy-select">
+            <option value="">— Không chọn —</option>
+            <option value="Balanced" selected>⚖️ Balanced (Cân bằng)</option>
+            <option value="Diet">🥗 Diet (Ăn kiêng)</option>
+            <option value="Bulking">💪 Bulking (Tăng cơ)</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <div class="field-header">
+            <span class="field-label">Thời tiết (thủ công)</span>
+          </div>
+          <select id="h-weather" class="fancy-select">
+            <option value="">🌐 Tự động từ API</option>
+            <option value="Clear">☀️ Nắng</option>
+            <option value="Rainy">🌧️ Mưa</option>
+          </select>
+        </div>
+        <button class="find-btn" id="find-btn" onclick="runRecommend()">
+          <span id="find-btn-text">Tìm món phù hợp</span>
+          <span class="material-symbols-outlined" style="font-size:20px">arrow_forward</span>
+        </button>
+      </div>
+
+      <!-- Suggestion section -->
+      <div class="sec">
+        <div class="sec-row">
+          <span class="section-title">Gợi ý món khác</span>
+          <button class="see-all" onclick="runRecommend()">Xem tất cả</button>
+        </div>
+        <div id="suggestion-list" class="h-scroll">
+          <div style="display:flex;align-items:center;justify-content:center;min-width:190px;height:160px;background:white;border-radius:22px;border:1px solid var(--border)">
+            <div class="spinner"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Result section (after recommend) -->
+      <div id="rec-result-section" style="display:none">
+        <div class="sec-row">
+          <span class="section-title">Kết quả gợi ý</span>
+          <span id="rec-count" class="pill-badge"></span>
+        </div>
+        <div id="insight-bar" class="insight-row"></div>
+        <div id="rec-cards"></div>
+      </div>
+
+      <!-- Recent restaurants -->
+      <div class="sec" id="recent-section">
+        <div class="sec-row">
+          <span class="section-title">Quán quen gần đây</span>
+        </div>
+        <div id="recent-list">
+          <div class="spinner-wrap"><div class="spinner"></div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ SCREEN 2: TRACKING ═══ -->
+  <div id="screen-tracking" class="screen">
+    <div style="padding:0 20px">
+
+      <div class="track-hero">
+        <div class="track-ring-wrap">
+          <div class="track-ring-bg"></div>
+          <div class="track-ring-fill" id="track-ring-fill"></div>
+          <div class="track-emoji" id="track-emoji">👨‍🍳</div>
+        </div>
+        <h1 id="track-title">Đơn hàng đã xác nhận!</h1>
+        <p class="tsub" id="track-sub">Nhà hàng đang chuẩn bị món ăn của bạn</p>
+      </div>
+
+      <div class="track-stats-row">
+        <div class="track-stat-box">
+          <div class="tval" id="track-time">--</div>
+          <div class="tlbl">Thời gian còn lại</div>
+        </div>
+        <div class="track-stat-box">
+          <div class="tval green" id="track-dist">--</div>
+          <div class="tlbl">Quãng đường còn</div>
+        </div>
+      </div>
+
+      <div class="track-progress-bar-wrap">
+        <div class="tprog-labels">
+          <span>Đặt hàng</span>
+          <span>Giao hàng</span>
+        </div>
+        <div class="tprog-track">
+          <div class="tprog-fill" id="track-progress" style="width:0%"></div>
+        </div>
+      </div>
+
+      <div class="track-steps" id="track-steps"></div>
+
+      <!-- Map -->
+      <div class="map-section">
+        <div class="map-header">
+          <span class="material-symbols-outlined" style="color:var(--green);font-size:20px">map</span>
+          <h4>Theo dõi lộ trình</h4>
+        </div>
+        <div id="track-map-wrap">
+          <div class="map-placeholder">
+            <div class="mp-icon">🗺️</div>
+            <p>Bản đồ lộ trình sẽ hiện sau khi đặt hàng thành công</p>
+          </div>
+        </div>
+      </div>
+
+      <button class="done-btn" id="done-btn" onclick="finishOrder()">🎉 Đã nhận hàng xong!</button>
+
+    </div>
+  </div>
+
+  <!-- ═══ SCREEN 3: PLANNER ═══ -->
+  <div id="screen-planner" class="screen">
+    <div class="planner-header">
+      <h1>📅 Kế hoạch ăn hôm nay</h1>
+      <p>AI lên thực đơn dựa trên Fuzzy Logic</p>
+    </div>
+
+    <div class="planner-config">
+      <h3>⚙️ Cấu hình</h3>
+      <div class="field-group">
+        <div class="field-header">
+          <span class="field-label">Lifestyle Profile</span>
+        </div>
+        <select id="p-profile" class="fancy-select">
+          <option value="Office Worker" selected>💼 Office Worker</option>
+          <option value="Student">🎓 Student</option>
+          <option value="Gym">💪 Gym</option>
+          <option value="Dieter">🥗 Dieter</option>
+        </select>
+      </div>
+      <div class="toggle-row">
+        <span class="toggle-label">🌙 Bao gồm bữa khuya</span>
+        <label class="toggle">
+          <input type="checkbox" id="p-late">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <button class="plan-run-btn" id="plan-btn" onclick="runPlan()">
+        <span id="plan-btn-text">🚀 Lập kế hoạch</span>
+      </button>
+    </div>
+
+    <div id="plan-result"></div>
+  </div>
+
+  <!-- ═══ SCREEN 4: SETTINGS ═══ -->
+  <div id="screen-settings" class="screen">
+    <div class="settings-header">
+      <h1>⚙️ Cài đặt</h1>
+    </div>
+
+    <!-- Profile card -->
+    <div class="settings-section">
+      <div style="padding:20px;display:flex;align-items:center;gap:16px">
+        <div style="width:60px;height:60px;border-radius:50%;background:var(--peach);display:flex;align-items:center;justify-content:center;font-size:28px">👤</div>
+        <div>
+          <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--brown)">Nguyễn Văn A</div>
+          <div style="font-size:13px;color:var(--muted)">Thành viên Aura Cuisines</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">Ứng dụng</div>
+      <div class="settings-row">
+        <div class="srow-left">
+          <div class="srow-icon">🌐</div>
+          <span class="srow-label">Ngôn ngữ</span>
+        </div>
+        <span class="srow-value">Tiếng Việt</span>
+      </div>
+      <div class="settings-row">
+        <div class="srow-left">
+          <div class="srow-icon">🎨</div>
+          <span class="srow-label">Giao diện</span>
+        </div>
+        <span class="srow-value">Sáng</span>
+      </div>
+      <div class="settings-row">
+        <div class="srow-left">
+          <div class="srow-icon">🔔</div>
+          <span class="srow-label">Thông báo</span>
+        </div>
+        <label class="toggle" style="flex-shrink:0">
+          <input type="checkbox" checked>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">API & Backend</div>
+      <div class="settings-row">
+        <div class="srow-left">
+          <div class="srow-icon">🖥️</div>
+          <span class="srow-label">Server URL</span>
+        </div>
+        <span class="srow-value" id="api-url-display">localhost:5000</span>
+      </div>
+      <div class="settings-row">
+        <div class="srow-left">
+          <div class="srow-icon">🌡️</div>
+          <span class="srow-label">Thời tiết</span>
+        </div>
+        <span class="srow-value" id="weather-status-settings">Đang kiểm tra...</span>
+      </div>
+      <div class="settings-row">
+        <div class="srow-left">
+          <div class="srow-icon">🤖</div>
+          <span class="srow-label">Fuzzy Engine</span>
+        </div>
+        <span class="srow-value" style="color:var(--green)">FIS 1 + FIS 2 + Delivery</span>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">Thông tin</div>
+      <div class="settings-row">
+        <div class="srow-left">
+          <div class="srow-icon">ℹ️</div>
+          <span class="srow-label">Phiên bản</span>
+        </div>
+        <span class="srow-value">2.0.0</span>
+      </div>
+      <div class="settings-row" onclick="showScreen('screen-home')">
+        <div class="srow-left">
+          <div class="srow-icon">🏠</div>
+          <span class="srow-label">Về trang chủ</span>
+        </div>
+        <span class="material-symbols-outlined" style="color:var(--muted2);font-size:18px">chevron_right</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ NAV BAR ═══ -->
+  <nav class="nav-bar">
+    <button class="nav-btn active" id="nav-home" onclick="showScreen('screen-home')">
+      <div class="nav-icon-wrap">
+        <span class="material-symbols-outlined">home_app_logo</span>
+      </div>
+      <span>Trang chủ</span>
+    </button>
+    <button class="nav-btn" id="nav-tracking" onclick="showScreen('screen-tracking')">
+      <div class="nav-icon-wrap">
+        <span class="material-symbols-outlined">delivery_dining</span>
+      </div>
+      <span>Theo dõi</span>
+    </button>
+    <button class="nav-btn" id="nav-planner" onclick="showScreen('screen-planner')">
+      <div class="nav-icon-wrap">
+        <span class="material-symbols-outlined">calendar_today</span>
+      </div>
+      <span>Kế hoạch</span>
+    </button>
+    <button class="nav-btn" id="nav-settings" onclick="showScreen('screen-settings')">
+      <div class="nav-icon-wrap">
+        <span class="material-symbols-outlined">settings</span>
+      </div>
+      <span>Cài đặt</span>
+    </button>
+  </nav>
+
+</div>
+
+<!-- ═══ ORDER MODAL ═══ -->
+<div class="overlay" id="order-overlay">
+  <div class="modal-sheet">
+    <div class="modal-drag"></div>
+    <h2>🛒 Xác nhận đặt hàng</h2>
+    <p class="msub">Kiểm tra thông tin trước khi đặt</p>
+
+    <div class="modal-dish-preview">
+      <div class="dp-img">
+        <img id="modal-img" src="" alt="">
+      </div>
+      <div id="modal-dish-info"></div>
+    </div>
+
+    <div class="qty-bar">
+      <span class="qlbl">Số lượng món</span>
+      <div class="qty-controls">
+        <button class="qty-btn" onclick="changeQty(-1)">−</button>
+        <span class="qty-num" id="qty-num">1</span>
+        <button class="qty-btn" onclick="changeQty(1)">+</button>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field">
+        <label>Họ tên người nhận</label>
+        <input type="text" id="order-name" placeholder="Nguyễn Văn A">
+      </div>
+      <div class="form-field">
+        <label>Số điện thoại</label>
+        <input type="tel" id="order-phone" placeholder="0901234567">
+      </div>
+    </div>
+    <div class="form-field">
+      <label>Địa chỉ giao hàng</label>
+      <input type="text" id="order-address" placeholder="123 Nguyễn Trãi, Quận 5, TP.HCM">
+    </div>
+    <div class="form-field">
+      <label>Ghi chú</label>
+      <textarea id="order-note" placeholder="Ít cay, không hành, để ở cửa..."></textarea>
+    </div>
+    <div class="form-field">
+      <label>Phương thức thanh toán</label>
+      <select id="order-payment" class="fancy-select">
+        <option value="cod">💵 Tiền mặt khi nhận (COD)</option>
+        <option value="momo">💜 Ví MoMo</option>
+        <option value="vnpay">🏦 VNPay</option>
+        <option value="card">💳 Thẻ ngân hàng</option>
+      </select>
+    </div>
+
+    <div class="mini-map-wrap" id="modal-mini-map"></div>
+    <div class="order-summary" id="order-summary-area"></div>
+
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button onclick="closeModal()" style="flex:1;padding:14px;border:1.5px solid var(--border);border-radius:16px;background:white;color:var(--muted);font-family:'Syne',sans-serif;font-weight:700;cursor:pointer;font-size:14px">Huỷ</button>
+      <button class="confirm-btn" onclick="confirmOrder()" style="flex:2">✅ Xác nhận đặt hàng</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════════════
+const API = '';
+
+// ══ 100-dish food image map ══
+// Map dish name keywords → Unsplash food image URLs
+const FOOD_IMAGES = {
+  // Vietnamese fast
+  'bánh mì': 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80',
+  'xôi': 'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=400&q=80',
+  'gà rán': 'https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=400&q=80',
+  'hamburger': 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&q=80',
+  'gỏi cuốn': 'https://images.unsplash.com/photo-1562802378-063ec186a863?w=400&q=80',
+  'bánh cuốn': 'https://images.unsplash.com/photo-1626776876729-bab4369a5a5a?w=400&q=80',
+  'cháo': 'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400&q=80',
+  'súp': 'https://images.unsplash.com/photo-1547592180-85f173990554?w=400&q=80',
+  'bánh giò': 'https://images.unsplash.com/photo-1498654896293-37aacf113fd9?w=400&q=80',
+  'bánh bao': 'https://images.unsplash.com/photo-1563245372-f21724e3856d?w=400&q=80',
+  'sandwich': 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=400&q=80',
+  'kimbap': 'https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=400&q=80',
+  'tokbokki': 'https://images.unsplash.com/photo-1635363638580-c2809d049eee?w=400&q=80',
+  'hotdog': 'https://images.unsplash.com/photo-1612392062631-94a8bb3a9558?w=400&q=80',
+  'takoyaki': 'https://images.unsplash.com/photo-1545093149-618ce3bcf49d?w=400&q=80',
+  'onigiri': 'https://images.unsplash.com/photo-1617196034082-73ea1cff2c0e?w=400&q=80',
+  // Vietnamese full
+  'cơm tấm': 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&q=80',
+  'bún bò': 'https://images.unsplash.com/photo-1618889483131-be4a89e2e1c7?w=400&q=80',
+  'phở': 'https://images.unsplash.com/photo-1576577445504-6af96477db52?w=400&q=80',
+  'cơm gà': 'https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=400&q=80',
+  'bún thịt nướng': 'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=400&q=80',
+  'mì quảng': 'https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=400&q=80',
+  'hủ tiếu': 'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400&q=80',
+  'bánh xèo': 'https://images.unsplash.com/photo-1626776876729-bab4369a5a5a?w=400&q=80',
+  'cua rang': 'https://images.unsplash.com/photo-1559847844-5315695dadae?w=400&q=80',
+  'bò nhúng dấm': 'https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=400&q=80',
+  'gà hấp': 'https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=400&q=80',
+  'bún riêu': 'https://images.unsplash.com/photo-1618889483131-be4a89e2e1c7?w=400&q=80',
+  'cơm chiên': 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=400&q=80',
+  'lẩu thái': 'https://images.unsplash.com/photo-1516684732162-798a0062be99?w=400&q=80',
+  'sashimi': 'https://images.unsplash.com/photo-1617196034232-34c7e5a66ca6?w=400&q=80',
+  'lẩu gà': 'https://images.unsplash.com/photo-1516684732162-798a0062be99?w=400&q=80',
+  'gà hầm': 'https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=400&q=80',
+  'dê núi': 'https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=400&q=80',
+  'king crab': 'https://images.unsplash.com/photo-1559847844-5315695dadae?w=400&q=80',
+  'lẩu cá': 'https://images.unsplash.com/photo-1516684732162-798a0062be99?w=400&q=80',
+  'gan ngỗng': 'https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=400&q=80',
+  'pizza': 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&q=80',
+  'steak': 'https://images.unsplash.com/photo-1544025162-d76694265947?w=400&q=80',
+  'sò điệp': 'https://images.unsplash.com/photo-1559847844-5315695dadae?w=400&q=80',
+  'bê chao': 'https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=400&q=80',
+};
+
+const DEFAULT_IMG = 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&q=80';
+
+function getDishImage(name) {
+  if (!name) return DEFAULT_IMG;
+  const lower = name.toLowerCase();
+  for (const [key, url] of Object.entries(FOOD_IMAGES)) {
+    if (lower.includes(key)) return url;
+  }
+  return DEFAULT_IMG;
+}
+
+// Budget bands for slider
+const BUDGET_BANDS = [
+  { value: 100000, label: 'Dưới 100k' },
+  { value: 300000, label: 'Dưới 300k' },
+  { value: 500000, label: 'Dưới 500k' },
+  { value: 1000000, label: 'Dưới 1 triệu' },
+  { value: 2000000, label: 'Không giới hạn' },
+];
+
+function updateBudgetLabel() {
+  const i = parseInt(document.getElementById('h-budget-slider').value);
+  document.getElementById('h-budget-label').textContent = BUDGET_BANDS[i].label;
+}
+
+// ═══════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════
+const SCREENS = ['screen-home','screen-tracking','screen-planner','screen-settings'];
+const NAVS    = ['nav-home','nav-tracking','nav-planner','nav-settings'];
+
+function showScreen(id) {
+  SCREENS.forEach(s => {
+    const el = document.getElementById(s);
+    if (el) el.classList.toggle('active', s === id);
+  });
+  NAVS.forEach(n => {
+    const el = document.getElementById(n);
+    if (el) el.classList.toggle('active', n === id.replace('screen-','nav-'));
+  });
+  // Reset scroll
+  const target = document.getElementById(id);
+  if (target) target.scrollTop = 0;
+}
+
+// ═══════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════
+function showToast(msg, type = 'ok') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast ${type} show`;
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ═══════════════════════════════════════════════════
+// WEATHER
+// ═══════════════════════════════════════════════════
+function weatherIcon(w) {
+  if (!w) return '☀️';
+  const lower = (w||'').toLowerCase();
+  if (lower.includes('rain') || lower.includes('drizzle')) return '🌧️';
+  if (lower.includes('thunder')) return '⛈️';
+  if (lower.includes('cloud') || lower.includes('mist')) return '⛅';
+  return '☀️';
+}
+
+async function loadWeather() {
+  try {
+    const r = await fetch(API + '/api/weather');
+    const w = await r.json();
+    const ic = weatherIcon(w.weather);
+    document.getElementById('w-icon').textContent = ic;
+    document.getElementById('w-title').textContent = w.weather_vi || w.weather || 'Nắng đẹp';
+    document.getElementById('w-temp').textContent = Math.round(w.temp || 32) + '°C';
+    document.getElementById('w-note').textContent =
+      `Độ ẩm ${w.humidity || '--'}% · Gió ${w.wind || '--'} km/h · Gợi ý điều chỉnh theo thời tiết`;
+    document.getElementById('weather-status-settings').textContent = '✅ Kết nối thành công';
+  } catch(e) {
+    document.getElementById('w-icon').textContent = '⚠️';
+    document.getElementById('w-title').textContent = 'Không có dữ liệu';
+    document.getElementById('w-temp').textContent = '--°C';
+    document.getElementById('w-note').textContent = 'Không kết nối được backend. Đang dùng dữ liệu mẫu.';
+    document.getElementById('weather-status-settings').textContent = '⚠️ Offline (fallback)';
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// DISH STORE (avoid JSON in onclick)
+// ═══════════════════════════════════════════════════
+const DISH_STORE = {};
+let dishIdx = 0;
+function storeDish(d) {
+  const k = 'dish_' + (dishIdx++);
+  DISH_STORE[k] = d;
+  return k;
+}
+
+// ═══════════════════════════════════════════════════
+// SUGGESTIONS (horizontal scroll, random picks)
+// ═══════════════════════════════════════════════════
+const RANDOM_DISHES = [
+  {name:'Phở Bò Tái Nạm',price:60000,calo:600,distance_km:0.8,delivery_time:12,meal_type:'full',style:'soup',protein:'beef',method:'boiled',rest_name:'Phở Vip'},
+  {name:'Bánh Mì Pate Chả',price:25000,calo:450,distance_km:0.3,delivery_time:7,meal_type:'fast',style:'dry',protein:'pork',method:'baked',rest_name:'Bánh Mì Ngon'},
+  {name:'Cơm Tấm Sườn Bì',price:55000,calo:800,distance_km:1.2,delivery_time:18,meal_type:'full',style:'dry',protein:'pork',method:'grilled',rest_name:'Cơm Hot'},
+  {name:'Gà Rán KFC',price:75000,calo:650,distance_km:0.6,delivery_time:10,meal_type:'fast',style:'dry',protein:'chicken',method:'fried',rest_name:'Gà Đêm'},
+  {name:'Bún Bò Huế',price:65000,calo:750,distance_km:1.0,delivery_time:15,meal_type:'full',style:'soup',protein:'beef',method:'stewed',rest_name:'Bún Gia Truyền'},
+  {name:'Gỏi Cuốn Tôm Thịt',price:30000,calo:200,distance_km:0.4,delivery_time:8,meal_type:'fast',style:'dry',protein:'mixed',method:'boiled',rest_name:'Gỏi Chuẩn'},
+  {name:'Pizza Seafood',price:250000,calo:1200,distance_km:2.0,delivery_time:25,meal_type:'full',style:'dry',protein:'seafood',method:'baked',rest_name:'Pizza Xịn'},
+  {name:'Steak Bò Mỹ',price:350000,calo:900,distance_km:1.8,delivery_time:22,meal_type:'full',style:'dry',protein:'beef',method:'pan-fried',rest_name:'Steak Hot'},
+  {name:'Kimbap Truyền Thống',price:45000,calo:400,distance_km:0.5,delivery_time:9,meal_type:'fast',style:'dry',protein:'veg',method:'mixed',rest_name:'Kimbap Ngon'},
+  {name:'Tokbokki Cay Nồng',price:55000,calo:480,distance_km:0.7,delivery_time:11,meal_type:'fast',style:'soup',protein:'veg',method:'stewed',rest_name:'Tokbokki Vip'},
+  {name:'Lẩu Thái Hải Sản',price:400000,calo:900,distance_km:2.5,delivery_time:30,meal_type:'full',style:'soup',protein:'seafood',method:'boiled',rest_name:'Lẩu Chuẩn'},
+  {name:'Hamburger Bò Úc',price:85000,calo:550,distance_km:0.9,delivery_time:13,meal_type:'fast',style:'dry',protein:'beef',method:'fried',rest_name:'Hamburger Hot'},
+  {name:'Xôi Gà Xé',price:30000,calo:600,distance_km:0.2,delivery_time:6,meal_type:'fast',style:'dry',protein:'chicken',method:'steamed',rest_name:'Xôi Vip'},
+  {name:'Hủ Tiếu Nam Vang',price:60000,calo:650,distance_km:1.1,delivery_time:16,meal_type:'full',style:'soup',protein:'pork',method:'boiled',rest_name:'Hủ Tiếu Gia Truyền'},
+  {name:'Cơm Chiên Dương Châu',price:55000,calo:700,distance_km:0.8,delivery_time:12,meal_type:'full',style:'dry',protein:'mixed',method:'fried',rest_name:'Cơm Chiên Ngon'},
+  {name:'Sandwich Cá Ngừ',price:50000,calo:350,distance_km:0.4,delivery_time:8,meal_type:'fast',style:'dry',protein:'seafood',method:'mixed',rest_name:'Sandwich Chuẩn'},
+  {name:'Bánh Xèo Miền Tây',price:55000,calo:500,distance_km:1.3,delivery_time:17,meal_type:'full',style:'dry',protein:'mixed',method:'fried',rest_name:'Bánh Xèo Hot'},
+  {name:'Cua Rang Muối',price:350000,calo:800,distance_km:2.2,delivery_time:28,meal_type:'full',style:'dry',protein:'seafood',method:'fried',rest_name:'Cua Vip'},
+  {name:'Mì Quảng Tôm Thịt',price:50000,calo:600,distance_km:0.9,delivery_time:13,meal_type:'full',style:'dry',protein:'mixed',method:'mixed',rest_name:'Mì Quảng Ngon'},
+  {name:'Takoyaki Bạch Tuộc',price:50000,calo:300,distance_km:0.6,delivery_time:10,meal_type:'fast',style:'dry',protein:'seafood',method:'fried',rest_name:'Takoyaki Xịn'},
+];
+
+function renderSuggestions(dishes) {
+  const list = document.getElementById('suggestion-list');
+  const picks = [...dishes].sort(() => 0.5 - Math.random()).slice(0, 6);
+  list.innerHTML = picks.map(item => {
+    const img = getDishImage(item.name);
+    const k = storeDish(item);
+    return `<div class="dish-card-h" onclick="openOrder('${k}')">
+      <div class="img-wrap">
+        <img src="${img}" alt="${item.name}" loading="lazy" onerror="this.src='${DEFAULT_IMG}'">
+        <div class="badge-rating">⭐ ${(4 + Math.random()).toFixed(1)}</div>
+      </div>
+      <h4>${item.name}</h4>
+      <p class="meta">Cách ${item.distance_km}km · ${Math.round(item.delivery_time)} phút</p>
+      <div class="bottom-row">
+        <span class="price">${(item.price/1000).toFixed(0)}k ₫</span>
+        <button class="add-btn" onclick="event.stopPropagation();openOrder('${k}')">+</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderRecent(dishes) {
+  const list = document.getElementById('recent-list');
+  const emojis = {pork:'🥩',beef:'🥩',chicken:'🍗',seafood:'🦐',veg:'🥗',egg:'🥚',mixed:'🍱',poultry:'🍗',meat:'🥩'};
+  list.innerHTML = dishes.slice(0, 4).map(item => {
+    const k = storeDish(item);
+    const em = emojis[item.protein] || '🍽️';
+    return `<div class="recent-card" onclick="openOrder('${k}')">
+      <div class="recent-icon">${em}</div>
+      <div class="recent-info">
+        <h4>${item.rest_name || item.name}</h4>
+        <p>${item.name} · Cách ${item.distance_km}km</p>
+      </div>
+      <div class="recent-time">~${Math.round(item.delivery_time)} phút</div>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════
+// RECOMMEND
+// ═══════════════════════════════════════════════════
+async function runRecommend() {
+  const btn = document.getElementById('find-btn');
+  const btnText = document.getElementById('find-btn-text');
+  btn.disabled = true;
+  btnText.textContent = '⏳ Đang tính toán...';
+
+  // Show rec section
+  document.getElementById('rec-result-section').style.display = 'block';
+  document.getElementById('rec-cards').innerHTML = '<div class="spinner-wrap"><div class="spinner"></div></div>';
+
+  const budgetIdx = parseInt(document.getElementById('h-budget-slider').value);
+  const healthVal = document.getElementById('h-health').value;
+  const payload = {
+    hunger: parseFloat(document.getElementById('h-hunger').value),
+    time_avail: parseFloat(document.getElementById('h-time').value),
+    budget: BUDGET_BANDS[budgetIdx].value,
+    health: healthVal || 'Balanced',
+    weather: document.getElementById('h-weather').value || undefined,
+  };
+
+  try {
+    const r = await fetch(API + '/api/recommend', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await r.json();
+    if (!data.results) throw new Error('Không nhận được dữ liệu');
+
+    // Render insight bar
+    const ul = data.urgency > 6.5 ? '🔴 Cao' : data.urgency > 3.5 ? '🟡 Trung bình' : '🟢 Thấp';
+    const tl = data.meal_score > 5 ? '🍱 Bữa đầy đủ' : '⚡ Ăn nhanh';
+    const wi = weatherIcon(data.weather.weather);
+    document.getElementById('insight-bar').innerHTML = [
+      `<div class="ichip">⚡ Urgency <span class="ival">${ul}</span></div>`,
+      `<div class="ichip">🍽️ Loại bữa <span class="ival">${tl}</span></div>`,
+      `<div class="ichip">🔥 Calo mục tiêu <span class="ival">${Math.round(data.cal_target)} kcal</span></div>`,
+      `<div class="ichip">${wi} <span class="ival">${data.weather.weather_vi||data.weather.weather} ${data.weather.temp}°C</span></div>`,
+    ].join('');
+
+    document.getElementById('rec-count').textContent = `${data.results.length} kết quả`;
+
+    // Render cards
+    document.getElementById('rec-cards').innerHTML = data.results.map((d, i) => buildRecCard(d, i)).join('');
+
+    // Also update suggestion list & recent with results
+    renderSuggestions([...data.results, ...RANDOM_DISHES]);
+    renderRecent(data.results);
+
+    showToast(`✅ Tìm thấy ${data.results.length} món!`, 'ok');
+
+    // Scroll to results
+    document.getElementById('rec-result-section').scrollIntoView({ behavior: 'smooth' });
+
+  } catch(e) {
+    document.getElementById('rec-cards').innerHTML = `
+      <div class="empty-state">
+        <div class="esi">❌</div>
+        <h3>Lỗi kết nối</h3>
+        <p>${e.message}<br>Kiểm tra backend đang chạy tại localhost:5000</p>
+      </div>`;
+    showToast('❌ ' + e.message, 'err');
+  }
+
+  btn.disabled = false;
+  btnText.textContent = 'Tìm món phù hợp';
+}
+
+function buildRecCard(d, rank) {
+  const isTop = rank <= 1;
+  const img = getDishImage(d.name);
+  const k = storeDish(d);
+  const mealCls = d.meal_type === 'fast' ? 'fast' : 'full';
+  const mealLbl = d.meal_type === 'fast' ? '⚡ Ăn nhanh' : '🍱 Đầy đủ';
+  const styleCls = d.style === 'soup' ? 'soup' : '';
+  const styleLbl = d.style === 'soup' ? '🍲 Canh' : '🥢 Khô';
+  return `<div class="rec-card" style="animation-delay:${rank*0.06}s">
+    <div class="rec-card-header">
+      <div class="rec-card-img-wrap">
+        <img src="${img}" alt="${d.name}" loading="lazy" onerror="this.src='${DEFAULT_IMG}'">
+      </div>
+      <div class="rec-card-info">
+        <h3>${d.name}</h3>
+        <div class="rest">🏪 ${d.rest_name}</div>
+        <div class="rec-card-tags">
+          <span class="rec-tag ${mealCls}">${mealLbl}</span>
+          ${d.style==='soup'?`<span class="rec-tag soup">${styleLbl}</span>`:''}
+        </div>
+      </div>
+      <span class="rec-rank ${isTop?'top'}">#${rank+1}</span>
+    </div>
+    <div class="rec-stats">
+      <div class="rec-stat"><div class="rs-lbl">Giá</div><div class="rs-val price">${(d.price/1000).toFixed(0)}k</div></div>
+      <div class="rec-stat"><div class="rs-lbl">Calo</div><div class="rs-val">${d.calo}</div></div>
+      <div class="rec-stat"><div class="rs-lbl">Giao hàng</div><div class="rs-val delivery">~${d.delivery_time} phút</div></div>
+      <div class="rec-stat"><div class="rs-lbl">Khoảng cách</div><div class="rs-val">${d.distance_km} km</div></div>
+    </div>
+    <button class="order-btn-full" onclick="openOrder('${k}')">🛒 Đặt ngay</button>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════
+// ORDER MODAL
+// ═══════════════════════════════════════════════════
+let currentDish = null;
+let orderQty = 1;
+
+function openOrder(key) {
+  const d = DISH_STORE[key];
+  if (!d) return;
+  currentDish = d;
+  orderQty = 1;
+  document.getElementById('qty-num').textContent = '1';
+
+  // Image
+  const img = getDishImage(d.name);
+  document.getElementById('modal-img').src = img;
+  document.getElementById('modal-img').alt = d.name;
+
+  // Dish info
+  document.getElementById('modal-dish-info').innerHTML = `
+    <h3>${d.name}</h3>
+    <p>🏪 ${d.rest_name}<br>📍 ${d.distance_km} km &nbsp;·&nbsp; 🚚 ~${d.delivery_time} phút<br>🔥 ${d.calo} kcal / phần</p>`;
+
+  // Mini map
+  document.getElementById('modal-mini-map').innerHTML =
+    `<iframe src="${API}/api/mini_map?lat=${d.lat||10.7725}&lon=${d.lon||106.698}&name=${encodeURIComponent(d.rest_name||d.name)}" style="width:100%;height:170px;border:none;border-radius:16px"></iframe>`;
+
+  updateOrderSummary();
+  document.getElementById('order-overlay').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('order-overlay').classList.remove('open');
+}
+
+function changeQty(delta) {
+  orderQty = Math.max(1, Math.min(10, orderQty + delta));
+  document.getElementById('qty-num').textContent = orderQty;
+  updateOrderSummary();
+}
+
+function updateOrderSummary() {
+  if (!currentDish) return;
+  const sub = currentDish.price * orderQty;
+  const ship = Math.round((currentDish.distance_km || 1) * 5000);
+  const total = sub + ship;
+  document.getElementById('order-summary-area').innerHTML = `
+    <div class="orow"><span class="ol">${currentDish.name} x${orderQty}</span><span class="or">${(sub/1000).toFixed(0)}k ₫</span></div>
+    <div class="orow"><span class="ol">Phí giao hàng (~${currentDish.distance_km||1}km)</span><span class="or">${(ship/1000).toFixed(0)}k ₫</span></div>
+    <div class="orow"><span class="ol">Khuyến mãi</span><span class="or" style="color:var(--green)">-0k ₫</span></div>
+    <div class="orow total"><span class="ol">Tổng cộng</span><span class="or">${(total/1000).toFixed(0)}k ₫</span></div>`;
+}
+
+function confirmOrder() {
+  const name = document.getElementById('order-name').value.trim();
+  const phone = document.getElementById('order-phone').value.trim();
+  const addr = document.getElementById('order-address').value.trim();
+  if (!name || !phone || !addr) {
+    showToast('⚠️ Vui lòng điền đầy đủ thông tin!', 'err');
+    return;
+  }
+  closeModal();
+  startTracking();
+  showScreen('screen-tracking');
+  showToast('✅ Đơn hàng đã được đặt!', 'ok');
+}
+
+// ═══════════════════════════════════════════════════
+// TRACKING
+// ═══════════════════════════════════════════════════
+let trackInterval = null;
+let trackSeconds = 0;
+let trackTotal = 0;
+
+const TRACK_STEPS = [
+  { icon: '✅', text: 'Đơn hàng được xác nhận', pct: 0.00 },
+  { icon: '👨‍🍳', text: 'Nhà hàng đang chuẩn bị', pct: 0.15 },
+  { icon: '📦', text: 'Món ăn đã đóng gói xong', pct: 0.45 },
+  { icon: '🛵', text: 'Tài xế đang giao hàng', pct: 0.65 },
+  { icon: '📍', text: 'Sắp đến nơi giao hàng', pct: 0.88 },
+];
+
+function renderSteps(p) {
+  return TRACK_STEPS.map(s => {
+    let cls = 'wait', lbl = 'Chờ...';
+    if (p >= s.pct + 0.18) { cls = 'done'; lbl = 'Hoàn thành ✓'; }
+    else if (p >= s.pct) { cls = 'active'; lbl = 'Đang xử lý...'; }
+    return `<div class="tstep ${cls}">
+      <div class="step-icon">${s.icon}</div>
+      <div class="step-text">${s.text}</div>
+      <div class="step-status">${lbl}</div>
+    </div>`;
+  }).join('');
+}
+
+function startTracking() {
+  if (!currentDish) return;
+  const totalMin = currentDish.delivery_time || 20;
+  trackTotal = Math.round(totalMin * 60);
+  trackSeconds = trackTotal;
+
+  // Setup tracking UI
+  document.getElementById('track-title').textContent = 'Đơn hàng đã xác nhận!';
+  document.getElementById('track-sub').textContent = `Giao tới bạn trong ~${Math.ceil(totalMin)} phút · ${currentDish.rest_name || currentDish.name}`;
+  document.getElementById('track-time').textContent = Math.ceil(totalMin) + ' phút';
+  document.getElementById('track-dist').textContent = (currentDish.distance_km || 1) + ' km';
+  document.getElementById('track-progress').style.width = '0%';
+  document.getElementById('track-emoji').textContent = '👨‍🍳';
+  document.getElementById('done-btn').classList.remove('visible');
+  document.getElementById('track-steps').innerHTML = renderSteps(0);
+
+  // Try load mini map
+  const mapWrap = document.getElementById('track-map-wrap');
+  mapWrap.innerHTML = `<iframe src="${API}/api/mini_map?lat=${currentDish.lat||10.7725}&lon=${currentDish.lon||106.698}&name=${encodeURIComponent(currentDish.rest_name||currentDish.name)}" style="width:100%;height:220px;border:none"></iframe>`;
+
+  clearInterval(trackInterval);
+  trackInterval = setInterval(() => {
+    trackSeconds--;
+    if (trackSeconds <= 0) {
+      clearInterval(trackInterval);
+      document.getElementById('track-emoji').textContent = '🎉';
+      document.getElementById('track-title').textContent = 'Đã giao hàng thành công!';
+      document.getElementById('track-sub').textContent = 'Cảm ơn bạn! Chúc ngon miệng 🍜';
+      document.getElementById('track-time').textContent = '0 phút';
+      document.getElementById('track-dist').textContent = '0 km';
+      document.getElementById('track-progress').style.width = '100%';
+      document.getElementById('track-steps').innerHTML = renderSteps(1);
+      document.getElementById('done-btn').classList.add('visible');
+      document.getElementById('track-ring-fill').style.animation = 'none';
+      return;
+    }
+    const p = (trackTotal - trackSeconds) / trackTotal;
+    const mLeft = Math.ceil(trackSeconds / 60);
+    const dLeft = ((currentDish.distance_km || 1) * (1 - p)).toFixed(2);
+    document.getElementById('track-time').textContent = mLeft + ' phút';
+    document.getElementById('track-dist').textContent = dLeft + ' km';
+    document.getElementById('track-progress').style.width = (p * 100).toFixed(1) + '%';
+    document.getElementById('track-steps').innerHTML = renderSteps(p);
+    if (p < 0.3) document.getElementById('track-emoji').textContent = '👨‍🍳';
+    else if (p < 0.55) document.getElementById('track-emoji').textContent = '📦';
+    else document.getElementById('track-emoji').textContent = '🛵';
+  }, 1000);
+}
+
+function finishOrder() {
+  clearInterval(trackInterval);
+  showScreen('screen-home');
+  showToast('🎉 Cảm ơn bạn! Chúc ngon miệng!', 'ok');
+}
+
+// ═══════════════════════════════════════════════════
+// DAILY PLANNER
+// ═══════════════════════════════════════════════════
+let planData = [];
+const PERIOD_COLORS = { Breakfast: '', Lunch: 'lunch', Dinner: 'dinner', 'Late Night': 'late' };
+const PERIOD_EMOJIS = { Breakfast: '☀️', Lunch: '🍱', Dinner: '🌙', 'Late Night': '⭐' };
+
+async function runPlan() {
+  const btn = document.getElementById('plan-btn');
+  const btnText = document.getElementById('plan-btn-text');
+  btn.disabled = true;
+  btnText.textContent = '⏳ Đang lên kế hoạch...';
+
+  document.getElementById('plan-result').innerHTML = '<div class="spinner-wrap"><div class="spinner"></div></div>';
+
+  try {
+    const payload = {
+      profile: document.getElementById('p-profile').value,
+      late_night: document.getElementById('p-late').checked,
+    };
+    const r = await fetch(API + '/api/plan', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await r.json();
+    planData = data.plan;
+    const w = data.weather || {};
+    const wi = weatherIcon(w.weather);
+
+    let html = `<div class="insight-row">
+      <div class="ichip">${wi} <span class="ival">${w.weather_vi||w.weather||'Nắng'} ${w.temp||32}°C</span></div>
+      <div class="ichip">👤 <span class="ival">${payload.profile}</span></div>
+      <div class="ichip">🍽️ <span class="ival">${data.plan.length} bữa</span></div>
+      <div class="ichip">🔥 <span class="ival">${data.total_calo} kcal</span></div>
+    </div>`;
+
+    html += data.plan.map((d, i) => buildPlanCard(d, i)).join('');
+
+    const totalPrice = data.plan.reduce((s, d) => s + d.price, 0);
+    html += `<div class="plan-summary-bar">
+      <div class="plan-sum-item"><div class="sv">${data.total_calo}</div><div class="sl">Tổng Calo</div></div>
+      <div class="plan-sum-item"><div class="sv">${data.plan.length}</div><div class="sl">Số bữa</div></div>
+      <div class="plan-sum-item"><div class="sv">${(totalPrice/1000).toFixed(0)}k</div><div class="sl">Chi phí</div></div>
+    </div>`;
+
+    // Add map button
+    html += `<button onclick="showPlanMap()" style="width:100%;padding:14px;border:1.5px solid var(--border);border-radius:16px;background:white;color:var(--brown-mid);font-family:'Syne',sans-serif;font-weight:700;cursor:pointer;font-size:14px;margin-bottom:20px;display:flex;align-items:center;justify-content:center;gap:8px">
+      🗺️ Xem bản đồ lộ trình
+    </button>`;
+
+    document.getElementById('plan-result').innerHTML = html;
+    showToast('✅ Kế hoạch đã sẵn sàng!', 'ok');
+
+  } catch(e) {
+    document.getElementById('plan-result').innerHTML = `
+      <div class="empty-state">
+        <div class="esi">❌</div>
+        <h3>Lỗi kết nối</h3>
+        <p>${e.message}</p>
+      </div>`;
+    showToast('❌ ' + e.message, 'err');
+  }
+
+  btn.disabled = false;
+  btnText.textContent = '🚀 Lập kế hoạch';
+}
+
+function buildPlanCard(d, i) {
+  const col = PERIOD_COLORS[d.period] || '';
+  const em = PERIOD_EMOJIS[d.period] || '🍽️';
+  const img = getDishImage(d.name);
+  const k = storeDish(d);
+  return `<div class="plan-meal-card" style="animation-delay:${i*0.1}s">
+    <div class="plan-accent ${col}"></div>
+    <div class="plan-body">
+      <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:10px">
+        <img src="${img}" alt="${d.name}" style="width:60px;height:60px;border-radius:12px;object-fit:cover;flex-shrink:0" onerror="this.style.display='none'">
+        <div style="flex:1">
+          <div class="plan-period-label">${em} ${d.period}</div>
+          <div class="plan-dish-name">${d.name}</div>
+        </div>
+      </div>
+      <div class="plan-meta">
+        <span class="plan-meta-chip">🏪 <span class="val">${d.rest_name}</span></span>
+        <span class="plan-meta-chip">💰 <span class="val">${(d.price/1000).toFixed(0)}k ₫</span></span>
+        <span class="plan-meta-chip">🔥 <span class="val">${d.calo} kcal</span></span>
+        <span class="plan-meta-chip">🚚 <span class="val">~${d.delivery_time} phút</span></span>
+        <span class="plan-meta-chip">📍 <span class="val">${d.distance_km} km</span></span>
+      </div>
+      <button class="order-small-btn" onclick="openOrder('${k}')">🛒 Đặt món này</button>
+    </div>
+  </div>`;
+}
+
+async function showPlanMap() {
+  if (!planData.length) { showToast('⚠️ Chạy planner trước!', 'err'); return; }
+  try {
+    const r = await fetch(API + '/api/map', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ items: planData }),
+    });
+    const data = await r.json();
+    if (data.error) throw new Error(data.error);
+    // Open in new tab or append
+    const win = window.open(data.map_url, '_blank');
+    if (!win) showToast('🗺️ Mở bản đồ trong tab mới', 'ok');
+    else showToast('🗺️ Bản đồ đã tải!', 'ok');
+  } catch(e) {
+    showToast('❌ ' + e.message, 'err');
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  updateBudgetLabel();
+  loadWeather();
+
+  // Load fallback suggestions from random dishes
+  renderSuggestions(RANDOM_DISHES);
+  renderRecent(RANDOM_DISHES.slice(0, 4));
+
+  // Try to auto-load recommendations
+  setTimeout(async () => {
+    try {
+      const payload = {
+        hunger: 7, time_avail: 45,
+        budget: 500000, health: 'Balanced',
+      };
+      const r = await fetch(API + '/api/recommend', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await r.json();
+      if (data.results && data.results.length) {
+        renderSuggestions([...data.results, ...RANDOM_DISHES]);
+        renderRecent(data.results);
+      }
+    } catch(e) {
+      // Fallback already shown
+    }
+  }, 500);
+});
+</script>
+</body>
+</html>

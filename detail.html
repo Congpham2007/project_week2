@@ -5,6 +5,11 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Restaurant Detail</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<<<<<<< HEAD
+=======
+<script src="navigation.js" defer></script>
+<script src="api.js" defer></script>
+>>>>>>> 05845629517b63be87990d750165bf8548d0c33b
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
@@ -126,10 +131,17 @@
 <body class="bg-background text-on-background font-body-md text-body-md antialiased pb-[100px]">
 <!-- Hero Image & Floating Header -->
 <header class="relative w-full h-[320px]">
+<<<<<<< HEAD
 <button onclick="window.parent.changeChannel('fuzzy.html')" class="absolute top-6 left-4 z-50 w-10 h-10 rounded-full bg-white/80 backdrop-blur-md shadow-md flex items-center justify-center text-[#765842] hover:bg-white active:scale-95 transition-all cursor-pointer">
     <span class="material-symbols-outlined">arrow_back</span>
 </button>
 <img alt="Restaurant Hero Image" class="absolute inset-0 w-full h-full object-cover" data-alt="A mouth-watering, top-down view of a modern Asian fusion feast spread across a rustic wooden table. The focal point is a steaming bowl of rich, amber-colored broth with perfectly arranged noodles, seared pork belly, and bright green scallions. Surrounding the bowl are elegant, minimalist ceramic plates holding delicate dim sum and vibrant, fresh spring rolls. The lighting is soft, warm, and natural, creating a candy-coated, premium aesthetic with deep, appetizing shadows and bright highlights that emphasize the textures of the food. The overall mood is inviting, sophisticated, and perfect for a high-end food delivery app." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhtfDX4W05gi-7GjCd-zE4Pam4idx9ZWgZR6_nDS_r6PuFqoLND9bH63rNtHcmEMTD2gNstO8sBHew38LY3kQtswO_IyCsMD6chURyf71qhRte_C2Lk-bQEFcSWXayN68PUT6VuplKZ-9wqq-AJ6SqW2_qPHNCaxcU0JynUkgwS34jmAG6GBNd20KS6QB3HKXoA6S02BJohw9ksAP4y31PFmyjbKN2azaYQPTNzuF4Jmrz5lpDrty3lvKzrxBr215BxoMPtY9IpNg"/>
+=======
+<button onclick="navigateTo('fuzzy.html')" class="absolute top-6 left-4 z-50 w-10 h-10 rounded-full bg-white/80 backdrop-blur-md shadow-md flex items-center justify-center text-[#765842] hover:bg-white active:scale-95 transition-all cursor-pointer">
+    <span class="material-symbols-outlined">arrow_back</span>
+</button>
+<img id="detail-hero" alt="Restaurant Hero Image" class="absolute inset-0 w-full h-full object-cover" data-alt="A mouth-watering, top-down view of a modern Asian fusion feast spread across a rustic wooden table. The focal point is a steaming bowl of rich, amber-colored broth with perfectly arranged noodles, seared pork belly, and bright green scallions. Surrounding the bowl are elegant, minimalist ceramic plates holding delicate dim sum and vibrant, fresh spring rolls. The lighting is soft, warm, and natural, creating a candy-coated, premium aesthetic with deep, appetizing shadows and bright highlights that emphasize the textures of the food. The overall mood is inviting, sophisticated, and perfect for a high-end food delivery app." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhtfDX4W05gi-7GjCd-zE4Pam4idx9ZWgZR6_nDS_r6PuFqoLND9bH63rNtHcmEMTD2gNstO8sBHew38LY3kQtswO_IyCsMD6chURyf71qhRte_C2Lk-bQEFcSWXayN68PUT6VuplKZ-9wqq-AJ6SqW2_qPHNCaxcU0JynUkgwS34jmAG6GBNd20KS6QB3HKXoA6S02BJohw9ksAP4y31PFmyjbKN2azaYQPTNzuF4Jmrz5lpDrty3lvKzrxBr215BxoMPtY9IpNg"/>
+>>>>>>> 05845629517b63be87990d750165bf8548d0c33b
 <!-- Gradient Overlay for better readability if needed, though mostly for the top bar area here -->
 <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/10 pointer-events-none"></div>
 <!-- Floating Glassmorphism Nav -->
@@ -138,7 +150,11 @@
 <!-- Restaurant Info Card (Overlapping Hero) -->
 <main class="relative z-20 -mt-10 mx-0 bg-surface-container-lowest rounded-t-xl px-container-padding pt-stack-md pb-stack-sm shadow-[0_-10px_40px_-10px_rgba(118,88,66,0.15)]">
 <div class="flex justify-between items-start mb-unit">
+<<<<<<< HEAD
 <h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Bếp Chay Mộc Nhiên</h1>
+=======
+<h1 id="detail-title" class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Bếp Chay Mộc Nhiên</h1>
+>>>>>>> 05845629517b63be87990d750165bf8548d0c33b
 <div class="flex flex-col items-end">
 <div class="flex items-center gap-1 bg-primary-container text-on-primary-container px-2 py-1 rounded-lg">
 <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
@@ -147,17 +163,29 @@
 <span class="font-label-md text-label-md text-on-surface-variant mt-1">200+ đánh giá</span>
 </div>
 </div>
+<<<<<<< HEAD
 <p class="font-body-md text-body-md text-on-surface-variant mb-stack-sm">Ẩm thực thuần chay, Tươi ngon mỗi ngày</p>
+=======
+<p id="detail-subtitle" class="font-body-md text-body-md text-on-surface-variant mb-stack-sm">Ẩm thực thuần chay, Tươi ngon mỗi ngày</p>
+>>>>>>> 05845629517b63be87990d750165bf8548d0c33b
 <!-- Meta Info Row -->
 <div class="flex items-center gap-4 mb-stack-sm font-label-md text-label-md text-on-surface">
 <div class="flex items-center gap-1">
 <span class="material-symbols-outlined text-outline text-[18px]">schedule</span>
+<<<<<<< HEAD
 <span>25 - 35 phút</span>
+=======
+<span id="detail-time">25 - 35 phút</span>
+>>>>>>> 05845629517b63be87990d750165bf8548d0c33b
 </div>
 <div class="w-1 h-1 rounded-full bg-outline-variant"></div>
 <div class="flex items-center gap-1">
 <span class="material-symbols-outlined text-outline text-[18px]">location_on</span>
+<<<<<<< HEAD
 <span>2.4 km</span>
+=======
+<span id="detail-distance">2.4 km</span>
+>>>>>>> 05845629517b63be87990d750165bf8548d0c33b
 </div>
 <div class="w-1 h-1 rounded-full bg-outline-variant"></div>
 <div class="flex items-center gap-1 text-primary">
@@ -259,6 +287,7 @@
 <span class="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-error text-on-error font-label-md text-[10px] flex items-center justify-center border-2 border-surface-container-lowest">2</span>
 </div>
 </div>
+<<<<<<< HEAD
 <button onclick="window.parent.changeChannel('tracking.html')" class="flex-1 bg-gradient-to-r from-primary-fixed to-primary-container text-on-primary-container py-3.5 px-6 rounded-full font-label-lg text-label-lg flex items-center justify-between shadow-sm active:scale-[0.98] transition-transform">
 <span>Thanh toán</span>
 <span class="font-bold">140.000đ</span>
@@ -266,3 +295,29 @@
 </div>
 </div>
 </body></html>
+=======
+<button onclick="navigateTo('tracking.html')" class="flex-1 bg-gradient-to-r from-primary-fixed to-primary-container text-on-primary-container py-3.5 px-6 rounded-full font-label-lg text-label-lg flex items-center justify-between shadow-sm active:scale-[0.98] transition-transform">
+<span>Thanh toán</span>
+<span id="detail-price" class="font-bold">140.000đ</span>
+</button>
+</div>
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const selectedDish = smartFoodStore.getStored(smartFoodApi.STORAGE_KEYS.selectedDish);
+  if (!selectedDish) return;
+
+  const hero = selectedDish.meal_type === "fast"
+    ? "https://lh3.googleusercontent.com/aida-public/AB6AXuBYwF2sN4XIoizoz6tr7EmkaEl_4HIHzzfwlJ_IJN-wdIfr31xC780QfLkderqKEfSh6tCPzUhaCXtfZnV4qXFxcltzF1NRMXsGTWB4WgnbUbjGxFhlMh5OzWcFwkABVPXJ_U-OdKVTrc43IiHPi6U7r8mBXB0amXYgL4nEtCdvfKUd3gx21Mws6vtxTFstfwBO26mHNPq0c8wgU-59QUPO48_30Apa6I9vtfJ1Yv95cFYkqswBa0TyMTXY2YbywmGjEimS_F8UZz4"
+    : "https://lh3.googleusercontent.com/aida-public/AB6AXuDhtfDX4W05gi-7GjCd-zE4Pam4idx9ZWgZR6_nDS_r6PuFqoLND9bH63rNtHcmEMTD2gNstO8sBHew38LY3kQtswO_IyCsMD6chURyf71qhRte_C2Lk-bQEFcSWXayN68PUT6VuplKZ-9wqq-AJ6SqW2_qPHNCaxcU0JynUkgwS34jmAG6GBNd20KS6QB3HKXoA6S02BJohw9ksAP4y31PFmyjbKN2azaYQPTNzuF4Jmrz5lpDrty3lvKzrxBr215BxoMPtY9IpNg";
+
+  document.getElementById("detail-hero").src = hero;
+  document.getElementById("detail-title").textContent = selectedDish.rest_name || selectedDish.name;
+  document.getElementById("detail-subtitle").textContent = `${selectedDish.name} • ${selectedDish.meal_type === "fast" ? "Ưu tiên giao nhanh" : "Bữa đầy đủ theo fuzzy"}`;
+  document.getElementById("detail-time").textContent = `${Math.max(12, Math.round(selectedDish.delivery_time - 6))} - ${Math.round(selectedDish.delivery_time)} phút`;
+  document.getElementById("detail-distance").textContent = `${selectedDish.distance_km} km`;
+  document.getElementById("detail-price").textContent = smartFoodUtils.formatPrice(selectedDish.price);
+});
+</script>
+</body></html>
+>>>>>>> 05845629517b63be87990d750165bf8548d0c33b

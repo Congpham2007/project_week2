@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<<<<<<< HEAD
 
 <html lang="vi"><head>
 <meta charset="utf-8"/>
@@ -230,3 +231,229 @@
 <!-- BottomNavBar (Hidden on Desktop) -->
 
 </body></html>
+=======
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Theo dõi đơn hàng - Aura Cuisines</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="navigation.js" defer></script>
+    <script src="api.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <style>
+        ::-webkit-scrollbar { display: none; }
+        html, body { -ms-overflow-style: none; scrollbar-width: none; overflow-x: hidden; height: 100%; }
+        body { font-family: 'Inter', sans-serif; background: #fbf9f4; }
+
+        /* Vòng xoay đếm ngược đặc trưng của Planner */
+        .track-ring { position:absolute; inset:0; border-radius:50%; border:3px solid #eee2d8; }
+        .track-ring-fill { 
+            position:absolute; inset:0; border-radius:50%; 
+            border:3px solid #765842; border-right-color:transparent; 
+            animation: spin 1.5s linear infinite; 
+        }
+        @keyframes spin { to { transform:rotate(360deg); } }
+
+        /* Timeline dọc */
+        .tstep { border-left: 2px solid #eee2d8; margin-left: 11px; padding-left: 20px; position: relative; padding-bottom: 24px; transition: 0.4s; }
+        .tstep::before { content: ''; position: absolute; left: -7px; top: 0; width: 12px; height: 12px; border-radius: 50%; background: #eee2d8; border: 2px solid #fff; }
+        .tstep.done { border-left-color: #74cdb9; }
+        .tstep.done::before { background: #74cdb9; }
+        .tstep.active { border-left-color: #f4a55a; }
+        .tstep.active::before { background: #f4a55a; box-shadow: 0 0 0 4px rgba(244,165,90,0.15); }
+        .tstep:last-child { border-left-color: transparent; padding-bottom: 0; }
+
+        /* Bottom Sheet panel */
+        .bottom-sheet { 
+            background: white; 
+            border-radius: 32px 32px 0 0; 
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.06);
+            z-index: 40;
+        }
+
+        iframe { border: none; width: 100%; height: 100%; }
+        .fade-up { animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="text-[#1b1c19]">
+    <div class="w-full max-w-[430px] min-h-screen mx-auto relative flex flex-col">
+        
+        <header class="fixed top-0 inset-x-0 z-50 bg-white/80 backdrop-blur-md px-5 h-16 flex items-center justify-between">
+            <button onclick="goBack()" class="w-10 h-10 rounded-full bg-white border border-[#eaded5] flex items-center justify-center text-[#8a6547] active:scale-90 transition-all">
+                <span class="material-symbols-outlined">arrow_back</span>
+            </button>
+            <h1 class="text-[17px] font-bold text-[#765842]">Theo dõi đơn hàng</h1>
+            <div class="w-10"></div>
+        </header>
+
+        <div id="map-container" class="fixed inset-0 z-0 h-[55%] bg-[#f3ede8]">
+            <div class="flex items-center justify-center h-full text-[#9c8a7d] text-sm italic">
+                Đang nạp bản đồ tài xế...
+            </div>
+        </div>
+
+        <main class="mt-auto relative z-10 bottom-sheet p-6 pb-12 fade-up max-h-[70vh] overflow-y-auto">
+            <div class="w-12 h-1 bg-[#eee2d8] rounded-full mx-auto mb-6"></div>
+
+            <div class="flex justify-between items-start mb-6">
+                <div class="flex-1">
+                    <div class="flex items-center gap-2 mb-1.5">
+                        <div id="status-dot" class="w-2.5 h-2.5 rounded-full bg-[#74cdb9] animate-pulse"></div>
+                        <span id="order-status-text" class="text-[11px] font-bold text-[#2f685e] uppercase tracking-widest">Đang giao hàng</span>
+                    </div>
+                    <h2 id="countdown-timer" class="text-[36px] font-bold text-[#241814] leading-none mb-1">-- phút</h2>
+                    <p class="text-[13px] text-[#8d7d72]">Khoảng cách: <span id="dist-km" class="font-bold text-[#5a4a40]">--</span> km • <span id="id-label">#ORD...</span></p>
+                </div>
+                
+                <div class="relative w-16 h-16 shrink-0">
+                    <div class="track-ring"></div>
+                    <div id="ring-spinner" class="track-ring-fill"></div>
+                    <div class="absolute inset-0 flex items-center justify-center text-xl" id="center-icon">🛵</div>
+                </div>
+            </div>
+
+            <div class="bg-[#fbf9f4] border border-[#eee2d8] rounded-[24px] p-4 mb-6 flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-white border border-[#eee2d8] flex items-center justify-center text-2xl" id="item-emoji">🍔</div>
+                <div class="flex-1">
+                    <h3 id="item-name" class="font-bold text-[15px] text-[#241814]">Tên món ăn</h3>
+                    <p id="item-rest" class="text-[12px] text-[#8d7d72]">Nhà hàng</p>
+                </div>
+                <div class="text-right">
+                    <div id="item-qty" class="text-[12px] font-bold text-[#765842] bg-[#ffd6ba] px-2 py-0.5 rounded-lg mb-1">x1</div>
+                    <p id="item-price" class="text-[14px] font-bold text-[#765842]">0đ</p>
+                </div>
+            </div>
+
+            <div id="timeline-box" class="mb-8"></div>
+
+            <div class="flex items-center gap-3 border border-[#f0ebe7] rounded-[24px] p-3 bg-white shadow-sm mb-4">
+                <img class="w-11 h-11 rounded-full object-cover border-2 border-[#fdf3eb]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9RJSYa8veyO7N8IiZn1LCurJQ3R8KBeC5NVEp-Z91dTtT4s-sU7tpD4BsYsz_qlA3OE1FR4hBvXFfI4EBkADvQ9Kg9ApeIqrNpuyLjuBhXRQ-PyREkFcqFKK4N3nzY4E3bX2jvuMVRStKlgbT8UO2tK_XXioVqXgTqAEt87yJmBZJspa3GVkcFupooj_vMSpmBjXfwowcdyQ9kvd0Jbg49f4c-VEF8slVqsmlaPi_MC0qb2ZdUIR8SR3Bhl9pF1tGHvHP9c3K1Ss">
+                <div class="flex-1 text-left">
+                    <h3 class="font-bold text-[14px] text-[#241814]">Trần Văn Tài</h3>
+                    <p class="text-[11px] text-[#8d7d72]">4.9 ★ • 29A1-123.45</p>
+                </div>
+                <button class="w-10 h-10 rounded-full bg-[#765842] text-white flex items-center justify-center shadow-md active:scale-90 transition-all">
+                    <span class="material-symbols-outlined text-[18px]">call</span>
+                </button>
+            </div>
+
+            <button id="btn-finish" onclick="goBack()" class="hidden w-full py-4 rounded-[16px] bg-[#2f685e] text-white font-bold text-[15px] items-center justify-center gap-2 shadow-lg animate-bounce">
+                <span class="material-symbols-outlined">check_circle</span>
+                Xác nhận đã nhận hàng
+            </button>
+        </main>
+    </div>
+
+    <script>
+        let countdownInterval = null;
+
+        function goBack() {
+            if(window.parent && window.parent.changeChannel) {
+                window.parent.changeChannel('map.html', 'tab-map');
+            } else {
+                window.location.href = 'map.html';
+            }
+        }
+
+        function initTracking() {
+            // Lấy đơn hàng mới nhất từ danh sách
+            const orderId = localStorage.getItem('last_order_id');
+            const orders = JSON.parse(localStorage.getItem('smart_food_orders') || '[]');
+            const order = orders.find(o => o.orderId === orderId) || orders[orders.length - 1];
+
+            if (!order) {
+                alert("Không có đơn hàng nào đang giao!");
+                goBack();
+                return;
+            }
+
+            // Đổ dữ liệu
+            document.getElementById('id-label').textContent = '#' + (order.orderId || 'ORD-000');
+            document.getElementById('item-name').textContent = order.name;
+            document.getElementById('item-rest').textContent = order.rest_name;
+            document.getElementById('item-qty').textContent = 'x' + (order.qty || 1);
+            document.getElementById('item-price').textContent = (order.totalPrice / 1000).toFixed(0) + 'k ₫';
+            document.getElementById('item-emoji').textContent = order.meal_type === 'fast' ? '🍔' : '🍛';
+
+            // Nạp Map
+            document.getElementById('map-container').innerHTML = 
+                `<iframe src="/api/mini_map?lat=${order.lat}&lon=${order.lon}&name=${encodeURIComponent(order.rest_name)}"></iframe>`;
+
+            startLogic(order);
+        }
+
+        function startLogic(order) {
+            const steps = [
+                { text: 'Đã xác nhận đơn hàng', pct: 0 },
+                { text: 'Đang chuẩn bị món ăn', pct: 0.2 },
+                { text: 'Tài xế đang giao hàng', pct: 0.5 },
+                { text: 'Đang đến điểm giao', pct: 0.9 }
+            ];
+
+            const totalTime = (order.delivery_time || 15) * 60; // giây
+            
+            const update = () => {
+                const now = Date.now();
+                const elapsed = (now - order.startTime) / 1000;
+                const remain = Math.max(0, totalTime - elapsed);
+                const progress = Math.min(1, elapsed / totalTime);
+
+                // 1. Cập nhật đếm ngược
+                const mins = Math.ceil(remain / 60);
+                document.getElementById('countdown-timer').textContent = mins > 0 ? mins + ' phút' : 'Đã đến!';
+                document.getElementById('dist-km').textContent = (order.distance_km * (1 - progress)).toFixed(2);
+
+                // 2. Cập nhật Status
+                const statusTxt = document.getElementById('order-status-text');
+                if (progress < 0.2) {
+                    statusTxt.textContent = "Nhà hàng đã nhận đơn";
+                    document.getElementById('center-icon').textContent = '👨‍🍳';
+                } else if (progress < 0.5) {
+                    statusTxt.textContent = "Đang chuẩn bị món";
+                    document.getElementById('center-icon').textContent = '📦';
+                } else if (progress < 0.95) {
+                    statusTxt.textContent = "Đang giao hàng";
+                    document.getElementById('center-icon').textContent = '🛵';
+                }
+
+                // 3. Render Timeline
+                document.getElementById('timeline-box').innerHTML = steps.map(s => {
+                    let cls = progress >= s.pct + 0.1 ? 'done' : (progress >= s.pct ? 'active' : 'wait');
+                    return `<div class="tstep ${cls}"><div class="text-[14px] font-bold text-[#5a4a40]">${s.text}</div></div>`;
+                }).join('');
+
+                // 4. XỬ LÝ KHI HOÀN THÀNH (Yêu cầu của bạn)
+                if (remain <= 0) {
+                    clearInterval(countdownInterval);
+                    
+                    // Đổi trạng thái sang HOÀN THÀNH
+                    statusTxt.textContent = "Đã hoàn tất giao hàng";
+                    document.getElementById('countdown-timer').textContent = "Hoàn thành!";
+                    document.getElementById('status-dot').classList.remove('animate-pulse');
+                    document.getElementById('status-dot').classList.replace('bg-[#74cdb9]', 'bg-[#2f685e]');
+                    
+                    // Dừng vòng xoay và đổi icon
+                    const spinner = document.getElementById('ring-spinner');
+                    spinner.style.animation = 'none';
+                    spinner.style.borderRightColor = '#765842'; // Fill đầy vòng
+                    document.getElementById('center-icon').textContent = '✅';
+
+                    // Hiện nút xác nhận cuối cùng
+                    const btn = document.getElementById('btn-finish');
+                    btn.classList.remove('hidden');
+                    btn.classList.add('flex');
+                }
+            };
+
+            update();
+            countdownInterval = setInterval(update, 1000);
+        }
+
+        document.addEventListener("DOMContentLoaded", initTracking);
+    </script>
+</body>
+</html>
+>>>>>>> 05845629517b63be87990d750165bf8548d0c33b

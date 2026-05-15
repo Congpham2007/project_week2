@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html><html lang="vi" style=""><head>
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
@@ -193,3 +194,435 @@
 
 
 </body></html>
+=======
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Quán quen gần đây</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@turf/turf@7.2.0/turf.min.js"></script>
+    <script src="navigation.js" defer></script>
+    <script src="api.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <style>
+        ::-webkit-scrollbar { display: none; }
+        html, body { -ms-overflow-style: none; scrollbar-width: none; overflow-x: hidden; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(180deg, #fffdf9 0%, #f5efea 100%);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.82);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            box-shadow: 0 18px 40px rgba(118, 88, 66, 0.12);
+        }
+
+        .map-shell {
+            position: relative;
+            background:
+                radial-gradient(circle at top right, rgba(180, 238, 226, 0.3), transparent 24%),
+                radial-gradient(circle at bottom left, rgba(255, 214, 186, 0.28), transparent 26%),
+                linear-gradient(180deg, rgba(255, 250, 245, 0.92), rgba(242, 237, 230, 0.98));
+            touch-action: none;
+            cursor: grab;
+        }
+
+        .geometry-stage {
+            position: absolute;
+            inset: 0;
+            will-change: transform;
+        }
+
+        .map-shell.dragging {
+            cursor: grabbing;
+        }
+
+        .geometry-road {
+            fill: none;
+            stroke: rgba(138, 101, 71, 0.1);
+            stroke-width: 18;
+            stroke-linecap: round;
+        }
+
+        .geometry-road-outline {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.34);
+            stroke-width: 2;
+            stroke-linecap: round;
+        }
+
+        .marker-layer {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .map-pin {
+            position: absolute;
+            transform: translate(-50%, -100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            pointer-events: auto;
+        }
+
+        .map-pin__image {
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            border: 4px solid #ffffff;
+            object-fit: cover;
+            background: #ffffff;
+            box-shadow: 0 10px 20px rgba(118, 88, 66, 0.16);
+        }
+
+        .map-pin__label {
+            margin-top: 7px;
+            padding: 5px 10px;
+            border-radius: 9999px;
+            color: #ffffff;
+            font-size: 10px;
+            font-weight: 700;
+            white-space: nowrap;
+            box-shadow: 0 8px 16px rgba(118, 88, 66, 0.18);
+        }
+
+        .map-pin__stem {
+            width: 2px;
+            height: 12px;
+            margin-top: 1px;
+        }
+
+        .user-pulse {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border-radius: 9999px;
+            background: #2f685e;
+            border: 4px solid #ffffff;
+            box-shadow: 0 0 0 12px rgba(47, 104, 94, 0.12);
+            transform: translate(-50%, -50%);
+        }
+
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .nav-item {
+            color: #8d7d72;
+        }
+
+        .nav-item.active {
+            color: #765842;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body class="text-[#1b1c19]">
+    <div class="w-full max-w-[430px] min-h-screen mx-auto bg-[#fbf9f4] relative overflow-hidden pb-28">
+        <header class="px-5 pt-6 pb-4 relative z-20">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3 text-[#765842]">
+                    <span class="material-symbols-outlined">restaurant</span>
+                    <h1 class="text-[24px] leading-[30px] font-bold">Quán quen gần đây</h1>
+                </div>
+                <button onclick="navigateTo('settings.html', 'tab-settings')" class="w-10 h-10 rounded-full overflow-hidden border-2 border-[#ffd6ba]">
+                    <img alt="Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCPTZMyFcNlUDrrt5P2YCep_Rw9qQSTe3fndRYKzALgsKpTDFpx0rzOOpFFoMitc8alzyzkks_z5DMyvgV0lC5MjAW4Y4xOhcK_kJQx8t8x2Rz8cZ9lYg-2DK3SzZWzONW8-8Sn4J1E8dZlp5psAGQukKlT7Aqmqazxmjk0_2r90T-0FQRa8xmxML2pVjqtNxYGezXl56EtG_xTXq_nxPagUUVNpLTOQmGEbuggY0dEUMnXcVIF_wQEu6HsKKgUIg5HLnMEW3R8x3k">
+                </button>
+            </div>
+        </header>
+
+        <main class="px-5">
+            <section class="glass-card rounded-full px-4 py-3 flex items-center gap-3 relative z-20 border border-white/70">
+                <span class="material-symbols-outlined text-[#8d7d72]">search</span>
+                <input id="map-search" class="w-full bg-transparent border-none focus:ring-0 text-[#5e4839] placeholder:text-[#b3a394]" placeholder="Tìm kiếm trên bản đồ..." type="text">
+                <button class="w-9 h-9 rounded-full bg-[#ffd6ba] text-[#7a5b45] flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[18px]">tune</span>
+                </button>
+            </section>
+
+            <section class="map-shell relative mt-4 h-[610px] rounded-[34px] overflow-hidden border border-white/60">
+                <div class="geometry-stage">
+                    <svg id="geometry-svg" viewBox="0 0 1000 1400" class="w-full h-full">
+                        <g id="road-layer"></g>
+                    </svg>
+                    <div id="marker-layer" class="marker-layer"></div>
+                </div>
+
+                <section id="carousel-wrap" class="absolute inset-x-4 bottom-4 z-20">
+                    <div id="restaurant-carousel" class="flex gap-3 overflow-x-auto hide-scrollbar pb-1 pr-6"></div>
+                </section>
+            </section>
+        </main>
+
+        <nav id="standalone-nav" class="hidden fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-white/92 backdrop-blur-xl border-t border-[#efe7df] rounded-t-[28px] px-4 py-4 shadow-[0_-10px_30px_rgba(118,88,66,0.12)]">
+            <div class="flex items-center justify-around">
+                <button data-tab="tab-home" onclick="navigateTo('home.html', 'tab-home')" class="nav-item flex flex-col items-center gap-1">
+                    <span class="material-symbols-outlined">home_app_logo</span>
+                    <span class="text-[12px]">Trang chủ</span>
+                </button>
+                <button data-tab="tab-map" onclick="navigateTo('map.html', 'tab-map')" class="nav-item flex flex-col items-center gap-1">
+                    <span class="material-symbols-outlined">map</span>
+                    <span class="text-[12px]">Bản đồ</span>
+                </button>
+                <button data-tab="tab-planner" onclick="navigateTo('planner.html', 'tab-planner')" class="nav-item flex flex-col items-center gap-1">
+                    <span class="material-symbols-outlined">calendar_today</span>
+                    <span class="text-[12px]">Kế hoạch</span>
+                </button>
+                <button data-tab="tab-settings" onclick="navigateTo('settings.html', 'tab-settings')" class="nav-item flex flex-col items-center gap-1">
+                    <span class="material-symbols-outlined">settings</span>
+                    <span class="text-[12px]">Cài đặt</span>
+                </button>
+            </div>
+        </nav>
+    </div>
+
+    <script>
+        const USER_LOCATION = { lat: 10.7725, lon: 106.6980 };
+        const markerColors = ["#2f685e", "#9e6b43", "#7a5aa7", "#d68b5e", "#4a7f8f"];
+        let allRestaurants = [];
+        let visibleRestaurants = [];
+        let panX = 0;
+        let panY = 0;
+        let currentScale = 1;
+        let dragging = false;
+        let dragStartX = 0;
+        let dragStartY = 0;
+        let dragOriginX = 0;
+        let dragOriginY = 0;
+
+        async function ensureResults() {
+            let recommendation = smartFoodStore.getStored(smartFoodApi.STORAGE_KEYS.recommend);
+            if (recommendation?.results?.length) return recommendation.results.slice(0, 5);
+
+            const payload = smartFoodStore.getStored(smartFoodApi.STORAGE_KEYS.recommendPayload, {
+                hunger: 7,
+                time_avail: 30,
+                budget: 300000,
+                health: "Balanced"
+            });
+            recommendation = await smartFoodApi.getRecommend(payload);
+            smartFoodStore.setStored(smartFoodApi.STORAGE_KEYS.recommend, recommendation);
+            return recommendation.results.slice(0, 5);
+        }
+
+        function normalizeItems(items) {
+            return items.map((item, index) => ({
+                ...item,
+                image: index % 2 === 0
+                    ? "https://lh3.googleusercontent.com/aida-public/AB6AXuDhtfDX4W05gi-7GjCd-zE4Pam4idx9ZWgZR6_nDS_r6PuFqoLND9bH63rNtHcmEMTD2gNstO8sBHew38LY3kQtswO_IyCsMD6chURyf71qhRte_C2Lk-bQEFcSWXayN68PUT6VuplKZ-9wqq-AJ6SqW2_qPHNCaxcU0JynUkgwS34jmAG6GBNd20KS6QB3HKXoA6S02BJohw9ksAP4y31PFmyjbKN2azaYQPTNzuF4Jmrz5lpDrty3lvKzrxBr215BxoMPtY9IpNg"
+                    : "https://lh3.googleusercontent.com/aida-public/AB6AXuBYwF2sN4XIoizoz6tr7EmkaEl_4HIHzzfwlJ_IJN-wdIfr31xC780QfLkderqKEfSh6tCPzUhaCXtfZnV4qXFxcltzF1NRMXsGTWB4WgnbUbjGxFhlMh5OzWcFwkABVPXJ_U-OdKVTrc43IiHPi6U7r8mBXB0amXYgL4nEtCdvfKUd3gx21Mws6vtxTFstfwBO26mHNPq0c8wgU-59QUPO48_30Apa6I9vtfJ1Yv95cFYkqswBa0TyMTXY2YbywmGjEimS_F8UZz4",
+                category: item.name,
+                status: item.delivery_time <= 25 ? "Giao nhanh" : "Đang mở",
+                color: markerColors[index % markerColors.length]
+            }));
+        }
+
+        function buildProjection(restaurants) {
+            const features = turf.featureCollection([
+                turf.point([USER_LOCATION.lon, USER_LOCATION.lat]),
+                ...restaurants.map((item) => turf.point([item.lon, item.lat]))
+            ]);
+            const bbox = turf.bbox(features);
+            const padded = [
+                bbox[0] - 0.01,
+                bbox[1] - 0.01,
+                bbox[2] + 0.01,
+                bbox[3] + 0.01
+            ];
+
+            return {
+                bbox: padded,
+                project(lon, lat) {
+                    const x = ((lon - padded[0]) / (padded[2] - padded[0])) * 1000;
+                    const y = 1400 - ((lat - padded[1]) / (padded[3] - padded[1])) * 1400;
+                    return { x, y };
+                }
+            };
+        }
+
+        function toPath(points, projector) {
+            return points.map((point, index) => {
+                const projected = projector(point[0], point[1]);
+                return `${index === 0 ? "M" : "L"} ${projected.x.toFixed(1)} ${projected.y.toFixed(1)}`;
+            }).join(" ");
+        }
+
+        function buildRoadNetwork(restaurants, projection) {
+            const [minLon, minLat, maxLon, maxLat] = projection.bbox;
+            const centerLon = (minLon + maxLon) / 2;
+            const centerLat = (minLat + maxLat) / 2;
+            const quarterLon = (maxLon - minLon) / 4;
+            const quarterLat = (maxLat - minLat) / 4;
+
+            const northSouth = turf.lineString([
+                [centerLon - quarterLon * 0.2, maxLat],
+                [centerLon, centerLat + quarterLat * 0.3],
+                [centerLon + quarterLon * 0.1, minLat]
+            ]);
+            const westEast = turf.lineString([
+                [minLon, centerLat - quarterLat * 0.2],
+                [centerLon - quarterLon * 0.4, centerLat - quarterLat * 0.3],
+                [maxLon, centerLat - quarterLat * 0.1]
+            ]);
+            const arcWest = turf.lineString([
+                [minLon + quarterLon * 0.5, maxLat - quarterLat * 0.1],
+                [minLon + quarterLon * 0.35, centerLat + quarterLat * 0.15],
+                [minLon + quarterLon * 0.6, minLat + quarterLat * 0.2]
+            ]);
+            const arcEast = turf.lineString([
+                [maxLon - quarterLon * 0.45, maxLat - quarterLat * 0.05],
+                [maxLon - quarterLon * 0.25, centerLat - quarterLat * 0.2],
+                [maxLon - quarterLon * 0.55, minLat + quarterLat * 0.12]
+            ]);
+
+            return [northSouth, westEast, arcWest, arcEast].map((line) =>
+                toPath(line.geometry.coordinates, projection.project)
+            );
+        }
+
+        function renderGeometry(restaurants) {
+            const projection = buildProjection(restaurants);
+            const roads = buildRoadNetwork(restaurants, projection);
+            const roadLayer = document.getElementById("road-layer");
+            roadLayer.innerHTML = roads.map((path) => `
+                <g>
+                    <path d="${path}" class="geometry-road"></path>
+                    <path d="${path}" class="geometry-road-outline"></path>
+                </g>
+            `).join("");
+
+            const markerLayer = document.getElementById("marker-layer");
+            const userPoint = projection.project(USER_LOCATION.lon, USER_LOCATION.lat);
+            markerLayer.innerHTML = `
+                <div class="user-pulse" style="left:${userPoint.x / 10}%; top:${userPoint.y / 14}%;"></div>
+                ${restaurants.map((item) => {
+                    const point = projection.project(item.lon, item.lat);
+                    return `
+                        <button class="map-pin" data-name="${item.rest_name || item.name}" style="left:${point.x / 10}%; top:${point.y / 14}%;">
+                            <img alt="${item.name}" class="map-pin__image" src="${item.image}">
+                            <div class="map-pin__label" style="background:${item.color};">${item.rest_name || item.name} • ${item.distance_km}km</div>
+                            <div class="map-pin__stem" style="background:${item.color};"></div>
+                        </button>
+                    `;
+                }).join("")}
+            `;
+        }
+
+        function renderCarousel(restaurants) {
+            const carousel = document.getElementById("restaurant-carousel");
+            carousel.innerHTML = restaurants.map((item, index) => `
+                <article class="restaurant-card flex-none w-[248px] rounded-[24px] bg-white/94 border border-white/70 p-3 shadow-[0_16px_30px_rgba(118,88,66,0.14)] flex gap-3 cursor-pointer" data-index="${index}">
+                    <img alt="${item.name}" class="w-20 h-20 rounded-[18px] object-cover" src="${item.image}">
+                    <div class="flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-semibold text-[#473328]">${item.rest_name || item.name}</h3>
+                            <p class="text-sm text-[#8d7d72]">${item.category}</p>
+                        </div>
+                        <div class="flex items-center gap-2 text-sm">
+                            <span class="font-semibold text-[#765842]">${item.distance_km}km</span>
+                            <span class="w-1 h-1 rounded-full bg-[#d1c1b6]"></span>
+                            <span class="font-semibold uppercase tracking-[0.14em] text-[#2f685e]">${item.status}</span>
+                        </div>
+                    </div>
+                </article>
+            `).join("");
+        }
+
+        function wireSelection(restaurants) {
+            document.querySelectorAll(".restaurant-card").forEach((card) => {
+                card.addEventListener("click", () => {
+                    const item = restaurants[Number(card.dataset.index)];
+                    const match = [...document.querySelectorAll(".map-pin")].find((pin) => pin.dataset.name === (item.rest_name || item.name));
+                    if (match) {
+                        match.animate(
+                            [
+                                { transform: "translate(-50%, -100%) scale(1)" },
+                                { transform: "translate(-50%, -108%) scale(1.04)" },
+                                { transform: "translate(-50%, -100%) scale(1)" }
+                            ],
+                            { duration: 420, easing: "ease-out" }
+                        );
+                    }
+                });
+            });
+        }
+
+        function applyStageTransform() {
+            document.querySelector(".geometry-stage").style.transform = `translate(${panX}px, ${panY}px) scale(${currentScale})`;
+        }
+
+        function bindPan() {
+            const shell = document.querySelector(".map-shell");
+            const ignoreSelector = "#carousel-wrap, #map-search, button";
+
+            shell.addEventListener("pointerdown", (event) => {
+                if (event.target.closest(ignoreSelector)) return;
+                dragging = true;
+                dragStartX = event.clientX;
+                dragStartY = event.clientY;
+                dragOriginX = panX;
+                dragOriginY = panY;
+                shell.classList.add("dragging");
+            });
+
+            window.addEventListener("pointermove", (event) => {
+                if (!dragging) return;
+                panX = dragOriginX + (event.clientX - dragStartX);
+                panY = dragOriginY + (event.clientY - dragStartY);
+                applyStageTransform();
+            });
+
+            const stopDragging = () => {
+                dragging = false;
+                shell.classList.remove("dragging");
+            };
+
+            window.addEventListener("pointerup", stopDragging);
+            window.addEventListener("pointercancel", stopDragging);
+        }
+
+        function filterRestaurants() {
+            const query = document.getElementById("map-search").value.trim().toLowerCase();
+            visibleRestaurants = !query
+                ? [...allRestaurants]
+                : allRestaurants.filter((item) =>
+                    `${item.rest_name} ${item.name}`.toLowerCase().includes(query)
+                );
+
+            const list = visibleRestaurants.length ? visibleRestaurants : allRestaurants;
+            renderGeometry(list);
+            renderCarousel(list);
+            wireSelection(list);
+        }
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            try {
+                allRestaurants = normalizeItems(await ensureResults());
+                visibleRestaurants = [...allRestaurants];
+                renderGeometry(visibleRestaurants);
+                renderCarousel(visibleRestaurants);
+                wireSelection(visibleRestaurants);
+            } catch (error) {
+                document.getElementById("restaurant-carousel").innerHTML = `<div class="text-sm text-[#8d7d72]">Không tải được dữ liệu map từ backend.</div>`;
+            }
+
+            document.getElementById("map-search").addEventListener("input", filterRestaurants);
+            bindPan();
+            applyStageTransform();
+
+            if (!window.isEmbeddedApp?.()) {
+                document.getElementById("carousel-wrap").style.bottom = "82px";
+            }
+
+            setupStandaloneNav("tab-map");
+        });
+    </script>
+</body>
+</html>
+>>>>>>> 05845629517b63be87990d750165bf8548d0c33b

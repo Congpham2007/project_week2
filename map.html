@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<<<<<<< HEAD
 
 <html lang="vi"><head>
 <meta charset="utf-8"/>
@@ -247,3 +248,212 @@
 
 </main>
 </body></html>
+=======
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Đơn hàng của tôi</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <script src="navigation.js" defer></script>
+    <script src="api.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <style>
+        ::-webkit-scrollbar { display: none; }
+        html, body { -ms-overflow-style: none; scrollbar-width: none; overflow-x: hidden; height: 100%; }
+        body { font-family: 'Inter', sans-serif; background: #fbf9f4; color: #1b1c19; }
+
+        .glass-header { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(234, 222, 213, 0.5); }
+        
+        .order-card { 
+            background: white; 
+            border: 1px solid #eee2d8; 
+            box-shadow: 0 4px 15px rgba(118, 88, 66, 0.05); 
+            transition: transform 0.2s ease, opacity 0.3s ease; 
+        }
+        .order-card:active { transform: scale(0.98); }
+
+        /* Sửa lỗi CSS từ ảnh image_df287b.png */
+        .btn-confirm { 
+            background: #2f685e; 
+            color: white; 
+            padding: 8px 16px; 
+            border-radius: 12px; 
+            font-size: 11px; 
+            font-weight: bold; 
+            animation: popIn 0.3s ease; 
+            border: none;
+            cursor: pointer;
+        }
+
+        @keyframes popIn { 
+            from { opacity: 0; transform: scale(0.8); } 
+            to { opacity: 1; transform: scale(1); } 
+        }
+
+        .tstep { border-left: 2px solid #eee2d8; margin-left: 11px; padding-left: 20px; position: relative; padding-bottom: 22px; }
+        .tstep::before { content: ''; position: absolute; left: -7px; top: 0; width: 12px; height: 12px; border-radius: 50%; background: #eee2d8; border: 2px solid #fff; }
+        .tstep.done { border-left-color: #74cdb9; } .tstep.done::before { background: #74cdb9; }
+        .tstep.active { border-left-color: #f4a55a; } .tstep.active::before { background: #f4a55a; }
+
+        .bottom-sheet { background: white; border-radius: 32px 32px 0 0; box-shadow: 0 -10px 40px rgba(0,0,0,0.08); }
+        iframe { border: none; width: 100%; height: 100%; }
+    </style>
+</head>
+<body>
+    <div class="w-full max-w-[430px] min-h-screen mx-auto relative flex flex-col pb-[100px]">
+        
+        <header id="main-header" class="fixed top-0 inset-x-0 z-50 glass-header px-5 h-16 flex items-center justify-between max-w-[430px] mx-auto">
+            <h1 id="map-title" class="text-[18px] font-bold text-[#765842]">Đơn hàng của tôi</h1>
+            <span class="material-symbols-outlined text-[#8a6547]">receipt_long</span>
+        </header>
+
+        <main class="flex-1 mt-16 flex flex-col overflow-hidden">
+            <div id="empty-state" class="hidden flex-1 flex-col items-center justify-center p-10 text-center">
+                <div class="w-20 h-20 rounded-full bg-[#f3ede8] flex items-center justify-center mb-5 text-4xl">📦</div>
+                <h2 class="text-[18px] font-bold text-[#5a4a40]">Không có đơn hàng nào</h2>
+            </div>
+
+            <div id="list-state" class="hidden flex-1 p-5 space-y-4 overflow-y-auto">
+                <div id="order-items-container" class="space-y-4 pb-10"></div>
+            </div>
+
+            <div id="map-state" class="hidden fixed inset-0 z-[60] bg-[#f3ede8] max-w-[430px] mx-auto flex flex-col">
+                <div id="map-frame-container" class="absolute inset-0 z-0 h-[60%]"></div>
+                <button onclick="showOrderList()" class="absolute top-10 left-5 z-20 w-10 h-10 rounded-full bg-white shadow-lg flex items-center justify-center text-[#8a6547] border border-[#eee2d8]">
+                    <span class="material-symbols-outlined">arrow_back</span>
+                </button>
+                <div class="mt-auto relative z-10 bottom-sheet p-6 pb-12 overflow-y-auto max-h-[65vh]">
+                    <div class="w-12 h-1 bg-[#eee2d8] rounded-full mx-auto mb-6"></div>
+                    <div class="flex justify-between items-start mb-6">
+                        <div class="flex-1">
+                            <h2 id="det-eta" class="text-[34px] font-bold text-[#241814]">-- phút</h2>
+                            <p class="text-[13px] text-[#8d7d72]">Cách bạn: <span id="det-dist">--</span> km</p>
+                        </div>
+                        <div class="text-3xl">🛵</div>
+                    </div>
+                    <div id="det-timeline" class="mb-4"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let listInterval = null;
+        let detailInterval = null;
+
+        function getOrders() {
+            return JSON.parse(localStorage.getItem('smart_food_orders') || '[]');
+        }
+
+        // Xóa đơn hàng khỏi danh sách
+        function deleteOrder(event, id) {
+            event.stopPropagation(); // Không cho nhảy vào màn hình chi tiết
+            let orders = getOrders().filter(o => (o.orderId || o.id) != id);
+            localStorage.setItem('smart_food_orders', JSON.stringify(orders));
+            showOrderList(); // Vẽ lại list
+        }
+
+        function showOrderList() {
+            clearInterval(detailInterval);
+            document.getElementById('map-state').classList.add('hidden');
+            document.getElementById('main-header').classList.remove('hidden');
+            
+            const orders = getOrders();
+            const container = document.getElementById('order-items-container');
+            const empty = document.getElementById('empty-state');
+            const list = document.getElementById('list-state');
+
+            if (orders.length === 0) {
+                empty.classList.remove('hidden');
+                list.classList.add('hidden');
+            } else {
+                empty.classList.add('hidden');
+                list.classList.remove('hidden');
+                
+                // Render khung một lần
+                container.innerHTML = orders.map(o => {
+                    const id = o.orderId || o.id;
+                    return `
+                    <div id="card-${id}" onclick="viewDetail('${id}')" class="order-card rounded-[24px] p-4 flex items-center gap-4 cursor-pointer">
+                        <div class="w-14 h-14 rounded-[18px] bg-[#fdf3eb] text-[#c69a7b] flex items-center justify-center text-2xl shrink-0">🍲</div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex justify-between items-start mb-1">
+                                <span class="text-[10px] font-bold text-[#8a6547] uppercase tracking-widest">#${id.toString().slice(-6)}</span>
+                                <span id="st-txt-${id}" class="text-[10px] font-bold text-[#f4a55a]">Đang xử lý</span>
+                            </div>
+                            <h3 class="text-[15px] font-bold text-[#241814] truncate">${o.name} x${o.qty || 1}</h3>
+                            <p class="text-[12px] text-[#8d7d72] truncate">${o.rest_name}</p>
+                        </div>
+                        <div id="st-action-${id}" class="shrink-0">
+                            <span class="material-symbols-outlined text-[#eaded5]">chevron_right</span>
+                        </div>
+                    </div>`;
+                }).join('');
+
+                updateStatus();
+                clearInterval(listInterval);
+                listInterval = setInterval(updateStatus, 1000);
+            }
+        }
+
+        function updateStatus() {
+            const orders = getOrders();
+            const now = Date.now();
+            orders.forEach(o => {
+                const id = o.orderId || o.id;
+                const txt = document.getElementById(`st-txt-${id}`);
+                const action = document.getElementById(`st-action-${id}`);
+                if (!txt || !action) return;
+
+                const elapsed = now - o.startTime;
+                const total = (o.delivery_time || 15) * 60000;
+                const p = elapsed / total;
+
+                if (p >= 1) {
+                    txt.textContent = "Đã hoàn thành";
+                    txt.className = "text-[10px] font-bold text-[#2f685e]";
+                    if (!document.getElementById(`btn-del-${id}`)) {
+                        action.innerHTML = `<button id="btn-del-${id}" onclick="deleteOrder(event, '${id}')" class="btn-confirm">Xác nhận</button>`;
+                    }
+                } else if (p > 0.5) {
+                    txt.textContent = "Đang giao hàng";
+                    txt.className = "text-[10px] font-bold text-[#118ab2]";
+                }
+            });
+        }
+
+        function viewDetail(id) {
+            clearInterval(listInterval);
+            const order = getOrders().find(o => (o.orderId || o.id) == id);
+            if (!order) return;
+
+            document.getElementById('main-header').classList.add('hidden');
+            document.getElementById('list-state').classList.add('hidden');
+            document.getElementById('map-state').classList.remove('hidden');
+            
+            document.getElementById('map-frame-container').innerHTML = `<iframe src="/api/mini_map?lat=${order.lat}&lon=${order.lon}&name=${encodeURIComponent(order.rest_name)}"></iframe>`;
+
+            const updateDetail = () => {
+                const elapsed = (Date.now() - order.startTime) / 1000;
+                const total = (order.delivery_time || 15) * 60;
+                const progress = Math.min(1, elapsed / total);
+                document.getElementById('det-eta').textContent = progress < 1 ? Math.ceil((total - elapsed)/60) + " phút" : "Hoàn thành!";
+                document.getElementById('det-dist').textContent = (order.distance_km * (1 - progress)).toFixed(2);
+                
+                const steps = [{t:'Xác nhận', p:0}, {t:'Chuẩn bị', p:0.2}, {t:'Đang giao', p:0.5}, {t:'Đến nơi', p:0.9}];
+                document.getElementById('det-timeline').innerHTML = steps.map(s => {
+                    let cls = progress >= s.p + 0.1 ? 'done' : (progress >= s.p ? 'active' : 'wait');
+                    return `<div class="tstep ${cls}"><div class="text-[14px] font-bold text-[#5a4a40]">${s.t}</div></div>`;
+                }).join('');
+            };
+            updateDetail();
+            detailInterval = setInterval(updateDetail, 2000);
+        }
+
+        document.addEventListener("DOMContentLoaded", showOrderList);
+    </script>
+</body>
+</html>
+>>>>>>> 05845629517b63be87990d750165bf8548d0c33b

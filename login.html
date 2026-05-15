@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html><html lang="vi" style=""><head>
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
@@ -191,3 +192,101 @@
 
 
 </body></html>
+=======
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Đăng nhập - Aura Cuisines</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <style>
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        html, body {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(255, 214, 186, 0.7), transparent 34%),
+                radial-gradient(circle at top right, rgba(180, 238, 226, 0.65), transparent 30%),
+                radial-gradient(circle at bottom right, rgba(232, 215, 255, 0.55), transparent 28%),
+                linear-gradient(180deg, #fffdf8 0%, #f6f1eb 100%);
+            overflow-y: auto;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+            box-shadow: 0 28px 60px rgba(118, 88, 66, 0.14);
+        }
+
+    </style>
+</head>
+<body class="min-h-screen text-[#5e4839]">
+    <main class="min-h-screen flex items-center justify-center px-5 py-8">
+        <section class="w-full max-w-[430px] mx-auto">
+            <div class="glass-card rounded-[36px] border border-white/60 p-6 sm:p-8">
+                <div class="flex flex-col items-center text-center">
+                    <div class="mb-6 w-24 h-24 rounded-full bg-white shadow-[0_8px_20px_-8px_rgba(118,88,66,0.1)] flex items-center justify-center border border-[#f0ede9] overflow-hidden">
+                        <img alt="Aura Cuisines Mascot Logo" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/ADBb0ujt22xl0xlp3Gu8ksD1LkP7QCmr7JoTw1HjaxlpgLsq5R94OThNcRLhTiw16WMXFLI4jrO2Lz91KgHVKgI2dNlaEEiHwLniybBk6GFNFmTiznT1lFoVJn5WBUo8LfGRAPpFw-br-Mt8-Pmsjfi29bgUXfNtHUSAJVT5XNUII7S78uLkrUFl7fbBaYz4COTS-DdZ8FN2G2iIIFn-jSe3V-rtW78dMhQ0_TvsgKZBm1SBMb54SKmAHvrXV1wXqDIw-K2yrHtv9270bA">
+                    </div>
+                    <h1 class="text-[34px] leading-[40px] font-bold tracking-tight">Khám phá</h1>
+                    <p class="mt-2 text-[#7a6b61]">Hôm nay ăn gì?</p>
+                </div>
+
+                <form class="mt-8 space-y-4">
+                    <label class="relative flex items-center">
+                        <span class="material-symbols-outlined absolute left-5 text-[#b6a89d]">person</span>
+                        <input class="w-full rounded-full border border-[#f0ede9] bg-[#f8f7f5] py-4 pl-14 pr-5 text-[#5e4839] placeholder:text-[#b6a89d] focus:border-[#ffd6ba] focus:ring-1 focus:ring-[#ffd6ba]" placeholder="Tên đăng nhập" type="text">
+                    </label>
+
+                    <label class="relative flex items-center">
+                        <span class="material-symbols-outlined absolute left-5 text-[#b6a89d]">lock</span>
+                        <input class="w-full rounded-full border border-[#f0ede9] bg-[#f8f7f5] py-4 pl-14 pr-14 text-[#5e4839] placeholder:text-[#b6a89d] focus:border-[#ffd6ba] focus:ring-1 focus:ring-[#ffd6ba]" placeholder="Mật khẩu" type="password">
+                        <button class="absolute right-5 text-[#b6a89d]" type="button">
+                            <span class="material-symbols-outlined">visibility_off</span>
+                        </button>
+                    </label>
+
+                    <div class="flex items-center justify-between px-1 pt-1 text-sm">
+                        <label class="flex items-center gap-2 text-[#7a6b61]">
+                            <input class="rounded border-[#d9cec6] text-[#765842] focus:ring-[#ffd6ba]" type="checkbox">
+                            <span>Nhớ tài khoản</span>
+                        </label>
+                        <a class="text-[#765842]" href="#">Quên mật khẩu?</a>
+                    </div>
+
+                    <button onclick="window.location.href='app.html'" class="w-full rounded-full bg-[#8a6547] py-4 font-semibold text-white shadow-[0_12px_24px_-10px_rgba(118,88,66,0.35)] transition active:scale-[0.98] flex items-center justify-center gap-2" type="button">
+                        <span>Đăng nhập</span>
+                        <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+                    </button>
+                </form>
+
+                <div class="my-6 flex items-center gap-4 text-sm text-[#9a8779]">
+                    <div class="h-px flex-1 bg-[#e7ddd6]"></div>
+                    <span>Hoặc tiếp tục với</span>
+                    <div class="h-px flex-1 bg-[#e7ddd6]"></div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <button class="rounded-full border border-[#ece4dd] bg-white py-3.5 font-semibold shadow-sm" type="button">Google</button>
+                    <button class="rounded-full border border-[#ece4dd] bg-white py-3.5 font-semibold shadow-sm" type="button">Apple</button>
+                </div>
+
+                <p class="mt-6 text-center text-sm text-[#7a6b61]">Chưa có tài khoản? <a class="font-semibold text-[#765842]" href="#">Đăng ký ngay</a></p>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
+>>>>>>> 05845629517b63be87990d750165bf8548d0c33b

@@ -2,10 +2,15 @@
 <html lang="vi">
 <head>
     <meta charset="utf-8">
+<<<<<<< HEAD
+=======
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+>>>>>>> 05845629517b63be87990d750165bf8548d0c33b
     <title>Smart Foodie App</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<<<<<<< HEAD
     
     <style>
         body { font-family: 'Inter', sans-serif; }
@@ -29,14 +34,102 @@
 
         <nav id="bottom-nav" class="absolute bottom-0 w-full z-50 bg-white/90 backdrop-blur-xl rounded-t-3xl shadow-[0_-10px_30px_rgba(118,88,66,0.1)] flex justify-around items-center px-4 py-4 border-t border-gray-100">
             
+=======
+    <style>
+        :root {
+            color-scheme: light;
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        html, body {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at top left, rgba(255, 214, 186, 0.7), transparent 32%),
+                radial-gradient(circle at top right, rgba(180, 238, 226, 0.65), transparent 28%),
+                linear-gradient(180deg, #fffdf9 0%, #f4efe9 100%);
+        }
+
+        .phone-shell {
+            width: min(100vw, 430px);
+            height: 100dvh;
+            background: #fbf9f4;
+        }
+
+        .nav-item {
+            color: #81756d;
+            transition: all 0.25s ease;
+        }
+
+        .nav-item .icon-fill {
+            font-variation-settings: 'FILL' 0;
+        }
+
+        .nav-item.active {
+            color: #765842;
+            font-weight: 700;
+        }
+
+        .nav-item.active .icon-fill {
+            font-variation-settings: 'FILL' 1;
+        }
+
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            width: 6px;
+            height: 6px;
+            border-radius: 9999px;
+            background-color: #ffd6ba;
+        }
+
+        @media (min-width: 768px) {
+            body {
+                padding: 24px;
+            }
+
+            .phone-shell {
+                height: min(92vh, 900px);
+                border-radius: 3rem;
+                border: 10px solid #182033;
+                box-shadow:
+                    0 28px 60px rgba(24, 32, 51, 0.24),
+                    0 12px 26px rgba(118, 88, 66, 0.14);
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center">
+    <div class="phone-shell relative overflow-hidden flex flex-col">
+        <iframe id="man-hinh" src="home.html" title="Aura Cuisines Demo" class="w-full flex-1 border-none bg-[#fbf9f4]"></iframe>
+
+        <nav id="bottom-nav" class="absolute bottom-0 left-0 right-0 z-50 bg-white/92 backdrop-blur-xl rounded-t-[28px] shadow-[0_-10px_30px_rgba(118,88,66,0.12)] flex justify-around items-center px-4 py-4 border-t border-[#efe7df]">
+>>>>>>> 05845629517b63be87990d750165bf8548d0c33b
             <div id="tab-home" onclick="changeChannel('home.html', 'tab-home')" class="nav-item active flex flex-col items-center justify-center relative cursor-pointer w-16">
                 <span class="material-symbols-outlined icon-fill">home_app_logo</span>
                 <span class="text-[12px] mt-1">Trang chủ</span>
             </div>
+<<<<<<< HEAD
             
             <div id="tab-map" onclick="changeChannel('map.html', 'tab-map')" class="nav-item flex flex-col items-center justify-center relative cursor-pointer w-16">
                 <span class="material-symbols-outlined icon-fill">map</span>
                 <span class="text-[12px] mt-1">Bản đồ</span>
+=======
+
+            <div id="tab-map" onclick="changeChannel('map.html', 'tab-map')" class="nav-item flex flex-col items-center justify-center relative cursor-pointer w-16">
+                <span class="material-symbols-outlined icon-fill">receipt_long</span>
+                <span class="text-[12px] mt-1">Đơn hàng</span>
+>>>>>>> 05845629517b63be87990d750165bf8548d0c33b
             </div>
 
             <div id="tab-planner" onclick="changeChannel('planner.html', 'tab-planner')" class="nav-item flex flex-col items-center justify-center relative cursor-pointer w-16">
@@ -48,11 +141,15 @@
                 <span class="material-symbols-outlined icon-fill">settings</span>
                 <span class="text-[12px] mt-1">Cài đặt</span>
             </div>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 05845629517b63be87990d750165bf8548d0c33b
         </nav>
     </div>
 
     <script>
+<<<<<<< HEAD
         function changeChannel(url, tabId) {
             // 1. Chuyển kênh
             document.getElementById('man-hinh').src = url;
@@ -80,3 +177,30 @@
     </script>
 </body>
 </html>
+=======
+        const HIDDEN_NAV_PAGES = new Set(["detail.html", "fuzzy.html", "tracking.html", "login.html"]);
+
+        function setActiveTab(tabId) {
+            document.querySelectorAll(".nav-item").forEach((tab) => tab.classList.remove("active"));
+            if (tabId) {
+                document.getElementById(tabId)?.classList.add("active");
+            }
+        }
+
+        function updateNavVisibility(url) {
+            const navBar = document.getElementById("bottom-nav");
+            navBar.style.display = HIDDEN_NAV_PAGES.has(url) ? "none" : "flex";
+        }
+
+        function changeChannel(url, tabId) {
+            const frame = document.getElementById("man-hinh");
+            frame.src = url;
+            updateNavVisibility(url);
+            setActiveTab(tabId);
+        }
+
+        window.changeChannel = changeChannel;
+    </script>
+</body>
+</html>
+>>>>>>> 05845629517b63be87990d750165bf8548d0c33b
