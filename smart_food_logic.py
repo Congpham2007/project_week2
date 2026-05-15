@@ -448,6 +448,21 @@ def score_dishes(target_type, target_calo, meal_period,
 # ============================================================
 app = Flask(__name__, static_folder=".", static_url_path="")
 
+
+@app.before_request
+def handle_preflight():
+    if request.method == "OPTIONS":
+        response = app.make_default_options_response()
+        return response
+
+
+@app.after_request
+def add_cors_headers(response):
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+    return response
+
 # Boot FIS engines once at startup
 print("⏳ Đang khởi tạo Fuzzy Engines…", flush=True)
 _sim1, _sim2     = setup_fuzzy_engine()
@@ -479,7 +494,7 @@ def api_weather():
     return jsonify(cached_weather())
 
 
-@app.route("/api/recommend", methods=["POST"])
+@app.route("/api/recommend", methods=["POST", "OPTIONS"])
 def api_recommend():
     data = request.json or {}
     hunger    = float(data.get("hunger", 7))
@@ -511,12 +526,13 @@ def api_recommend():
         scored.append((d, 0.4 * pt + 0.6 * pcal))
     scored.sort(key=lambda x: x[1])
 
-    for d, _ in scored[:8]:
+    for d, penalty in scored[:8]:
         item = d.copy()
         item['delivery_time'] = compute_delivery(
             _sim_delivery, d['distance_km'],
             w.get('traffic_value', 5), wv
         )
+        item['match_pct']   = round(max(58, min(99, 100 - penalty * 30)), 1)
         item['urgency']     = round(urgency, 2)
         item['meal_score']  = round(meal_score, 2)
         item['cal_target']  = round(cal_score, 0)
@@ -528,7 +544,7 @@ def api_recommend():
                     "cal_target": round(cal_score, 0)})
 
 
-@app.route("/api/plan", methods=["POST"])
+@app.route("/api/plan", methods=["POST", "OPTIONS"])
 def api_plan():
     data    = request.json or {}
     profile = data.get("profile", "Office Worker")
@@ -565,7 +581,7 @@ def api_plan():
                     "total_calo": mem.total_calories})
 
 
-@app.route("/api/map", methods=["POST"])
+@app.route("/api/map", methods=["POST", "OPTIONS"])
 def api_map():
     """Tạo bản đồ Folium từ danh sách món và trả về URL"""
     data  = request.json or {}
@@ -617,7 +633,7 @@ def api_map():
 
     map_path = os.path.join(BASE_DIR, "food_map.html")
     m.save(map_path)
-    return jsonify({"map_url": f"/food_map.html"})
+    return jsonify({"map_url": f"{request.host_url.rstrip('/')}/food_map.html"})
 
 
 @app.route("/food_map.html")

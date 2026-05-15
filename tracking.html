@@ -5,6 +5,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Theo dõi đơn hàng</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="navigation.js" defer></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -116,7 +117,7 @@
 <!-- TopAppBar -->
 <header class="fixed top-0 w-full z-50 bg-surface/60 dark:bg-surface-dim/60 backdrop-blur-xl shadow-[0_20px_40px_-15px_rgba(118,88,66,0.08)]">
 <div class="flex items-center justify-between px-container-padding h-16 w-full max-w-md mx-auto">
-<button onclick="window.parent.changeChannel('detail.html')" class="text-outline dark:text-outline-variant hover:opacity-80 transition-opacity">
+<button onclick="navigateTo('detail.html')" class="text-outline dark:text-outline-variant hover:opacity-80 transition-opacity">
 <span class="material-symbols-outlined">arrow_back</span>
 </button>
 <h1 class="font-headline-md text-headline-md text-primary dark:text-primary-fixed-dim">Theo dõi</h1>
@@ -140,7 +141,7 @@
 </div>
 </section>
 <!-- Illustration Map Placeholder -->
-<section onclick="window.parent.changeChannel('map.html', 'tab-map')" class="rounded-xl overflow-hidden shadow-sm h-48 bg-surface-variant relative cursor-pointer active:scale-[0.98] transition-transform">
+<section onclick="navigateTo('map.html', 'tab-map')" class="rounded-xl overflow-hidden shadow-sm h-48 bg-surface-variant relative cursor-pointer active:scale-[0.98] transition-transform">
 <img alt="Map" class="w-full h-full object-cover opacity-80" data-alt="A stylized, flat-design illustration of a city map from a top-down perspective, optimized for a modern mobile app interface. The map uses a soft, light-mode color palette with pastel mint greens for parks, soft cream for roads, and muted peach for specific building markers. A clean, subtle drop shadow highlights a specific route, blending modern startup minimalism with soft glassmorphism." data-location="Hanoi" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9LA7swmhDxvwNgrCV82TfRt_XGlcFkKY2Bd5iXroU4_H6e071_PjJbNfUgtQiZK3K4uB0LKyM8iSX0ufV6070iHo1OQ0WKTUEj4Vw1b4aWeYD-ZcA2xiC4V_tiRoE8UWA9n_9SMWPEJ_af3nC-M632zGmKz2s8KwKxLX4moHcjCp4qMYk0BQwheCDn-wvW4aPxNutDnce7YxavUFkWKeItzNJ47sIG3wsniMBgqVBKgaIbKGCrucHuU3fqQJZ7mB7i9k9PMyUH80"/>
 <!-- Overlay Pin -->
 <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">

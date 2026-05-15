@@ -1,195 +1,223 @@
-<!DOCTYPE html><html lang="vi" style=""><head>
-<meta charset="utf-8">
-<meta content="width=device-width, initial-scale=1.0" name="viewport">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            "colors": {
-                    "surface-container-low": "#f5f3ee",
-                    "tertiary": "#685687",
-                    "secondary": "#2f685e",
-                    "primary-container": "#ffd6ba",
-                    "on-secondary-fixed": "#00201c",
-                    "secondary-fixed": "#b4eee2",
-                    "secondary-container": "#b4eee2",
-                    "on-tertiary": "#ffffff",
-                    "on-error-container": "#93000a",
-                    "surface-container-highest": "#e4e2de",
-                    "error-container": "#ffdad6",
-                    "surface-variant": "#e4e2de",
-                    "on-tertiary-fixed": "#23113f",
-                    "on-primary-fixed": "#2b1706",
-                    "outline": "#81756d",
-                    "surface-tint": "#765842",
-                    "primary-fixed-dim": "#e6bfa4",
-                    "background": "#fbf9f4",
-                    "tertiary-fixed": "#ebdcff",
-                    "tertiary-fixed-dim": "#d2bdf5",
-                    "on-surface": "#1b1c19",
-                    "on-primary-container": "#7a5b45",
-                    "surface-bright": "#fbf9f4",
-                    "on-secondary-fixed-variant": "#124f47",
-                    "primary-fixed": "#ffdcc4",
-                    "on-secondary-container": "#366e64",
-                    "on-primary": "#ffffff",
-                    "surface-container-high": "#eae8e3",
-                    "error": "#ba1a1a",
-                    "primary": "#765842",
-                    "surface-dim": "#dbdad5",
-                    "surface": "#fbf9f4",
-                    "surface-container": "#efeee9",
-                    "on-surface-variant": "#4f453e",
-                    "inverse-primary": "#e6bfa4",
-                    "on-background": "#1b1c19",
-                    "on-tertiary-fixed-variant": "#4f3e6e",
-                    "on-secondary": "#ffffff",
-                    "tertiary-container": "#e8d7ff",
-                    "outline-variant": "#d3c4ba",
-                    "surface-container-lowest": "#ffffff",
-                    "on-tertiary-container": "#6b598a",
-                    "inverse-on-surface": "#f2f1ec",
-                    "secondary-fixed-dim": "#99d2c6",
-                    "on-error": "#ffffff",
-                    "inverse-surface": "#30312e",
-                    "on-primary-fixed-variant": "#5c412c"
-            },
-            "borderRadius": {
-                    "DEFAULT": "1rem",
-                    "lg": "2rem",
-                    "xl": "3rem",
-                    "full": "9999px"
-            },
-            "spacing": {
-                    "stack-md": "24px",
-                    "stack-lg": "40px",
-                    "gutter": "16px",
-                    "unit": "8px",
-                    "stack-sm": "12px",
-                    "container-padding": "20px"
-            },
-            "fontFamily": {
-                    "body-lg": ["Inter"],
-                    "display-lg": ["Inter"],
-                    "body-sm": ["Inter"],
-                    "headline-lg": ["Inter"],
-                    "label-md": ["Inter"],
-                    "body-md": ["Inter"],
-                    "label-lg": ["Inter"],
-                    "headline-md": ["Inter"],
-                    "headline-lg-mobile": ["Inter"]
-            },
-            "fontSize": {
-                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
-                    "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
-                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
-                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
-                    "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
-                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
-                    "label-lg": ["14px", {"lineHeight": "18px", "fontWeight": "600"}],
-                    "headline-md": ["24px", {"lineHeight": "30px", "fontWeight": "600"}],
-                    "headline-lg-mobile": ["28px", {"lineHeight": "34px", "fontWeight": "700"}]
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Quán quen gần đây</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <script src="navigation.js" defer></script>
+    <script src="api.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <style>
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        html, body {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(180deg, #fffdf9 0%, #f5efea 100%);
+        }
+
+        .map-shell {
+            background:
+                linear-gradient(rgba(255, 250, 245, 0.78), rgba(255, 250, 245, 0.78)),
+                url("https://lh3.googleusercontent.com/aida-public/AB6AXuDmHQnZduWPEiO9sKjwuNd_PD_YcqZ_kjjgF8oqT7bJ5sEf3ebqDQ_eVoVdBdApxHA6jWTJ_LQFetT4mm1mOkDVA5_dP0W7pkNQ573hjP73_-Ni4b9k3-oJYC4Hxk-eBYCWVQroCdkhUE77L_I2VYo5iisu50s8dA0UsjxX07hXe0rII-B5Np6BuQg0GdGq0nfQGJmRHgXmi4yhYtvtSHvnN49PeRuafYXRUnAD2xMx0hc7lGCD6uZAAdJkXmekeQMzmB6quyHDDGw") center/cover;
+        }
+
+        .map-pin {
+            position: absolute;
+            transform: translate(-50%, -100%);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.82);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            box-shadow: 0 18px 40px rgba(118, 88, 66, 0.12);
+        }
+
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .nav-item {
+            color: #8d7d72;
+        }
+
+        .nav-item.active {
+            color: #765842;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body class="text-[#1b1c19]">
+    <div class="w-full max-w-[430px] min-h-screen mx-auto bg-[#fbf9f4] relative overflow-hidden pb-28">
+        <header class="px-5 pt-6 pb-4 relative z-20">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3 text-[#765842]">
+                    <span class="material-symbols-outlined">restaurant</span>
+                    <h1 class="text-[24px] leading-[30px] font-bold">Quán quen gần đây</h1>
+                </div>
+                <button onclick="navigateTo('settings.html', 'tab-settings')" class="w-10 h-10 rounded-full overflow-hidden border-2 border-[#ffd6ba]">
+                    <img alt="Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCPTZMyFcNlUDrrt5P2YCep_Rw9qQSTe3fndRYKzALgsKpTDFpx0rzOOpFFoMitc8alzyzkks_z5DMyvgV0lC5MjAW4Y4xOhcK_kJQx8t8x2Rz8cZ9lYg-2DK3SzZWzONW8-8Sn4J1E8dZlp5psAGQukKlT7Aqmqazxmjk0_2r90T-0FQRa8xmxML2pVjqtNxYGezXl56EtG_xTXq_nxPagUUVNpLTOQmGEbuggY0dEUMnXcVIF_wQEu6HsKKgUIg5HLnMEW3R8x3k">
+                </button>
+            </div>
+        </header>
+
+        <main class="px-5">
+            <section class="glass-card rounded-full px-4 py-3 flex items-center gap-3 relative z-20 border border-white/70">
+                <span class="material-symbols-outlined text-[#8d7d72]">search</span>
+                <input class="w-full bg-transparent border-none focus:ring-0 text-[#5e4839] placeholder:text-[#b3a394]" placeholder="Tìm kiếm trên bản đồ..." type="text">
+                <button class="w-9 h-9 rounded-full bg-[#ffd6ba] text-[#7a5b45] flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[18px]">tune</span>
+                </button>
+            </section>
+
+            <section class="map-shell relative mt-4 h-[610px] rounded-[34px] overflow-hidden border border-white/60">
+                <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(180,238,226,0.26),transparent_24%),radial-gradient(circle_at_bottom_left,rgba(255,214,186,0.28),transparent_26%)]"></div>
+
+                <div id="marker-layer" class="absolute inset-0"></div>
+
+                <section id="carousel-wrap" class="absolute inset-x-4 bottom-4 z-20">
+                    <div id="restaurant-carousel" class="flex gap-3 overflow-x-auto hide-scrollbar pb-1 pr-6"></div>
+                </section>
+            </section>
+        </main>
+
+        <nav id="standalone-nav" class="hidden fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-white/92 backdrop-blur-xl border-t border-[#efe7df] rounded-t-[28px] px-4 py-4 shadow-[0_-10px_30px_rgba(118,88,66,0.12)]">
+            <div class="flex items-center justify-around">
+                <button data-tab="tab-home" onclick="navigateTo('home.html', 'tab-home')" class="nav-item flex flex-col items-center gap-1">
+                    <span class="material-symbols-outlined">home_app_logo</span>
+                    <span class="text-[12px]">Trang chủ</span>
+                </button>
+                <button data-tab="tab-map" onclick="navigateTo('map.html', 'tab-map')" class="nav-item flex flex-col items-center gap-1">
+                    <span class="material-symbols-outlined">map</span>
+                    <span class="text-[12px]">Bản đồ</span>
+                </button>
+                <button data-tab="tab-planner" onclick="navigateTo('planner.html', 'tab-planner')" class="nav-item flex flex-col items-center gap-1">
+                    <span class="material-symbols-outlined">calendar_today</span>
+                    <span class="text-[12px]">Kế hoạch</span>
+                </button>
+                <button data-tab="tab-settings" onclick="navigateTo('settings.html', 'tab-settings')" class="nav-item flex flex-col items-center gap-1">
+                    <span class="material-symbols-outlined">settings</span>
+                    <span class="text-[12px]">Cài đặt</span>
+                </button>
+            </div>
+        </nav>
+    </div>
+
+    <script>
+        const markerColors = ["#2f685e", "#9e6b43", "#7a5aa7", "#d68b5e", "#4a7f8f"];
+
+        async function ensureResults() {
+            let recommendation = smartFoodStore.getStored(smartFoodApi.STORAGE_KEYS.recommend);
+            if (recommendation?.results?.length) return recommendation.results.slice(0, 5);
+
+            const payload = smartFoodStore.getStored(smartFoodApi.STORAGE_KEYS.recommendPayload, {
+                hunger: 7,
+                time_avail: 30,
+                budget: 300000,
+                health: "Balanced"
+            });
+            recommendation = await smartFoodApi.getRecommend(payload);
+            smartFoodStore.setStored(smartFoodApi.STORAGE_KEYS.recommend, recommendation);
+            return recommendation.results.slice(0, 5);
+        }
+
+        function projectToMap(items) {
+            const lats = items.map((item) => item.lat);
+            const lons = items.map((item) => item.lon);
+            const minLat = Math.min(...lats);
+            const maxLat = Math.max(...lats);
+            const minLon = Math.min(...lons);
+            const maxLon = Math.max(...lons);
+
+            return items.map((item, index) => {
+                const leftRatio = maxLon === minLon ? 0.5 : (item.lon - minLon) / (maxLon - minLon);
+                const topRatio = maxLat === minLat ? 0.5 : (maxLat - item.lat) / (maxLat - minLat);
+                return {
+                    ...item,
+                    image: index % 2 === 0
+                        ? "https://lh3.googleusercontent.com/aida-public/AB6AXuDhtfDX4W05gi-7GjCd-zE4Pam4idx9ZWgZR6_nDS_r6PuFqoLND9bH63rNtHcmEMTD2gNstO8sBHew38LY3kQtswO_IyCsMD6chURyf71qhRte_C2Lk-bQEFcSWXayN68PUT6VuplKZ-9wqq-AJ6SqW2_qPHNCaxcU0JynUkgwS34jmAG6GBNd20KS6QB3HKXoA6S02BJohw9ksAP4y31PFmyjbKN2azaYQPTNzuF4Jmrz5lpDrty3lvKzrxBr215BxoMPtY9IpNg"
+                        : "https://lh3.googleusercontent.com/aida-public/AB6AXuBYwF2sN4XIoizoz6tr7EmkaEl_4HIHzzfwlJ_IJN-wdIfr31xC780QfLkderqKEfSh6tCPzUhaCXtfZnV4qXFxcltzF1NRMXsGTWB4WgnbUbjGxFhlMh5OzWcFwkABVPXJ_U-OdKVTrc43IiHPi6U7r8mBXB0amXYgL4nEtCdvfKUd3gx21Mws6vtxTFstfwBO26mHNPq0c8wgU-59QUPO48_30Apa6I9vtfJ1Yv95cFYkqswBa0TyMTXY2YbywmGjEimS_F8UZz4",
+                    category: item.name,
+                    status: item.delivery_time <= 25 ? "Giao nhanh" : "Đang mở",
+                    left: `${20 + leftRatio * 60}%`,
+                    top: `${24 + topRatio * 52}%`,
+                    color: markerColors[index % markerColors.length]
+                };
+            });
+        }
+
+        function renderMarkers(nearbyRestaurants) {
+            const markerLayer = document.getElementById("marker-layer");
+            markerLayer.innerHTML = nearbyRestaurants.map((item) => `
+                <div class="map-pin z-10 flex flex-col items-center" style="left:${item.left}; top:${item.top};">
+                    <div class="bg-white rounded-2xl p-1.5 shadow-[0_10px_20px_rgba(118,88,66,0.16)]">
+                        <img alt="${item.name}" class="w-12 h-12 rounded-xl object-cover" src="${item.image}">
+                    </div>
+                    <div class="mt-2 px-3 py-1 rounded-full text-[10px] font-semibold text-white shadow-lg" style="background:${item.color};">
+                        ${item.rest_name || item.name} • ${item.distance_km || item.distance}
+                    </div>
+                    <div class="w-0.5 h-3 mt-px" style="background:${item.color};"></div>
+                </div>
+            `).join("") + `
+                <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+                    <div class="relative flex items-center justify-center">
+                        <div class="absolute w-14 h-14 rounded-full bg-[#2f685e]/20 animate-ping"></div>
+                        <div class="w-7 h-7 rounded-full bg-white border-2 border-[#2f685e] flex items-center justify-center shadow-lg">
+                            <div class="w-3 h-3 rounded-full bg-[#2f685e]"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderCarousel(nearbyRestaurants) {
+            const carousel = document.getElementById("restaurant-carousel");
+            carousel.innerHTML = nearbyRestaurants.map((item) => `
+                <article class="flex-none w-[248px] rounded-[24px] bg-white/94 border border-white/70 p-3 shadow-[0_16px_30px_rgba(118,88,66,0.14)] flex gap-3">
+                    <img alt="${item.name}" class="w-20 h-20 rounded-[18px] object-cover" src="${item.image}">
+                    <div class="flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-semibold text-[#473328]">${item.rest_name || item.name}</h3>
+                            <p class="text-sm text-[#8d7d72]">${item.category}</p>
+                        </div>
+                        <div class="flex items-center gap-2 text-sm">
+                            <span class="font-semibold text-[#765842]">${item.distance_km || item.distance}km</span>
+                            <span class="w-1 h-1 rounded-full bg-[#d1c1b6]"></span>
+                            <span class="font-semibold uppercase tracking-[0.14em] text-[#2f685e]">${item.status}</span>
+                        </div>
+                    </div>
+                </article>
+            `).join("");
+        }
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            try {
+                const nearbyRestaurants = projectToMap(await ensureResults());
+                renderMarkers(nearbyRestaurants);
+                renderCarousel(nearbyRestaurants);
+            } catch (error) {
+                document.getElementById("restaurant-carousel").innerHTML = `<div class="text-sm text-[#8d7d72]">Không tải được dữ liệu map từ backend.</div>`;
             }
-          },
-        },
-      }
+            if (!window.isEmbeddedApp?.()) {
+                document.getElementById("carousel-wrap").style.bottom = "82px";
+            }
+            setupStandaloneNav("tab-map");
+        });
     </script>
-<style>.glass-panel {
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px)
-    }
-.marker-shadow {
-    filter: drop-shadow(0 4px 8px rgba(118, 88, 66, 0.2))
-    }
-.bottom-sheet {
-    box-shadow: 0 -10px 40px rgba(118, 88, 66, 0.12)
-    }
-.map-bg {
-    background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuDmHQnZduWPEiO9sKjwuNd_PD_YcqZ_kjjgF8oqT7bJ5sEf3ebqDQ_eVoVdBdApxHA6jWTJ_LQFetT4mm1mOkDVA5_dP0W7pkNQ573hjP73_-Ni4b9k3-oJYC4Hxk-eBYCWVQroCdkhUE77L_I2VYo5iisu50s8dA0UsjxX07hXe0rII-B5Np6BuQg0GdGq0nfQGJmRHgXmi4yhYtvtSHvnN49PeRuafYXRUnAD2xMx0hc7lGCD6uZAAdJkXmekeQMzmB6quyHDDGw);
-    background-size: cover;
-    background-position: center
-    }</style>
-<style>
-    body {
-      min-height: max(884px, 100dvh);
-    }
-  </style>
-  <style data-stitch-cursor=""></style><style data-stitch-scroll-lock=""></style><style data-stitch-cursor=""></style><style data-stitch-scroll-lock=""></style></head>
-<body class="bg-background text-on-background font-body-md selection:bg-primary-container min-h-screen">
-<!-- Top App Bar (JSON Shell Execution) -->
-<header class="fixed top-0 w-full z-50 bg-surface/60 dark:bg-surface-dim/60 backdrop-blur-xl shadow-[0px_20px_40px_rgba(118,88,66,0.05)] flex justify-between items-center px-container-padding h-16">
-<div class="flex items-center gap-2 text-primary dark:text-primary-fixed-dim">
-<span class="material-symbols-outlined text-headline-md">restaurant</span>
-<h1 class="font-display-lg text-[20px] font-bold text-on-primary-fixed-variant">Quán Quen Gần Đây</h1>
-</div>
-<div class="w-10 h-10 rounded-full border-2 border-primary-container overflow-hidden active:scale-95 transition-transform hover:opacity-80">
-<img alt="Profile" data-alt="A professional studio headshot of a young man with a friendly expression, set against a clean, minimalist off-white background. The lighting is soft and high-key, creating a modern and premium look consistent with a luxury food discovery app's aesthetic. The color palette is composed of natural skin tones and soft neutral highlights." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCPTZMyFcNlUDrrt5P2YCep_Rw9qQSTe3fndRYKzALgsKpTDFpx0rzOOpFFoMitc8alzyzkks_z5DMyvgV0lC5MjAW4Y4xOhcK_kJQx8t8x2Rz8cZ9lYg-2DK3SzZWzONW8-8Sn4J1E8dZlp5psAGQukKlT7Aqmqazxmjk0_2r90T-0FQRa8xmxML2pVjqtNxYGezXl56EtG_xTXq_nxPagUUVNpLTOQmGEbuggY0dEUMnXcVIF_wQEu6HsKKgUIg5HLnMEW3R8x3k" class="">
-</div>
-</header>
-<!-- Main Canvas: Interactive Map -->
-<main class="relative h-screen w-full pt-16 pb-20 overflow-hidden">
-<!-- Map Background Layer -->
-<div class="absolute inset-0 z-0 map-bg" data-location="Ho Chi Minh City">
-<!-- Simulated Stylized Map Overlay (Light Pastel Mask) -->
-<div class="absolute inset-0 bg-surface-container-low/40 mix-blend-color"></div>
-<div class="absolute inset-0 bg-gradient-to-b from-surface/20 to-transparent"></div>
-</div>
-<!-- Search Bar Overlay -->
-<div class="absolute top-20 left-0 right-0 px-container-padding z-20">
-<div class="flex items-center gap-3 bg-white/60 backdrop-blur-md p-3 px-4 rounded-full border border-white/40 shadow-[0px_10px_30px_rgba(118,88,66,0.08)]">
-<span class="material-symbols-outlined text-primary/60">search</span>
-<input class="bg-transparent border-none focus:ring-0 w-full text-on-surface font-body-md placeholder:text-on-surface-variant/40" placeholder="Tìm kiếm trên bản đồ..." type="text">
-<button class="w-8 h-8 flex items-center justify-center rounded-full bg-primary-container text-on-primary-container active:scale-90 transition-transform">
-<span class="material-symbols-outlined text-[20px]">tune</span>
-</button>
-</div>
-</div>
-<!-- Floating Map Markers -->
-<!-- McDonald's Marker -->
-<div class="absolute top-[40%] left-[30%] z-10 flex flex-col items-center">
-<div class="bg-white p-1 rounded-2xl marker-shadow active:scale-95 transition-transform">
-<div class="w-12 h-12 rounded-xl bg-primary-container flex items-center justify-center overflow-hidden">
-<img alt="McDonald's" class="w-full h-full object-cover" data-alt="A stylized minimalist golden arches logo of McDonald's presented in a clean, professional food brand context. The scene is bright and appetizing with soft, warm studio lighting. The aesthetic is high-end and modern, featuring pastel tones that harmonize with a premium mobile app UI designed for food discovery and refined dining." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB1jMRRur9lx6_6tIshT7Rk_RZFjXizNrMRk9EOiD_V6qppFdxBJlM_aGeW97yfxGcgRNZoidJSSlBXlWEWhKyexhd9B0AiL3WKd_EeIn5YhGvhttnhvJME0NvLEWHEpwryots8rsbkIOXPOP1YbUB9j-iBgBXo26V7i3lI-PX45dUAII3iy_G8xZGx-Oo4NKOqEhB9JqVreJyU1fiay1dyL419Dg227B2vEJFKD-M6N1bS8np-K08ghlgCnmpZ7pGrS0AayjgdQDc">
-</div>
-</div>
-<div class="mt-2 bg-primary px-3 py-1 rounded-full shadow-lg">
-<p class="text-[10px] font-label-lg text-white">McDonald's • 400m</p>
-</div>
-<div class="w-0.5 h-3 bg-primary mt-px"></div>
-</div>
-<!-- The Coffee House Marker -->
-<div class="absolute top-[55%] right-[25%] z-10 flex flex-col items-center">
-<div class="bg-white p-1 rounded-2xl marker-shadow active:scale-95 transition-transform">
-<div class="w-12 h-12 rounded-xl bg-tertiary-container flex items-center justify-center overflow-hidden">
-<img alt="The Coffee House" class="w-full h-full object-cover" data-alt="A contemporary, minimalist cafe interior representing The Coffee House brand. The visual style is light and airy, dominated by cream and soft wood textures. High-key natural lighting illuminates a clean table with a premium latte. The overall mood is peaceful and sophisticated, aligning with a luxury lifestyle mobile application interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDo2Q0ZPCrCu7lCL4MGPUPVxTfmqXm9DZvy7jkV7ijNHALVNeo6FKeOpPAR231GFWlq7itLFKTDmrRQtXvzAumiQdXuAxCzpNJTxbXnz1DPnnZyPpRaQRErkiWIK7VIIxryCniMV8FlK0K1EUPSv0cvRw_YhljDRgxWbUWrpXZ_4D5y1IrTyJU45Gk_0h0SJBvow-O1MrGLg94-598aULScdqih8YpbLtmy9aQSwMyq0zNR-cIFGUmG3usnDfe_svUJBRnNtRysSos">
-</div>
-</div>
-<div class="mt-2 bg-tertiary px-3 py-1 rounded-full shadow-lg">
-<p class="text-[10px] font-label-lg text-white">The Coffee House • 850m</p>
-</div>
-<div class="w-0.5 h-3 bg-tertiary mt-px"></div>
-</div>
-<!-- User Location Pulse -->
-<div class="absolute top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 z-10">
-<div class="relative flex items-center justify-center">
-<div class="absolute w-12 h-12 bg-primary/20 rounded-full animate-ping"></div>
-<div class="w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-lg border-2 border-primary">
-<div class="w-3 h-3 bg-primary rounded-full"></div>
-</div>
-</div>
-</div>
-<!-- Pull-up Bottom Sheet (Drawer) -->
-<section class="absolute bottom-20 left-0 right-0 z-30 backdrop-blur-xl rounded-t-xl bottom-sheet border-t border-white/40 bg-transparent" style="background: linear-gradient(to bottom, rgba(251, 249, 244, 0.6), rgba(251, 249, 244, 0.95));"><div class="px-container-padding pt-2"><div class="flex items-center justify-between mb-2"><h2 class="font-display-lg text-[18px] font-bold text-on-surface"></h2></div><div class="flex gap-4 overflow-x-auto pb-4 scrollbar-hide"><div class="flex-none w-[280px] rounded-2xl border border-white/40 shadow-sm p-3 flex gap-3 active:scale-[0.98] transition-transform bg-white"><div class="w-20 h-20 rounded-xl overflow-hidden bg-primary-container shrink-0"><img src="https://lh3.googleusercontent.com/aida-public/AB6AXuB1jMRRur9lx6_6tIshT7Rk_RZFjXizNrMRk9EOiD_V6qppFdxBJlM_aGeW97yfxGcgRNZoidJSSlBXlWEWhKyexhd9B0AiL3WKd_EeIn5YhGvhttnhvJME0NvLEWHEpwryots8rsbkIOXPOP1YbUB9j-iBgBXo26V7i3lI-PX45dUAII3iy_G8xZGx-Oo4NKOqEhB9JqVreJyU1fiay1dyL419Dg227B2vEJFKD-M6N1bS8np-K08ghlgCnmpZ7pGrS0AayjgdQDc" class="w-full h-full object-cover" alt="McDonald's"></div><div class="flex flex-col justify-between py-1"><div><h3 class="font-label-lg text-on-surface leading-tight">McDonald's</h3><p class="text-[12px] text-on-surface-variant/70">Fast Food • Burger</p></div><div class="flex items-center gap-2"><span class="text-[12px] font-medium text-primary">400m</span><span class="w-1 h-1 rounded-full bg-outline-variant"></span><span class="text-[12px] text-secondary font-medium uppercase tracking-wider">Đang mở</span></div></div></div><div class="flex-none w-[280px] rounded-2xl border border-white/40 shadow-sm p-3 flex gap-3 active:scale-[0.98] transition-transform bg-white"><div class="w-20 h-20 rounded-xl overflow-hidden bg-tertiary-container shrink-0"><img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDo2Q0ZPCrCu7lCL4MGPUPVxTfmqXm9DZvy7jkV7ijNHALVNeo6FKeOpPAR231GFWlq7itLFKTDmrRQtXvzAumiQdXuAxCzpNJTxbXnz1DPnnZyPpRaQRErkiWIK7VIIxryCniMV8FlK0K1EUPSv0cvRw_YhljDRgxWbUWrpXZ_4D5y1IrTyJU45Gk_0h0SJBvow-O1MrGLg94-598aULScdqih8YpbLtmy9aQSwMyq0zNR-cIFGUmG3usnDfe_svUJBRnNtRysSos" class="w-full h-full object-cover" alt="The Coffee House"></div><div class="flex flex-col justify-between py-1"><div><h3 class="font-label-lg text-on-surface leading-tight">The Coffee House</h3><p class="text-[12px] text-on-surface-variant/70">Cà phê • Bánh ngọt</p></div><div class="flex items-center gap-2"><span class="text-[12px] font-medium text-primary">850m</span><span class="w-1 h-1 rounded-full bg-outline-variant"></span><span class="text-[12px] text-secondary font-medium uppercase tracking-wider">Đang mở</span></div></div></div></div></div></section>
-</main>
-<!-- Bottom Navigation Bar (JSON Shell Execution) -->
-
-
-
-
-
-</body></html>
+</body>
+</html>

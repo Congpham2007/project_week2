@@ -1,292 +1,179 @@
-<!DOCTYPE html><html lang="vi"><head>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
-<script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            "colors": {
-                    "secondary": "#2f685e",
-                    "secondary-fixed": "#b4eee2",
-                    "outline-variant": "#d3c4ba",
-                    "surface-container-high": "#eae8e3",
-                    "primary-fixed-dim": "#e6bfa4",
-                    "on-primary-fixed": "#2b1706",
-                    "tertiary-fixed-dim": "#d2bdf5",
-                    "on-error": "#ffffff",
-                    "inverse-surface": "#30312e",
-                    "surface-bright": "#fbf9f4",
-                    "background": "#fbf9f4",
-                    "surface-container": "#efeee9",
-                    "surface-dim": "#dbdad5",
-                    "outline": "#81756d",
-                    "on-primary": "#ffffff",
-                    "tertiary": "#685687",
-                    "surface-tint": "#765842",
-                    "on-surface-variant": "#4f453e",
-                    "on-secondary": "#ffffff",
-                    "on-background": "#1b1c19",
-                    "tertiary-fixed": "#ebdcff",
-                    "primary-fixed": "#ffdcc4",
-                    "surface": "#fbf9f4",
-                    "on-secondary-container": "#366e64",
-                    "surface-container-lowest": "#ffffff",
-                    "on-error-container": "#93000a",
-                    "on-surface": "#1b1c19",
-                    "secondary-fixed-dim": "#99d2c6",
-                    "inverse-primary": "#e6bfa4",
-                    "on-tertiary": "#ffffff",
-                    "error": "#ba1a1a",
-                    "surface-variant": "#e4e2de",
-                    "primary-container": "#ffd6ba",
-                    "on-tertiary-container": "#6b598a",
-                    "error-container": "#ffdad6",
-                    "surface-container-highest": "#e4e2de",
-                    "on-secondary-fixed": "#00201c",
-                    "on-primary-container": "#7a5b45",
-                    "on-primary-fixed-variant": "#5c412c",
-                    "on-tertiary-fixed": "#23113f",
-                    "primary": "#765842",
-                    "tertiary-container": "#e8d7ff",
-                    "inverse-on-surface": "#f2f1ec",
-                    "surface-container-low": "#f5f3ee",
-                    "on-tertiary-fixed-variant": "#4f3e6e",
-                    "secondary-container": "#b4eee2",
-                    "on-secondary-fixed-variant": "#124f47"
-            },
-            "borderRadius": {
-                    "DEFAULT": "1rem",
-                    "lg": "2rem",
-                    "xl": "3rem",
-                    "full": "9999px"
-            },
-            "spacing": {
-                    "unit": "8px",
-                    "stack-md": "24px",
-                    "stack-lg": "40px",
-                    "stack-sm": "12px",
-                    "container-padding": "20px",
-                    "gutter": "16px"
-            },
-            "fontFamily": {
-                    "body-sm": ["Inter"],
-                    "body-lg": ["Inter"],
-                    "label-md": ["Inter"],
-                    "headline-lg-mobile": ["Inter"],
-                    "headline-lg": ["Inter"],
-                    "display-lg": ["Inter"],
-                    "body-md": ["Inter"],
-                    "label-lg": ["Inter"],
-                    "headline-md": ["Inter"]
-            },
-            "fontSize": {
-                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
-                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
-                    "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
-                    "headline-lg-mobile": ["28px", {"lineHeight": "34px", "fontWeight": "700"}],
-                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
-                    "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
-                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
-                    "label-lg": ["14px", {"lineHeight": "18px", "fontWeight": "600"}],
-                    "headline-md": ["24px", {"lineHeight": "30px", "fontWeight": "600"}]
-            }
-          },
-        },
-      }
-    </script>
+<script src="navigation.js" defer></script>
+<script src="api.js" defer></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <style>
-  /* Giấu thanh cuộn xấu xí của trình duyệt */
-    ::-webkit-scrollbar { display: none; }
-    html, body { -ms-overflow-style: none; scrollbar-width: none; }
-    
-        body { font-family: 'Inter', sans-serif; }
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        .mesh-gradient-bg {
-            background: radial-gradient(at 0% 0%, #ffd6ba 0%, transparent 50%),
-                        radial-gradient(at 100% 0%, #e8d7ff 0%, transparent 50%),
-                        radial-gradient(at 50% 100%, #b4eee2 0%, transparent 50%);
-        }
-    </style>
-<style>
-    body {
-      min-height: max(884px, 100dvh);
-    }
-  </style>
-  <style data-stitch-cursor=""></style><style data-stitch-scroll-lock=""></style><style data-stitch-cursor=""></style><style data-stitch-scroll-lock=""></style></head>
-
-<body class="bg-surface text-on-surface min-h-screen pb-24">
-<!-- TopAppBar -->
-<header class="fixed top-0 w-full z-50 bg-surface/60 backdrop-blur-xl shadow-[0_20px_40px_-15px_rgba(118,88,66,0.08)]">
-<div class="flex items-center justify-between px-container-padding h-16 w-full max-w-md mx-auto">
-<button onclick="window.parent.changeChannel('home.html', 'tab-home')" class="text-primary active:scale-95 transition-transform duration-200">
+  ::-webkit-scrollbar { display: none; }
+  html, body { -ms-overflow-style: none; scrollbar-width: none; overflow-x: hidden; }
+  body { font-family: 'Inter', sans-serif; }
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+  .mesh-gradient-bg {
+      background: radial-gradient(at 0% 0%, #ffd6ba 0%, transparent 50%),
+                  radial-gradient(at 100% 0%, #e8d7ff 0%, transparent 50%),
+                  radial-gradient(at 50% 100%, #b4eee2 0%, transparent 50%);
+  }
+</style>
+</head>
+<body class="bg-[#fbf9f4] text-[#1b1c19] min-h-screen pb-24">
+<header class="fixed top-0 w-full z-50 bg-[#fbf9f4]/85 backdrop-blur-xl shadow-[0_20px_40px_-15px_rgba(118,88,66,0.08)]">
+<div class="flex items-center justify-between px-5 h-16 w-full max-w-md mx-auto">
+<button onclick="navigateTo('home.html', 'tab-home')" class="text-[#765842] active:scale-95 transition-transform duration-200">
 <span class="material-symbols-outlined">arrow_back</span>
 </button>
-<h1 class="font-headline-md text-headline-md text-on-surface">Gợi ý cho bạn</h1>
-<button class="text-primary active:scale-95 transition-transform duration-200">
+<h1 class="text-[22px] font-semibold text-[#3f2c22]">Gợi ý cho bạn</h1>
+<button class="text-[#765842] active:scale-95 transition-transform duration-200">
 <span class="material-symbols-outlined">restaurant_menu</span>
 </button>
 </div>
 </header>
-<main class="max-w-md mx-auto pt-20 px-container-padding space-y-6 pb-10">
 
-<!-- Loading State -->
-<div id="loading-state" class="flex flex-col items-center justify-center py-20 space-y-4">
-  <div class="w-16 h-16 border-4 border-primary-container border-t-primary rounded-full animate-spin"></div>
-  <p class="font-body-md text-on-surface-variant">Đang phân tích với Fuzzy Logic...</p>
+<main class="max-w-md mx-auto pt-20 px-5 space-y-6">
+<div id="reason-box" class="bg-[#fff1e4] border border-[#ead8cb] rounded-2xl p-4 flex items-start gap-3 text-[#6f5544]">
+<span class="material-symbols-outlined text-[#8a6547]" style="font-variation-settings:'FILL' 1;">info</span>
+<p class="text-sm leading-6">Đang lấy kết quả fuzzy từ backend…</p>
 </div>
 
-<!-- Results (hidden initially) -->
-<div id="results-state" class="hidden space-y-6">
-
-<!-- AI Score Section -->
 <div class="relative overflow-hidden rounded-xl mesh-gradient-bg p-6 text-center shadow-lg border border-white/40">
 <div class="relative z-10 flex flex-col items-center">
-<div class="text-on-surface-variant font-label-lg text-label-lg mb-1 uppercase tracking-wider">Độ tương thích AI</div>
+<div class="text-[#6d5a4e] text-sm font-semibold mb-1 uppercase tracking-wider">Độ tương thích AI</div>
 <div class="flex items-center justify-center gap-2">
-<span class="text-[48px] font-bold text-primary leading-tight" id="ai-score">--</span>
-<span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<span id="match-score" class="text-[48px] font-bold text-[#3f2c22] leading-tight">--%</span>
+<span class="material-symbols-outlined text-[#8a6547] text-3xl" style="font-variation-settings:'FILL' 1;">auto_awesome</span>
 </div>
-<p class="font-body-sm text-body-sm text-on-surface-variant mt-2" id="ai-explain">Dựa trên thói quen ăn uống và điều kiện thời tiết hiện tại.</p>
+<p id="insight-text" class="text-sm text-[#5f5148] mt-2 leading-6">Phân tích theo độ đói, thời gian, ngân sách và thời tiết thực tế.</p>
 </div>
 </div>
 
-<!-- Best Recommendation -->
-<section id="best-dish-section">
-<h2 class="font-label-lg text-label-lg text-on-surface-variant mb-4 uppercase tracking-widest">Lựa chọn tốt nhất</h2>
-<div class="bg-surface-container-lowest rounded-lg overflow-hidden shadow-[0_20px_50px_rgba(118,88,66,0.1)] border border-outline-variant/30">
-<div class="relative aspect-[16/10] overflow-hidden bg-surface-container-highest">
-  <div class="w-full h-full flex items-center justify-center">
-    <span class="material-symbols-outlined text-outline text-6xl">restaurant</span>
-  </div>
-</div>
-<div class="p-4 space-y-3">
-<div class="flex justify-between items-start">
-<div>
-<h3 class="font-headline-md text-headline-md text-on-surface" id="best-name">--</h3>
-<div class="flex items-center gap-3 text-on-surface-variant/70 mt-1">
-<span class="flex items-center gap-1 font-body-sm text-body-sm"><span class="material-symbols-outlined text-[18px]">local_fire_department</span> <span id="best-calo">--</span> kcal</span>
-<span class="flex items-center gap-1 font-body-sm text-body-sm"><span class="material-symbols-outlined text-[18px]">schedule</span> <span id="best-time">--</span> phút</span>
-</div>
-</div>
-<div class="text-right">
-<div class="text-primary font-headline-md text-headline-md" id="best-price">--đ</div>
-<div class="text-on-surface-variant/60 font-body-sm text-body-sm" id="best-rest">--</div>
-</div>
-</div>
-<button onclick="window.parent.changeChannel('detail.html')" class="w-full bg-primary-container text-on-primary-container py-3 rounded-full font-label-lg text-label-lg active:scale-95 transition-all shadow-sm">Đặt món ngay</button>
-</div>
-</div>
+<section>
+<h2 class="text-sm font-semibold text-[#7d6d63] mb-4 uppercase tracking-widest">Lựa chọn tốt nhất</h2>
+<div id="best-choice"></div>
 </section>
 
-<!-- Other Recommendations -->
 <section class="space-y-4">
-<h2 class="font-label-lg text-label-lg text-on-surface-variant mb-4 uppercase tracking-widest">Các đề xuất khác</h2>
-<div id="other-dishes" class="space-y-3"></div>
+<h2 class="text-sm font-semibold text-[#7d6d63] mb-4 uppercase tracking-widest">Các đề xuất khác</h2>
+<div id="other-choices" class="space-y-4"></div>
 </section>
-
-</div><!-- end results-state -->
 </main>
 
 <script>
-const FOOD_IMGS = [
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuCp9Ie70zQhA3z732uwqb5DqONyYWDWLvVAOHrkpKoBAkEK33e8h3gCK_OQA_xH-lWinnPSoBzWh8hWrZ3IjNvbpKWYo4fMMj2WQFiWTlTSjdzOuYtb4QF8aGonKkwIGKfF_NVMS19CRAiFYb-Wypgf8ijQsc19GNObpgMf0cVFJGY5JBoQVYdW3xthiswv0ipdgxcWM4pxfJ3NIwgWgFN856llaN1Kp6otsC8p5y4Zb0M59N5vLZz0r300YxiflP7cUzgMAJHB6qE',
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuDOx0Sv7T5FrDrkETVFzxP1OtAy8HsMlGU2OYVlJ2umuOV1SN3VDO8OUMwBff3wKl5cBtaZ-EqK8alxrGclYTAG6nCW_Fy3xbhux4Tbs3N4f8PvJEjdWVoUrV5XaLys1xuKtWZxcwlDsi2_ceBhT4Ws4WIpg_rbAAGzNxol18dtY9LTeMionKPVohJhixgQfSsHpXri2ZI51tEHIDy1JF2HYKhM0U_mSi1VtNOpJ_XdrqJ9W-1aiKmmIIICf6Y1LlZVhj9cN1gNuMU',
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuBYwF2sN4XIoizoz6tr7EmkaEl_4HIHzzfwlJ_IJN-wdIfr31xC780QfLkderqKEfSh6tCPzUhaCXtfZnV4qXFxcltzF1NRMXsGTWB4WgnbUbjGxFhlMh5OzWcFwkABVPXJ_U-OdKVTrc43IiHPi6U7r8mBXB0amXYgL4nEtCdvfKUd3gx21Mws6vtxTFstfwBO26mHNPq0c8wgU-59QUPO48_30Apa6I9vtfJ1Yv95cFYkqswBa0TyMTXY2YbywmGjEimS_F8UZz4',
-];
-
-async function loadRecommendations() {
-  const params = JSON.parse(sessionStorage.getItem('fuzzyParams') || '{}');
-  const payload = {
-    hunger: parseFloat(params.hunger || 7),
-    time_avail: parseFloat(params.time_avail || 45),
-    budget: parseFloat(params.budget || 150000),
-    health: params.health || 'Balanced',
-  };
-
-  // Thêm weather nếu có
-  const weather = JSON.parse(sessionStorage.getItem('weatherData') || '{}');
-  if (weather.weather) payload.weather = weather.weather;
-
-  try {
-    const res = await fetch('/api/recommend', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(payload)
-    });
-    const data = await res.json();
-    renderResults(data);
-  } catch(e) {
-    document.getElementById('loading-state').innerHTML = '<p class="text-error text-center py-10">Lỗi kết nối server. Hãy chạy backend trước!</p>';
-  }
+function fallbackImage(type) {
+  return type === "fast"
+    ? "https://images.unsplash.com/photo-1512058564366-c9e2c0cf0f12?auto=format&fit=crop&w=900&q=80"
+    : "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=900&q=80";
 }
 
-function renderResults(data) {
-  document.getElementById('loading-state').classList.add('hidden');
-  document.getElementById('results-state').classList.remove('hidden');
+function selectDish(item) {
+  smartFoodStore.setStored(smartFoodApi.STORAGE_KEYS.selectedDish, item);
+  navigateTo("detail.html");
+}
 
-  const results = data.results || [];
-  if (!results.length) return;
+function bestCard(item) {
+  return `
+    <div class="bg-white rounded-[22px] overflow-hidden shadow-[0_20px_50px_rgba(118,88,66,0.1)] border border-[#eadfd5]">
+      <div class="relative aspect-[16/10] overflow-hidden">
+        <img alt="${item.name}" class="w-full h-full object-cover" src="${fallbackImage(item.meal_type)}">
+        <div class="absolute top-4 right-4 bg-[#ffe1ca] text-[#7a5b45] text-sm font-semibold px-3 py-1 rounded-full backdrop-blur-md shadow-sm">
+          ${smartFoodUtils.buildMatch(0, item.match_pct)}
+        </div>
+      </div>
+      <div class="p-4 space-y-3">
+        <div class="flex justify-between items-start gap-3">
+          <div>
+            <h3 class="text-[22px] leading-[28px] font-semibold text-[#2e2018]">${item.name}</h3>
+            <div class="flex items-center gap-3 text-[#7d6d63] mt-1 flex-wrap text-sm">
+              <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[18px]">local_fire_department</span>${item.calo} kcal</span>
+              <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[18px]">schedule</span>${Math.round(item.delivery_time)} phút</span>
+            </div>
+            <p class="mt-2 text-sm text-[#7d6d63]">${item.rest_name} • Cách ${item.distance_km}km</p>
+          </div>
+          <div class="text-right shrink-0">
+            <div class="text-[#8a6547] text-[22px] font-semibold">${smartFoodUtils.formatPrice(item.price)}</div>
+          </div>
+        </div>
+        <button onclick='selectDish(${JSON.stringify(item).replace(/'/g, "&apos;")})' class="w-full bg-[#ffd6ba] text-[#7a5b45] py-3 rounded-full text-sm font-semibold active:scale-95 transition-all shadow-sm">Đặt món ngay</button>
+      </div>
+    </div>`;
+}
 
-  // Score
-  const urgency = data.urgency || 0;
-  const score = Math.round(100 - urgency * 5);
-  document.getElementById('ai-score').textContent = score + '%';
-
-  const w = data.weather || {};
-  const wText = w.weather === 'Rain' || w.weather === 'Drizzle' ? 'Trời mưa - ưu tiên món nóng, giao nhanh!' :
-                w.weather === 'Clear' ? 'Trời đẹp - mọi món đều phù hợp!' :
-                'Dựa trên thời tiết và mức độ đói của bạn.';
-  document.getElementById('ai-explain').textContent = wText;
-
-  // Best dish
-  const best = results[0];
-  document.getElementById('best-name').textContent = best.name;
-  document.getElementById('best-calo').textContent = best.calo;
-  document.getElementById('best-time').textContent = Math.round(best.delivery_time);
-  document.getElementById('best-price').textContent = best.price.toLocaleString('vi-VN') + 'đ';
-  document.getElementById('best-rest').textContent = '🏪 ' + (best.rest_name || '');
-
-  // Other dishes
-  const container = document.getElementById('other-dishes');
-  container.innerHTML = '';
-  results.slice(1, 5).forEach((dish, i) => {
-    const matchPct = Math.round(100 - (i+1)*4);
-    container.innerHTML += \`
-    <div class="bg-surface-container-lowest p-3 rounded-lg flex gap-4 shadow-sm border border-outline-variant/20 active:scale-[0.98] transition-transform">
-      <div class="w-24 h-24 rounded-lg overflow-hidden shrink-0 relative bg-surface-container-highest flex items-center justify-center">
-        <img src="\${FOOD_IMGS[i % FOOD_IMGS.length]}" class="w-full h-full object-cover" alt="\${dish.name}" onerror="this.style.display='none'">
-        <div class="absolute top-1 right-1 bg-white/70 backdrop-blur-sm text-primary font-label-md text-[10px] px-1.5 py-0.5 rounded-full">\${matchPct}% Match</div>
+function smallCard(item, index) {
+  return `
+    <div class="bg-white p-3 rounded-[20px] flex gap-4 shadow-sm border border-[#eadfd5] active:scale-[0.98] transition-transform">
+      <div class="w-24 h-24 rounded-lg overflow-hidden shrink-0 relative">
+        <img alt="${item.name}" class="w-full h-full object-cover" src="${fallbackImage(item.meal_type)}">
+        <div class="absolute top-1 right-1 bg-white/80 backdrop-blur-sm text-[#8a6547] text-[10px] font-semibold px-1.5 py-0.5 rounded-full">${smartFoodUtils.buildMatch(index + 1, item.match_pct)}</div>
       </div>
       <div class="flex-1 flex flex-col justify-between">
         <div>
-          <h4 class="font-label-lg text-label-lg text-on-surface line-clamp-1">\${dish.name}</h4>
-          <div class="flex gap-2 mt-1">
-            <span class="text-on-surface-variant/60 font-body-sm text-body-sm">\${dish.calo} kcal</span>
-            <span class="text-on-surface-variant/60">•</span>
-            <span class="text-on-surface-variant/60 font-body-sm text-body-sm">\${Math.round(dish.delivery_time)} phút</span>
-            <span class="text-on-surface-variant/60">•</span>
-            <span class="text-on-surface-variant/60 font-body-sm text-body-sm">\${dish.distance_km}km</span>
+          <div class="flex justify-between items-start gap-2">
+            <h4 class="text-[16px] leading-[22px] font-semibold text-[#2e2018] line-clamp-2">${item.name}</h4>
           </div>
-          <p class="text-on-surface-variant/50 font-body-sm text-[11px] mt-0.5">\${dish.rest_name}</p>
+          <div class="flex gap-2 mt-1 flex-wrap text-sm">
+            <span class="text-[#8d7d72]">${item.calo} kcal</span>
+            <span class="text-[#8d7d72]">•</span>
+            <span class="text-[#8d7d72]">${Math.round(item.delivery_time)} phút</span>
+          </div>
+          <p class="mt-1 text-xs text-[#8d7d72]">${item.rest_name}</p>
         </div>
         <div class="flex justify-between items-end">
-          <span class="font-label-lg text-label-lg text-primary">\${dish.price.toLocaleString('vi-VN')}đ</span>
-          <button class="bg-surface-container text-on-surface-variant p-1.5 rounded-lg active:scale-95 transition-all shadow-sm border border-outline-variant/10">
+          <span class="text-sm font-semibold text-[#8a6547]">${smartFoodUtils.formatPrice(item.price)}</span>
+          <button onclick='selectDish(${JSON.stringify(item).replace(/'/g, "&apos;")})' class="bg-[#f6efe8] text-[#7d6d63] p-1.5 rounded-lg active:scale-95 transition-all shadow-sm border border-[#eadfd5]">
             <span class="material-symbols-outlined text-[20px] font-bold">add</span>
           </button>
         </div>
       </div>
-    </div>\`;
-  });
+    </div>`;
 }
 
-loadRecommendations();
+async function ensureRecommendation() {
+  let recommendation = smartFoodStore.getStored(smartFoodApi.STORAGE_KEYS.recommend);
+  if (recommendation && recommendation.results?.length) return recommendation;
+
+  const payload = smartFoodStore.getStored(smartFoodApi.STORAGE_KEYS.recommendPayload, {
+    hunger: 7,
+    time_avail: 30,
+    budget: 300000,
+    health: "Balanced"
+  });
+
+  recommendation = await smartFoodApi.getRecommend(payload);
+  smartFoodStore.setStored(smartFoodApi.STORAGE_KEYS.recommend, recommendation);
+  return recommendation;
+}
+
+async function hydrateRecommendation() {
+  try {
+    const recommendation = await ensureRecommendation();
+    const weather = recommendation.weather || smartFoodStore.getStored(smartFoodApi.STORAGE_KEYS.weather);
+    const best = recommendation.results?.[0];
+    const others = recommendation.results?.slice(1, 6) || [];
+
+    document.getElementById("reason-box").innerHTML = `
+      <span class="material-symbols-outlined text-[#8a6547]" style="font-variation-settings:'FILL' 1;">info</span>
+      <p class="text-sm leading-6 text-[#6f5544]">
+        Đề xuất vì thời tiết hiện tại là ${weather?.weather_vi || weather?.weather || "ổn định"}, độ khẩn cấp bữa ăn ở mức ${recommendation.urgency || "--"} và ngân sách phù hợp.
+      </p>`;
+
+    document.getElementById("match-score").textContent = `${Math.round(best?.match_pct || 96)}%`;
+    document.getElementById("insight-text").textContent = `Fuzzy logic đang ưu tiên món ${best?.meal_type === "fast" ? "ăn nhanh" : "bữa đầy đủ"} với mục tiêu khoảng ${Math.round(recommendation.cal_target || best?.calo || 0)} kcal.`;
+    document.getElementById("best-choice").innerHTML = best ? bestCard(best) : "";
+    document.getElementById("other-choices").innerHTML = others.map((item, index) => smallCard(item, index)).join("");
+  } catch (error) {
+    document.getElementById("reason-box").innerHTML = `
+      <span class="material-symbols-outlined text-[#ba1a1a]" style="font-variation-settings:'FILL' 1;">error</span>
+      <p class="text-sm leading-6 text-[#6f5544]">Không tải được dữ liệu fuzzy từ backend: ${error.message}</p>`;
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  window.selectDish = selectDish;
+  hydrateRecommendation();
+});
 </script>
-</body></html>
+</body>
+</html>
