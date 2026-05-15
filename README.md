@@ -29,11 +29,11 @@ Các file quan trọng:
 - [home.html](./home.html): trang chủ, gọi `weather` và `recommend`
 - [fuzzy.html](./fuzzy.html): màn hình kết quả fuzzy
 - [planner.html](./planner.html): kế hoạch bữa ăn, gọi `plan`
-- [map.html](./map.html): màn hình theo dõi giao hàng/demo map card
-- [map_quanquen.html](./map_quanquen.html): màn hình quán quen, render marker từ dữ liệu recommend
+- [map.html](./map.html): màn hình theo dõi giao hàng dùng custom geometry map từ dữ liệu tọa độ thật
+- [map_quanquen.html](./map_quanquen.html): màn hình quán quen dùng custom geometry map từ dữ liệu recommend thật
 - [detail.html](./detail.html): chi tiết món/quán, nhận món đã chọn từ frontend
 - [tracking.html](./tracking.html): theo dõi đơn hàng
-- [settings.html](./settings.html): cài đặt, login/logout
+- [settings.html](./settings.html): cài đặt
 - [navigation.js](./navigation.js): helper điều hướng dùng chung
 - [api.js](./api.js): helper gọi API và lưu sessionStorage
 
@@ -128,7 +128,7 @@ python smart_food_logic.py
 Sau khi chạy:
 
 - backend mở ở `http://127.0.0.1:5000`
-- route `/` sẽ trả về [app.html](./app.html)
+- route `/` sẽ trả về [login.html](./login.html)
 
 Mở trình duyệt:
 
@@ -152,7 +152,7 @@ python -m http.server 4173
 
 Sau đó mở:
 
-- frontend static: [http://127.0.0.1:4173/app.html](http://127.0.0.1:4173/app.html)
+- frontend static: [http://127.0.0.1:4173/login.html](http://127.0.0.1:4173/login.html)
 - backend API: [http://127.0.0.1:5000](http://127.0.0.1:5000)
 
 Trong mode này:
@@ -214,7 +214,9 @@ File: [map_quanquen.html](./map_quanquen.html)
 Trang này:
 
 - lấy dữ liệu từ recommend gần nhất
-- dùng `lat/lon` backend trả ra để nội suy marker lên mock map
+- dùng `lat/lon` backend trả ra để vẽ custom map bằng `SVG + geometry`
+- không dùng ảnh chụp map
+- không dùng street tile map
 - render danh sách card quán dưới cùng
 
 ### 5.5. Detail
@@ -233,17 +235,19 @@ Trang này:
 ### 6.1. Test flow cơ bản
 
 1. Mở [http://127.0.0.1:5000](http://127.0.0.1:5000)
-2. Vào `Trang chủ`
-3. Kiểm tra card thời tiết đã hiện dữ liệu thật
-4. Thay đổi slider ở `Tìm kiếm thông minh`
-5. Bấm `Tìm món ăn phù hợp`
-6. Xác nhận `fuzzy.html` hiện món từ backend
-7. Bấm `Đặt món ngay`
-8. Xác nhận `detail.html` đổi theo món vừa chọn
-9. Qua `Kế hoạch`
-10. Xác nhận 3 bữa ăn được lấy từ backend
-11. Qua `Bản đồ / Quán quen`
-12. Xác nhận marker và card map lấy theo dữ liệu recommend
+2. Xác nhận app vào `login.html`
+3. Bấm `Đăng nhập`
+4. Vào `Trang chủ`
+5. Kiểm tra card thời tiết đã hiện dữ liệu thật
+6. Thay đổi slider ở `Tìm kiếm thông minh`
+7. Bấm `Tìm món ăn phù hợp`
+8. Xác nhận `fuzzy.html` hiện món từ backend
+9. Bấm `Đặt món ngay`
+10. Xác nhận `detail.html` đổi theo món vừa chọn
+11. Qua `Kế hoạch`
+12. Xác nhận 3 bữa ăn được lấy từ backend
+13. Qua `Bản đồ / Quán quen`
+14. Xác nhận marker và card map lấy theo dữ liệu recommend
 
 ### 6.2. Checklist UI nên kiểm
 
@@ -277,16 +281,15 @@ Trang này:
 - `12 - 15 phút` không bị xuống dòng
 - `19:45` không bị tách dòng
 - phần đánh giá shipper có icon sao
+- có thể kéo/pan bằng chuột hoặc touch
+- là custom geometry map, không phải nền street tile
 
 `map_quanquen.html`
 
 - Marker hiển thị đủ
 - Bottom carousel không bị nav che khi mở standalone
-
-`settings.html`
-
-- có nút `Đăng nhập`
-- có nút `Đăng xuất`
+- có thể kéo/pan bằng chuột hoặc touch
+- dữ liệu quán lấy từ backend
 
 ---
 
@@ -442,6 +445,14 @@ Kiểm tra thứ tự:
 3. `/api/plan` có trả `plan` không
 4. mở console browser xem lỗi fetch
 
+### Geometry map không tương tác
+
+Kiểm tra:
+
+- đã reload cứng `Ctrl+F5` chưa
+- JS mới của `map.html` / `map_quanquen.html` đã được tải chưa
+- thao tác kéo bắt đầu từ vùng bản đồ, không phải từ card dưới cùng hay nút nổi
+
 ### Weather không đúng
 
 Kiểm tra:
@@ -455,7 +466,8 @@ Kiểm tra:
 ## 9. Ghi chú quan trọng
 
 - Chart tuần trong [planner.html](./planner.html) hiện là `mock KPI`, không phản ánh dữ liệu backend
-- `map.html` hiện là `tracking demo`, chưa có tuyến đường live từ backend
+- `map.html` và `map_quanquen.html` hiện là `custom geometry map` từ dữ liệu tọa độ thật, không phải street map tile
+- route trong `map.html` là tuyến mô phỏng hình học từ dữ liệu thật, chưa gọi dịch vụ routing ngoài
 - Frontend hiện dùng `Tailwind CDN`, phù hợp cho demo/prototype; nếu production nên build CSS local
 
 ---
@@ -483,7 +495,7 @@ python -m http.server 4173
 Mở:
 
 ```text
-http://127.0.0.1:4173/app.html
+http://127.0.0.1:4173/login.html
 ```
 
 ### Test API nhanh
@@ -514,11 +526,12 @@ POST http://127.0.0.1:5000/api/map
 - weather thật
 - fuzzy recommend thật
 - meal plan thật
-- recent map từ recommend thật
+- recent map geometry từ recommend thật
+- tracking map geometry từ món đã chọn thật
 - detail nhận món đã chọn
 
 Chưa nối dữ liệu thật hoàn toàn:
 
 - chart tuần planner
-- tracking route live ở `map.html`
-
+- order backend thực sự
+- menu backend riêng cho `detail.html`

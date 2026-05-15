@@ -5,41 +5,25 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Màn hình bản đồ - Khám phá</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@turf/turf@7.2.0/turf.min.js"></script>
     <script src="navigation.js" defer></script>
+    <script src="api.js" defer></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <style>
-        ::-webkit-scrollbar {
-            display: none;
-        }
-
-        html, body {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-            overflow-x: hidden;
-        }
+        ::-webkit-scrollbar { display: none; }
+        html, body { -ms-overflow-style: none; scrollbar-width: none; overflow-x: hidden; }
 
         body {
             font-family: 'Inter', sans-serif;
             background: linear-gradient(180deg, #fffdf9 0%, #f4eeea 100%);
         }
 
-        .map-canvas {
-            background:
-                linear-gradient(rgba(255, 248, 242, 0.78), rgba(255, 248, 242, 0.78)),
-                url("https://lh3.googleusercontent.com/aida-public/AB6AXuDNOIfO7TkiqGsWpHervWQAGwrAyNFWMsUNIYV-qZ-Kikjdq8r1unefH7ECuym0OxINt2ay-Mh3b1gZ1G33jBMwun-KBHsx5Y_wX6gkNmTEyhEHhODqroqlHezn4L-kn_FETrRJGWAjtJGwvJ6SDiIYD9nH9Xl_SecGZ03VWxyvAG8B6eHtAG-YHUrGB2fsyhvQF8XxumIOuRPJxIRn1zSc3w_QGYxR8GQoy_jxqA-LF4pZ8NLZjc5sS9pX2sk1ZeDVvqLUF3H0NHo") center/cover;
-        }
-
         .glass-button,
         .glass-card {
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.82);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-        }
-
-        .map-node {
-            position: absolute;
-            transform: translate(-50%, -100%);
         }
 
         .nav-item {
@@ -49,6 +33,161 @@
         .nav-item.active {
             color: #765842;
             font-weight: 700;
+        }
+
+        .map-shell {
+            position: relative;
+            background:
+                radial-gradient(circle at top right, rgba(180, 238, 226, 0.28), transparent 24%),
+                radial-gradient(circle at bottom left, rgba(255, 214, 186, 0.28), transparent 24%),
+                linear-gradient(180deg, rgba(255, 250, 245, 0.94), rgba(242, 237, 230, 0.98));
+            touch-action: none;
+            cursor: grab;
+        }
+
+        .geometry-stage {
+            position: absolute;
+            inset: 0;
+            transform-origin: center center;
+            transition: transform 0.25s ease;
+            will-change: transform;
+        }
+
+        .map-shell.dragging {
+            cursor: grabbing;
+        }
+
+        .geometry-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .geometry-road {
+            fill: none;
+            stroke: rgba(95, 171, 160, 0.22);
+            stroke-width: 26;
+            stroke-linecap: round;
+        }
+
+        .geometry-road-outline {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.42);
+            stroke-width: 3;
+            stroke-linecap: round;
+        }
+
+        .geometry-route-glow {
+            fill: none;
+            stroke: rgba(180, 238, 226, 0.88);
+            stroke-width: 18;
+            stroke-linecap: round;
+        }
+
+        .geometry-route {
+            fill: none;
+            stroke: #2f685e;
+            stroke-width: 5;
+            stroke-linecap: round;
+            stroke-dasharray: 12 12;
+        }
+
+        .node-layer {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .floating-badge {
+            position: absolute;
+            transform: translate(-50%, -100%);
+            padding: 9px 16px;
+            border-radius: 9999px;
+            background: rgba(255,255,255,0.96);
+            color: #5e4839;
+            font-size: 13px;
+            font-weight: 700;
+            box-shadow: 0 10px 20px rgba(118, 88, 66, 0.14);
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        .store-pin {
+            position: absolute;
+            transform: translate(-50%, -100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            pointer-events: none;
+        }
+
+        .store-pin__head {
+            width: 56px;
+            height: 56px;
+            border-radius: 9999px;
+            background: #2f685e;
+            border: 4px solid #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            box-shadow: 0 12px 22px rgba(47,104,94,0.28);
+        }
+
+        .store-pin__tail {
+            width: 16px;
+            height: 16px;
+            transform: rotate(45deg);
+            background: #2f685e;
+            margin-top: -6px;
+        }
+
+        .courier-pin {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            width: 48px;
+            height: 48px;
+            pointer-events: none;
+        }
+
+        .courier-pin__pulse {
+            position: absolute;
+            inset: 0;
+            border-radius: 9999px;
+            background: rgba(180, 238, 226, 0.72);
+            animation: pulse 1.8s infinite;
+        }
+
+        .courier-pin__dot {
+            position: relative;
+            z-index: 1;
+            width: 48px;
+            height: 48px;
+            border-radius: 9999px;
+            background: #ffffff;
+            border: 3px solid #2f685e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2f685e;
+            box-shadow: 0 12px 22px rgba(47,104,94,0.18);
+        }
+
+        .user-pin {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            width: 18px;
+            height: 18px;
+            border-radius: 9999px;
+            background: #ffffff;
+            border: 3px solid #2f685e;
+            box-shadow: 0 0 0 12px rgba(47, 104, 94, 0.14);
+            pointer-events: none;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.82); opacity: 0.7; }
+            70% { transform: scale(1.2); opacity: 0; }
+            100% { transform: scale(1.2); opacity: 0; }
         }
     </style>
 </head>
@@ -67,48 +206,27 @@
         </header>
 
         <main class="pt-24 px-5">
-            <section class="relative h-[690px] rounded-[34px] overflow-hidden border border-white/70 map-canvas">
-                <svg class="absolute inset-0 w-full h-full pointer-events-none" preserveAspectRatio="none" viewBox="0 0 100 100">
-                    <path d="M62 20 C64 28, 57 38, 56 47 C55 58, 60 65, 60 77" fill="none" stroke="#bce8df" stroke-linecap="round" stroke-width="4"></path>
-                    <path d="M62 20 C64 28, 57 38, 56 47 C55 58, 60 65, 60 77" fill="none" stroke="#2f685e" stroke-dasharray="1 2.5" stroke-linecap="round" stroke-width="1.2"></path>
-                </svg>
-
-                <div class="map-node left-[56%] top-[34%] z-20">
-                    <div class="mb-2 rounded-full bg-white px-4 py-2 text-xs font-semibold text-[#5e4839] shadow-[0_10px_20px_rgba(118,88,66,0.12)]">Bếp Chay Mint</div>
-                    <div class="relative flex items-center justify-center">
-                        <div class="w-12 h-12 rounded-full bg-[#2f685e] border-[3px] border-white flex items-center justify-center shadow-[0_10px_22px_rgba(47,104,94,0.32)]">
-                            <span class="material-symbols-outlined text-white" style="font-variation-settings:'FILL' 1">storefront</span>
-                        </div>
-                        <div class="absolute -bottom-1 w-4 h-4 rotate-45 bg-[#2f685e]"></div>
-                    </div>
+            <section class="map-shell relative h-[690px] rounded-[34px] overflow-hidden border border-white/70">
+                <div id="geometry-stage" class="geometry-stage">
+                    <svg viewBox="0 0 1000 1400" class="geometry-svg" aria-hidden="true">
+                        <g id="road-layer"></g>
+                        <path id="route-glow" class="geometry-route-glow"></path>
+                        <path id="route-line" class="geometry-route"></path>
+                    </svg>
+                    <div id="node-layer" class="node-layer"></div>
                 </div>
 
-                <div class="absolute left-[60%] top-[77%] -translate-x-1/2 -translate-y-1/2 z-20">
-                    <div class="relative flex items-center justify-center">
-                        <div class="absolute w-16 h-16 rounded-full bg-[#b4eee2] opacity-60 animate-ping"></div>
-                        <div class="w-12 h-12 rounded-full bg-white border-2 border-[#2f685e] flex items-center justify-center shadow-lg">
-                            <span class="material-symbols-outlined text-[#2f685e]" style="font-variation-settings:'FILL' 1">directions_bike</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="map-node left-[60%] top-[90%] z-20">
-                    <div class="relative flex items-center justify-center">
-                        <div class="w-14 h-14 rounded-full bg-[#b4eee2] border-4 border-white flex items-center justify-center shadow-[0_12px_24px_rgba(47,104,94,0.18)]">
-                            <span class="material-symbols-outlined text-[#2f685e]" style="font-variation-settings:'FILL' 1">pedal_bike</span>
-                        </div>
-                    </div>
-                </div>
+                <div id="store-badge" class="floating-badge hidden">Đang tải điểm đến…</div>
 
                 <div class="absolute right-4 top-[40%] z-20 flex flex-col gap-3">
-                    <button class="glass-button w-11 h-11 rounded-full shadow-[0_10px_20px_rgba(118,88,66,0.12)] flex items-center justify-center text-[#7f6d61] border border-white/70">
+                    <button id="locate-btn" class="glass-button w-11 h-11 rounded-full shadow-[0_10px_20px_rgba(118,88,66,0.12)] flex items-center justify-center text-[#7f6d61] border border-white/70">
                         <span class="material-symbols-outlined">my_location</span>
                     </button>
                     <div class="glass-card rounded-full overflow-hidden border border-white/70 shadow-[0_10px_20px_rgba(118,88,66,0.12)]">
-                        <button class="w-11 h-11 flex items-center justify-center text-[#7f6d61] border-b border-[#ece1d8]">
+                        <button id="zoom-in-btn" class="w-11 h-11 flex items-center justify-center text-[#7f6d61] border-b border-[#ece1d8]">
                             <span class="material-symbols-outlined">add</span>
                         </button>
-                        <button class="w-11 h-11 flex items-center justify-center text-[#7f6d61]">
+                        <button id="zoom-out-btn" class="w-11 h-11 flex items-center justify-center text-[#7f6d61]">
                             <span class="material-symbols-outlined">remove</span>
                         </button>
                     </div>
@@ -122,9 +240,9 @@
                                     <span class="w-2 h-2 rounded-full bg-[#2f685e] animate-pulse"></span>
                                     <span>Đang giao hàng</span>
                                 </div>
-                                <h2 class="mt-2 text-[40px] leading-[44px] font-bold text-[#241814] whitespace-nowrap">12 - 15 phút</h2>
+                                <h2 id="eta-range" class="mt-2 text-[40px] leading-[44px] font-bold text-[#241814] whitespace-nowrap">12 - 15 phút</h2>
                                 <p class="mt-1 text-sm text-[#7f7066] leading-5">
-                                    <span>Khoảng cách: 2.4 km • Đến lúc </span><span class="whitespace-nowrap">19:45</span>
+                                    <span id="distance-line">Khoảng cách: 2.4 km • Đến lúc </span><span id="arrival-time" class="whitespace-nowrap">19:45</span>
                                 </p>
                             </div>
                             <div class="w-14 h-14 rounded-full bg-[#b4eee2] flex items-center justify-center">
@@ -182,7 +300,230 @@
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
+        const USER_LOCATION = { lat: 10.7725, lon: 106.6980 };
+        let currentScale = 1;
+        let panX = 0;
+        let panY = 0;
+        let dragging = false;
+        let dragStartX = 0;
+        let dragStartY = 0;
+        let dragOriginX = 0;
+        let dragOriginY = 0;
+
+        function fallbackDish() {
+            return {
+                name: "Bếp Chay Mint",
+                rest_name: "Bếp Chay Mint",
+                distance_km: 2.4,
+                delivery_time: 15,
+                lat: 10.786,
+                lon: 106.708,
+                price: 65000,
+                meal_type: "full"
+            };
+        }
+
+        function courierPoint(user, store) {
+            return turf.destination(
+                turf.point([user.lon, user.lat]),
+                turf.distance(turf.point([user.lon, user.lat]), turf.point([store.lon, store.lat])) * 0.62,
+                turf.bearing(turf.point([user.lon, user.lat]), turf.point([store.lon, store.lat]))
+            ).geometry.coordinates;
+        }
+
+        function estimateArrival(minutesAway) {
+            const now = new Date();
+            now.setMinutes(now.getMinutes() + minutesAway);
+            return now.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" });
+        }
+
+        function buildProjection(store, courier) {
+            const features = turf.featureCollection([
+                turf.point([USER_LOCATION.lon, USER_LOCATION.lat]),
+                turf.point([store.lon, store.lat]),
+                turf.point(courier)
+            ]);
+            const bbox = turf.bbox(features);
+            const padded = [bbox[0] - 0.01, bbox[1] - 0.01, bbox[2] + 0.01, bbox[3] + 0.01];
+            return {
+                bbox: padded,
+                project(lon, lat) {
+                    const x = ((lon - padded[0]) / (padded[2] - padded[0])) * 1000;
+                    const y = 1400 - ((lat - padded[1]) / (padded[3] - padded[1])) * 1400;
+                    return { x, y };
+                }
+            };
+        }
+
+        function roadPath(points, projector) {
+            return points.map((point, index) => {
+                const projected = projector(point[0], point[1]);
+                return `${index === 0 ? "M" : "L"} ${projected.x.toFixed(1)} ${projected.y.toFixed(1)}`;
+            }).join(" ");
+        }
+
+        function curvedRoute(userPoint, courierPointPx, storePoint) {
+            const cp1x = userPoint.x + (courierPointPx.x - userPoint.x) * 0.3;
+            const cp1y = userPoint.y - 40;
+            const cp2x = courierPointPx.x + (storePoint.x - courierPointPx.x) * 0.45;
+            const cp2y = courierPointPx.y - 50;
+            return `M ${userPoint.x.toFixed(1)} ${userPoint.y.toFixed(1)} Q ${cp1x.toFixed(1)} ${cp1y.toFixed(1)} ${courierPointPx.x.toFixed(1)} ${courierPointPx.y.toFixed(1)} Q ${cp2x.toFixed(1)} ${cp2y.toFixed(1)} ${storePoint.x.toFixed(1)} ${storePoint.y.toFixed(1)}`;
+        }
+
+        function buildRoadNetwork(store, projection) {
+            const [minLon, minLat, maxLon, maxLat] = projection.bbox;
+            const centerLon = (minLon + maxLon) / 2;
+            const centerLat = (minLat + maxLat) / 2;
+            const qLon = (maxLon - minLon) / 4;
+            const qLat = (maxLat - minLat) / 4;
+
+            return [
+                turf.lineString([
+                    [centerLon - qLon * 0.15, maxLat],
+                    [centerLon, centerLat + qLat * 0.2],
+                    [centerLon + qLon * 0.12, minLat]
+                ]),
+                turf.lineString([
+                    [minLon, centerLat - qLat * 0.1],
+                    [centerLon - qLon * 0.2, centerLat - qLat * 0.2],
+                    [maxLon, centerLat - qLat * 0.05]
+                ]),
+                turf.lineString([
+                    [minLon + qLon * 0.4, maxLat - qLat * 0.08],
+                    [minLon + qLon * 0.3, centerLat + qLat * 0.15],
+                    [minLon + qLon * 0.55, minLat + qLat * 0.18]
+                ]),
+                turf.lineString([
+                    [maxLon - qLon * 0.35, maxLat - qLat * 0.05],
+                    [maxLon - qLon * 0.15, centerLat - qLat * 0.18],
+                    [maxLon - qLon * 0.45, minLat + qLat * 0.14]
+                ]),
+                turf.lineString([
+                    [store.lon - qLon * 0.4, store.lat + qLat * 0.25],
+                    [store.lon - qLon * 0.12, store.lat + qLat * 0.04],
+                    [store.lon + qLon * 0.18, store.lat - qLat * 0.22]
+                ])
+            ].map((line) => roadPath(line.geometry.coordinates, projection.project));
+        }
+
+        function setStageScale(scale) {
+            currentScale = Math.max(0.92, Math.min(1.28, scale));
+            applyStageTransform();
+        }
+
+        function applyStageTransform() {
+            document.getElementById("geometry-stage").style.transform = `translate(${panX}px, ${panY}px) scale(${currentScale})`;
+        }
+
+        function resetView() {
+            panX = 0;
+            panY = 0;
+            currentScale = 1;
+            applyStageTransform();
+        }
+
+        function bindPan() {
+            const shell = document.querySelector(".map-shell");
+            const ignoreSelector = "#locate-btn, #zoom-in-btn, #zoom-out-btn, #store-badge, .glass-card button";
+
+            shell.addEventListener("pointerdown", (event) => {
+                if (event.target.closest(ignoreSelector)) return;
+                dragging = true;
+                dragStartX = event.clientX;
+                dragStartY = event.clientY;
+                dragOriginX = panX;
+                dragOriginY = panY;
+                shell.classList.add("dragging");
+            });
+
+            window.addEventListener("pointermove", (event) => {
+                if (!dragging) return;
+                panX = dragOriginX + (event.clientX - dragStartX);
+                panY = dragOriginY + (event.clientY - dragStartY);
+                applyStageTransform();
+            });
+
+            const stopDragging = () => {
+                dragging = false;
+                shell.classList.remove("dragging");
+            };
+
+            window.addEventListener("pointerup", stopDragging);
+            window.addEventListener("pointercancel", stopDragging);
+        }
+
+        function renderGeometryMap(dish) {
+            const store = {
+                lat: dish.lat || fallbackDish().lat,
+                lon: dish.lon || fallbackDish().lon
+            };
+            const courier = courierPoint(USER_LOCATION, store);
+            const projection = buildProjection(store, courier);
+
+            const roadLayer = document.getElementById("road-layer");
+            roadLayer.innerHTML = buildRoadNetwork(store, projection).map((path) => `
+                <g>
+                    <path d="${path}" class="geometry-road"></path>
+                    <path d="${path}" class="geometry-road-outline"></path>
+                </g>
+            `).join("");
+
+            const userPx = projection.project(USER_LOCATION.lon, USER_LOCATION.lat);
+            const courierPx = projection.project(courier[0], courier[1]);
+            const storePx = projection.project(store.lon, store.lat);
+
+            document.getElementById("route-glow").setAttribute("d", curvedRoute(userPx, courierPx, storePx));
+            document.getElementById("route-line").setAttribute("d", curvedRoute(userPx, courierPx, storePx));
+
+            const nodeLayer = document.getElementById("node-layer");
+            nodeLayer.innerHTML = `
+                <div class="user-pin" style="left:${userPx.x / 10}%; top:${userPx.y / 14}%;"></div>
+                <div class="courier-pin" style="left:${courierPx.x / 10}%; top:${courierPx.y / 14}%;">
+                    <div class="courier-pin__pulse"></div>
+                    <div class="courier-pin__dot">
+                        <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">directions_bike</span>
+                    </div>
+                </div>
+                <div class="store-pin" style="left:${storePx.x / 10}%; top:${storePx.y / 14}%;">
+                    <div class="store-pin__head">
+                        <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">storefront</span>
+                    </div>
+                    <div class="store-pin__tail"></div>
+                </div>
+            `;
+
+            const badge = document.getElementById("store-badge");
+            badge.textContent = dish.rest_name || dish.name || "Bếp Chay Mint";
+            badge.style.left = `${storePx.x / 10}%`;
+            badge.style.top = `${storePx.y / 14 - 3}%`;
+            badge.classList.remove("hidden");
+        }
+
+        async function loadTrackingMap() {
+            let selectedDish = smartFoodStore.getStored(smartFoodApi.STORAGE_KEYS.selectedDish);
+            if (!selectedDish) {
+                const recommendation = smartFoodStore.getStored(smartFoodApi.STORAGE_KEYS.recommend);
+                selectedDish = recommendation?.results?.[0] || fallbackDish();
+            }
+
+            renderGeometryMap(selectedDish);
+
+            const etaMax = Math.max(12, Math.round(selectedDish.delivery_time || 15));
+            const etaMin = Math.max(8, etaMax - 3);
+            document.getElementById("eta-range").textContent = `${etaMin} - ${etaMax} phút`;
+            document.getElementById("distance-line").textContent = `Khoảng cách: ${selectedDish.distance_km || 2.4} km • Đến lúc `;
+            document.getElementById("arrival-time").textContent = estimateArrival(etaMax);
+        }
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            await loadTrackingMap();
+            bindPan();
+            applyStageTransform();
+
+            document.getElementById("locate-btn").addEventListener("click", resetView);
+            document.getElementById("zoom-in-btn").addEventListener("click", () => setStageScale(currentScale + 0.08));
+            document.getElementById("zoom-out-btn").addEventListener("click", () => setStageScale(currentScale - 0.08));
+
             setupStandaloneNav("tab-map");
         });
     </script>

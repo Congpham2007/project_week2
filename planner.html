@@ -25,6 +25,7 @@
             background: linear-gradient(180deg, #fffdfa 0%, #f5efea 100%);
         }
 
+        .stats-card,
         .meal-card,
         .panel {
             background: rgba(255, 255, 255, 0.88);
@@ -71,6 +72,10 @@
             color: #765842;
             font-weight: 700;
         }
+
+        .macro-pill {
+            box-shadow: 0 14px 28px rgba(118, 88, 66, 0.08);
+        }
     </style>
 </head>
 <body class="text-[#1b1c19]">
@@ -88,6 +93,54 @@
         </header>
 
         <main class="px-5 pt-2">
+            <section class="space-y-1 mb-5">
+                <h2 class="text-[34px] leading-[40px] font-bold text-[#241814]">Kế hoạch hôm nay</h2>
+                <p id="planner-date" class="text-[13px] text-[#8d7d72]">Đang tải dữ liệu từ backend…</p>
+            </section>
+
+            <section class="grid grid-cols-2 gap-4 mb-5">
+                <div class="stats-card rounded-[28px] border border-[#eee2d8] p-5 flex flex-col items-center justify-center text-center">
+                    <p class="text-sm font-semibold uppercase tracking-[0.16em] text-[#7f7066] mb-3">Đã nạp</p>
+                    <div class="relative w-28 h-28 flex items-center justify-center">
+                        <div class="absolute inset-0 rounded-full border-[6px] border-[#ffd6ba]"></div>
+                        <div id="calorie-ring" class="absolute inset-0 rounded-full border-[6px] border-[#765842]" style="clip-path: polygon(0 0, 100% 0, 100% 56%, 0 56%);"></div>
+                        <div class="flex flex-col items-center">
+                            <span id="planner-total-cal" class="text-[32px] leading-[36px] font-bold text-[#765842]">0</span>
+                            <span class="text-sm text-[#7f7066]">/ <span id="planner-goal-cal">2,000</span></span>
+                        </div>
+                    </div>
+                    <p class="mt-3 text-[16px] font-medium text-[#765842]">kcal</p>
+                </div>
+
+                <div class="space-y-4 flex flex-col justify-between">
+                    <div class="macro-pill rounded-full bg-[#d8f3eb] px-5 py-4 flex items-center justify-between text-[#2c6a61]">
+                        <span class="text-[16px] font-medium">Carbs</span>
+                        <span id="macro-carbs" class="text-[16px] font-bold">0g</span>
+                    </div>
+                    <div class="macro-pill rounded-full bg-[#ffe7d7] px-5 py-4 flex items-center justify-between text-[#8a6547]">
+                        <span class="text-[16px] font-medium">Protein</span>
+                        <span id="macro-protein" class="text-[16px] font-bold">0g</span>
+                    </div>
+                    <div class="macro-pill rounded-full bg-[#efe2fb] px-5 py-4 flex items-center justify-between text-[#6f5a93]">
+                        <span class="text-[16px] font-medium">Fat</span>
+                        <span id="macro-fat" class="text-[16px] font-bold">0g</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="rounded-[32px] bg-[#e6d2ff] p-5 relative overflow-hidden shadow-[0_18px_38px_rgba(118,88,66,0.08)] mb-6">
+                <div class="absolute -right-10 -top-10 w-28 h-28 rounded-full bg-white/20 blur-xl"></div>
+                <div class="relative z-10 flex items-start gap-4">
+                    <div class="w-14 h-14 rounded-full bg-white flex items-center justify-center text-[#6f5a93] shadow-sm shrink-0">
+                        <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">auto_awesome</span>
+                    </div>
+                    <div>
+                        <h3 class="text-[16px] font-semibold text-[#5f4c84]">Gợi ý thông minh từ AI</h3>
+                        <p id="planner-ai-note" class="mt-2 text-[15px] leading-7 text-[#6f5a93]">Đang tạo gợi ý bữa ăn theo dữ liệu backend…</p>
+                    </div>
+                </div>
+            </section>
+
             <section class="mb-4 flex items-center justify-between">
                 <div>
                     <h2 class="text-[34px] leading-[38px] font-bold text-[#241814]">Thực đơn</h2>
@@ -213,6 +266,41 @@
             }));
         }
 
+        function formatToday() {
+            const today = new Date();
+            return today.toLocaleDateString("vi-VN", {
+                weekday: "long",
+                day: "numeric",
+                month: "numeric"
+            }).replace(/^./, (char) => char.toUpperCase());
+        }
+
+        function updatePlannerSummary(planResult) {
+            const totalCalo = Number(planResult?.total_calo || 0);
+            const goal = 2000;
+            const progress = Math.max(12, Math.min(100, Math.round((totalCalo / goal) * 100)));
+            const carbs = Math.round((totalCalo * 0.45) / 4);
+            const protein = Math.round((totalCalo * 0.25) / 4);
+            const fat = Math.round((totalCalo * 0.30) / 9);
+
+            document.getElementById("planner-date").textContent = formatToday();
+            document.getElementById("planner-total-cal").textContent = totalCalo.toLocaleString("vi-VN");
+            document.getElementById("planner-goal-cal").textContent = goal.toLocaleString("vi-VN");
+            document.getElementById("macro-carbs").textContent = `${carbs}g`;
+            document.getElementById("macro-protein").textContent = `${protein}g`;
+            document.getElementById("macro-fat").textContent = `${fat}g`;
+            document.getElementById("calorie-ring").style.clipPath = `polygon(0 0, 100% 0, 100% ${progress}%, 0 ${progress}%)`;
+
+            const dinner = planResult?.plan?.find((item) => item.period === "Dinner");
+            if (dinner) {
+                document.getElementById("planner-ai-note").textContent =
+                    `Bạn còn thiếu khoảng ${Math.max(10, Math.round(protein * 0.22))}g Protein hôm nay. Thử thêm một phần ${dinner.name.toLowerCase()} vào bữa tối để cân bằng dinh dưỡng nhé.`;
+            } else {
+                document.getElementById("planner-ai-note").textContent =
+                    "Meal plan đã được đồng bộ. Bạn có thể tải lại để lấy gợi ý bữa ăn mới từ backend.";
+            }
+        }
+
         async function loadPlan() {
             const button = document.getElementById("reload-plan-btn");
             button.textContent = "Đang tải...";
@@ -222,9 +310,12 @@
                     planResult = await smartFoodApi.getPlan({ profile: "Office Worker", late_night: false });
                     smartFoodStore.setStored(smartFoodApi.STORAGE_KEYS.plan, planResult);
                 }
+                updatePlannerSummary(planResult);
                 renderMeals(normalizePlan(planResult.plan));
             } catch (error) {
                 renderMeals([]);
+                document.getElementById("planner-date").textContent = "Không tải được dữ liệu backend";
+                document.getElementById("planner-ai-note").textContent = "Backend chưa phản hồi nên planner chưa thể tạo gợi ý hôm nay.";
                 document.getElementById("meal-list").innerHTML = `<div class="text-sm text-[#8d7d72]">Không tải được kế hoạch từ backend: ${error.message}</div>`;
             } finally {
                 button.textContent = "Tải lại";
