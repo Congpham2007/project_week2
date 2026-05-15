@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kế hoạch bữa ăn</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error": "#ba1a1a",
+                        "surface-tint": "#765842",
+                        "tertiary": "#685687",
+                        "on-tertiary-fixed": "#23113f",
+                        "on-tertiary-fixed-variant": "#4f3e6e",
+                        "on-primary": "#ffffff",
+                        "primary-fixed-dim": "#e6bfa4",
+                        "primary": "#765842",
+                        "outline": "#81756d",
+                        "surface-bright": "#fbf9f4",
+                        "secondary": "#2f685e",
+                        "primary-fixed": "#ffdcc4",
+                        "secondary-container": "#b4eee2",
+                        "on-surface": "#1b1c19",
+                        "primary-container": "#ffd6ba",
+                        "secondary-fixed-dim": "#99d2c6",
+                        "on-primary-container": "#7a5b45",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed": "#ebdcff",
+                        "on-primary-fixed": "#2b1706",
+                        "surface-container-highest": "#e4e2de",
+                        "on-secondary-container": "#366e64",
+                        "tertiary-fixed-dim": "#d2bdf5",
+                        "on-tertiary-container": "#6b598a",
+                        "on-secondary-fixed": "#00201c",
+                        "background": "#fbf9f4",
+                        "secondary-fixed": "#b4eee2",
+                        "surface": "#fbf9f4",
+                        "on-primary-fixed-variant": "#5c412c",
+                        "on-tertiary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "inverse-surface": "#30312e",
+                        "surface-container": "#efeee9",
+                        "surface-dim": "#dbdad5",
+                        "on-surface-variant": "#4f453e",
+                        "inverse-on-surface": "#f2f1ec",
+                        "surface-variant": "#e4e2de",
+                        "inverse-primary": "#e6bfa4",
+                        "surface-container-high": "#eae8e3",
+                        "on-secondary-fixed-variant": "#124f47",
+                        "on-error-container": "#93000a",
+                        "on-background": "#1b1c19",
+                        "outline-variant": "#d3c4ba",
+                        "surface-container-low": "#f5f3ee",
+                        "tertiary-container": "#e8d7ff",
+                        "error-container": "#ffdad6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-padding": "20px",
+                        "stack-md": "24px",
+                        "stack-sm": "12px",
+                        "stack-lg": "40px",
+                        "gutter": "16px",
+                        "unit": "8px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-lg": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "label-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "34px", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "30px", "fontWeight": "600" }],
+                        "label-lg": ["14px", { "lineHeight": "18px", "fontWeight": "600" }],
+                        "display-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
+        /* Hide scrollbar for clean minimal look */
+        ::-webkit-scrollbar { display: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md antialiased pb-24">
+<!-- TopAppBar Shared Component -->
+<header class="fixed top-0 w-full z-50 bg-surface/60 dark:bg-surface-dim/60 backdrop-blur-xl shadow-[0_20px_40px_-15px_rgba(118,88,66,0.08)]">
+<div class="flex items-center justify-between px-container-padding h-16 w-full max-w-md mx-auto">
+<div class="flex items-center gap-2 hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed-dim" data-icon="restaurant_menu">restaurant_menu</span>
+</div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">Khám phá</h1>
+<div class="w-6 h-6"></div> <!-- Spacer for center alignment -->
+</div>
+</header>
+<main class="pt-24 px-container-padding max-w-md mx-auto space-y-stack-md">
+<!-- Header -->
+<div class="space-y-1">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Kế hoạch hôm nay</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Thứ Năm, 24 Tháng 10</p>
+</div>
+<!-- Calorie & Macros Bento -->
+<section class="grid grid-cols-2 gap-gutter">
+<!-- Calorie Summary -->
+<div class="bg-surface-container-low rounded-xl p-5 shadow-[0_20px_40px_-15px_rgba(118,88,66,0.05)] border border-outline-variant/30 flex flex-col justify-center items-center text-center">
+<p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-2">Đã nạp</p>
+<div class="relative flex items-center justify-center w-24 h-24 rounded-full border-4 border-primary-container">
+<div class="absolute w-full h-full rounded-full border-4 border-primary" style="clip-path: polygon(0 0, 100% 0, 100% 60%, 0 60%);"></div>
+<div class="flex flex-col items-center">
+<span class="font-headline-md text-headline-md text-primary">1,240</span>
+<span class="font-label-md text-label-md text-on-surface-variant">/ 2,000</span>
+</div>
+</div>
+<p class="font-label-md text-label-md text-on-surface-variant mt-3">kcal</p>
+</div>
+<!-- Macros -->
+<div class="space-y-unit flex flex-col justify-between">
+<div class="bg-secondary-container/40 rounded-lg p-3 flex justify-between items-center shadow-sm">
+<span class="font-label-md text-label-md text-on-secondary-container">Carbs</span>
+<span class="font-label-md text-label-md font-bold text-on-secondary-container">120g</span>
+</div>
+<div class="bg-primary-container/40 rounded-lg p-3 flex justify-between items-center shadow-sm">
+<span class="font-label-md text-label-md text-on-primary-container">Protein</span>
+<span class="font-label-md text-label-md font-bold text-on-primary-container">65g</span>
+</div>
+<div class="bg-tertiary-container/40 rounded-lg p-3 flex justify-between items-center shadow-sm">
+<span class="font-label-md text-label-md text-on-tertiary-container">Fat</span>
+<span class="font-label-md text-label-md font-bold text-on-tertiary-container">40g</span>
+</div>
+</div>
+</section>
+<!-- AI Smart Suggestion -->
+<section class="bg-tertiary-container rounded-xl p-5 shadow-[0_20px_40px_-15px_rgba(104,86,135,0.15)] relative overflow-hidden">
+<div class="absolute -right-10 -top-10 w-32 h-32 bg-tertiary-fixed-dim rounded-full blur-2xl opacity-50"></div>
+<div class="relative z-10 flex gap-4 items-start">
+<div class="p-2 bg-on-tertiary rounded-full shadow-sm text-tertiary flex-shrink-0">
+<span class="material-symbols-outlined" data-icon="auto_awesome" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<div>
+<h3 class="font-label-lg text-label-lg text-on-tertiary-container mb-1">Gợi ý thông minh từ AI</h3>
+<p class="font-body-sm text-body-sm text-on-tertiary-container/80">Bạn còn thiếu 30g Protein hôm nay. Thử thêm một phần ức gà nướng vào bữa tối để cân bằng dinh dưỡng nhé.</p>
+</div>
+</div>
+</section>
+<!-- Daily Meals List -->
+<section class="space-y-stack-sm">
+<div class="flex justify-between items-center mb-2">
+<h3 class="font-headline-md text-headline-md text-on-surface">Thực đơn</h3>
+<button class="font-label-md text-label-md text-primary hover:opacity-80">Tùy chỉnh</button>
+</div>
+<!-- Breakfast -->
+<div class="bg-surface-container-lowest rounded-xl p-3 shadow-[0_15px_35px_-10px_rgba(118,88,66,0.06)] border border-outline-variant/30 flex items-center gap-4">
+<img alt="Bữa sáng" class="w-16 h-16 rounded-[20px] object-cover" data-alt="A top-down view of a healthy, vibrant breakfast bowl featuring avocado slices, a perfectly poached egg, cherry tomatoes, and quinoa on a pastel ceramic plate. The scene is brightly lit with natural morning sunlight, casting soft, smooth shadows on a clean white marble countertop. The overall aesthetic is modern, appetizing, and fits a premium light-mode food discovery application." src="https://lh3.googleusercontent.com/aida-public/AB6AXuACFMRr20gAi1XL0t3zu4NEEVhSeKK4cTG4TGHq9ehwG6U0nIeSwQGg1MfPjlMU0lNo7FuI5MRRzcdn5jjyafoMBsP3Xonvc0gnMhV-t_6QUR2ji8atTw4yHA1WKSIAPhUQ2gJDRwL8kFq_EXvOngKvQYcuBC6LJldClAjR0cS3UJGaywURPmpRjJBYHU81Uo0kdC4PcYvB6oCicoJMpPoSRCkHUCtiSodXWDfoZMH90yWdZiGjV-ePyt8_uke0l7lcQL7xjlZUEmE"/>
+<div class="flex-1">
+<p class="font-label-sm text-label-md text-outline mb-0.5 uppercase tracking-wide">Bữa sáng</p>
+<h4 class="font-label-lg text-label-lg text-on-surface">Bowl Quinoa Bơ Trứng</h4>
+<p class="font-body-sm text-body-sm text-primary mt-1">450 kcal</p>
+</div>
+<div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined text-[18px]" data-icon="check">check</span>
+</div>
+</div>
+<!-- Lunch -->
+<div class="bg-surface-container-lowest rounded-xl p-3 shadow-[0_15px_35px_-10px_rgba(118,88,66,0.06)] border border-outline-variant/30 flex items-center gap-4">
+<img alt="Bữa trưa" class="w-16 h-16 rounded-[20px] object-cover" data-alt="A beautifully arranged bento box containing grilled salmon, steamed asparagus, and a small portion of brown rice. The food is presented with a candy-coated, professional minimal aesthetic. The lighting is soft and diffused, highlighting the fresh textures of the ingredients. The background is a very subtle soft mint green, enhancing the fresh and healthy vibe of the meal." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6hyxB9vG4BkneKdlNYPAlwuuL6cOSPXH_4oKlR52hLrOqjrWWtX-1ygmePulFBOLxoVIO0cPxo974V6MvCjz7fv9rYeiArH6nm54wHrBZj-QOhCPDnIyU9qEO2mw-ct_c7JypyYWXNEin68hP0Jvpogr5DJf5Umk-0y1DmwmVWJzUUfdJAouedC_E923PUJCIkXEBBsa9E6v2aAF_6u3URStXPyhogguEcGcR_mBEp7w1tOlwDdqNHC35_t1KT4F4MfWuP8urE_Y"/>
+<div class="flex-1">
+<p class="font-label-sm text-label-md text-outline mb-0.5 uppercase tracking-wide">Bữa trưa</p>
+<h4 class="font-label-lg text-label-lg text-on-surface">Cơm Lứt Cá Hồi Nướng</h4>
+<p class="font-body-sm text-body-sm text-primary mt-1">520 kcal</p>
+</div>
+<div class="w-8 h-8 rounded-full border-2 border-outline-variant flex items-center justify-center text-outline">
+<span class="material-symbols-outlined text-[18px]" data-icon="schedule">schedule</span>
+</div>
+</div>
+<!-- Dinner -->
+<div class="bg-surface-container-lowest rounded-xl p-3 shadow-[0_15px_35px_-10px_rgba(118,88,66,0.06)] border border-outline-variant/30 flex items-center gap-4">
+<img alt="Bữa tối" class="w-16 h-16 rounded-[20px] object-cover" data-alt="An elegant, minimalist presentation of a vibrant mixed greens salad with sliced grilled chicken breast and a light vinaigrette dressing. The dish is served in a wide, shallow white bowl. The lighting is warm yet soft, creating an inviting evening meal atmosphere. The surrounding environment is clean and uncluttered, aligning with a sophisticated, pastel-toned design language." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbq0WKmwl75TinKgF3rQMUyPUDD_1Gy4wvQQJu5vllc-TTzraKP2J-5mk6kf5cFI2ALNzUzukhsWOAGMugVq6BybZor-STsKj5BoBidN9VYjQJAjd6ju0VqKmJtIZKudEoMU2dwJZDlxLbyrjmSUp1jOrgOqvesy811syuV2K9VCVKCI1tNIhwSfJ5okETic9nFd5yABaYf3t5lAMMAVPaR8gHBuHGH2o7Z1iPTIxyG8-_uZGEYfZ3VuaBPCbP37X8fZAs1cOtNlU"/>
+<div class="flex-1">
+<p class="font-label-sm text-label-md text-outline mb-0.5 uppercase tracking-wide">Bữa tối</p>
+<h4 class="font-label-lg text-label-lg text-on-surface">Salad Ức Gà Áp Chảo</h4>
+<p class="font-body-sm text-body-sm text-primary mt-1">380 kcal</p>
+</div>
+<div class="w-8 h-8 rounded-full border-2 border-outline-variant flex items-center justify-center text-outline">
+<span class="material-symbols-outlined text-[18px]" data-icon="schedule">schedule</span>
+</div>
+</div>
+</section>
+<!-- Weekly Chart -->
+<section class="bg-surface-container-lowest rounded-xl p-5 shadow-[0_20px_40px_-15px_rgba(118,88,66,0.05)] border border-outline-variant/30">
+<h3 class="font-label-lg text-label-lg text-on-surface mb-4">Phân tích tuần</h3>
+<div class="flex items-end justify-between h-32 pt-4 border-b border-surface-variant">
+<!-- Chart Bars -->
+<div class="flex flex-col items-center gap-2 group">
+<div class="w-8 bg-surface-variant rounded-t-sm h-[60%] group-hover:bg-primary-container transition-colors relative">
+<div class="absolute bottom-0 w-full bg-primary rounded-t-sm h-[40%]"></div>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">T2</span>
+</div>
+<div class="flex flex-col items-center gap-2 group">
+<div class="w-8 bg-surface-variant rounded-t-sm h-[75%] group-hover:bg-primary-container transition-colors relative">
+<div class="absolute bottom-0 w-full bg-primary rounded-t-sm h-[50%]"></div>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">T3</span>
+</div>
+<div class="flex flex-col items-center gap-2 group">
+<div class="w-8 bg-surface-variant rounded-t-sm h-[90%] group-hover:bg-primary-container transition-colors relative">
+<div class="absolute bottom-0 w-full bg-primary rounded-t-sm h-[80%]"></div>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">T4</span>
+</div>
+<div class="flex flex-col items-center gap-2 group">
+<div class="w-8 bg-primary-container rounded-t-sm h-[65%] relative">
+<div class="absolute bottom-0 w-full bg-primary rounded-t-sm h-[60%]"></div>
+</div>
+<span class="font-label-md text-label-md text-primary font-bold">T5</span>
+</div>
+<div class="flex flex-col items-center gap-2 group">
+<div class="w-8 bg-surface-variant rounded-t-sm h-0 group-hover:bg-primary-container transition-colors relative"></div>
+<span class="font-label-md text-label-md text-outline-variant">T6</span>
+</div>
+<div class="flex flex-col items-center gap-2 group">
+<div class="w-8 bg-surface-variant rounded-t-sm h-0 group-hover:bg-primary-container transition-colors relative"></div>
+<span class="font-label-md text-label-md text-outline-variant">T7</span>
+</div>
+<div class="flex flex-col items-center gap-2 group">
+<div class="w-8 bg-surface-variant rounded-t-sm h-0 group-hover:bg-primary-container transition-colors relative"></div>
+<span class="font-label-md text-label-md text-outline-variant">CN</span>
+</div>
+</div>
+<div class="flex justify-center items-center gap-4 mt-4">
+<div class="flex items-center gap-1.5">
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+<span class="font-label-md text-label-md text-on-surface-variant">Thực tế</span>
+</div>
+<div class="flex items-center gap-1.5">
+<div class="w-2 h-2 rounded-full bg-primary-container"></div>
+<span class="font-label-md text-label-md text-on-surface-variant">Mục tiêu</span>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar Shared Component -->
+
+</body></html>
